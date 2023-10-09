@@ -60,7 +60,7 @@ public class UpdateController {
 
     private void setFileIsReceivedView(Update update) {
         var sendMessage = messageUtils.generateSendMessageWithText(update,
-                "Файл получен! Обрабатывается...");
+                "Обработка...");
         setView(sendMessage);
     }
 
@@ -69,7 +69,7 @@ public class UpdateController {
     }
 
     private void processPhotoMessage(Update update) {
-        updateProducer.produce(PHOTO_MESSAGE_UPDATE, update);
+        updateProducer.produce(VOICE_MESSAGE, update);
         setFileIsReceivedView(update);
     }
 
@@ -81,6 +81,8 @@ public class UpdateController {
     private void processTextMessage(Update update) {
         updateProducer.produce(TEXT_MESSAGE_UPDATE, update);
     }
+
+
 
 
 }
