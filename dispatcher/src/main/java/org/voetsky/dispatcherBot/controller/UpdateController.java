@@ -37,6 +37,7 @@ public class UpdateController {
         } else {
             log.error("Unsupported message type is received: " + update);
         }
+
     }
 
     private void distributeMessagesByType(Update update) {
