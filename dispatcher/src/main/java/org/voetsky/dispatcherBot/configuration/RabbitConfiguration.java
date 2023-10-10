@@ -27,6 +27,11 @@ public class RabbitConfiguration {
     }
 
     @Bean
+    public Queue voiceMessageQueue() {
+        return new Queue(VOICE_MESSAGE_UPDATE);
+    }
+
+    @Bean
     public Queue answerMessageQueue() {
         return new Queue(ANSWER_MESSAGE);
     }

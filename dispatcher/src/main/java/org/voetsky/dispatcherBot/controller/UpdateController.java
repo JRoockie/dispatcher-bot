@@ -70,7 +70,7 @@ public class UpdateController {
     }
 
     private void processPhotoMessage(Update update) {
-        updateProducer.produce(VOICE_MESSAGE, update);
+        updateProducer.produce(VOICE_MESSAGE_UPDATE, update);
         setFileIsReceivedView(update);
     }
 
