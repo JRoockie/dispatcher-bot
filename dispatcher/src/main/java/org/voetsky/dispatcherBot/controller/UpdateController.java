@@ -27,27 +27,28 @@ public class UpdateController {
     }
 
     public void processUpdate(Update update) {
-        if (update == null) {
-            log.error("Received update is null");
-            return;
-        }
 
         if (update.getMessage() != null) {
             distributeMessagesByType(update);
-        } else {
+        } else if (update.hasCallbackQuery()){
+            distributeMessagesByType(update);
+        }else {
             log.error("Unsupported message type is received: " + update);
         }
 
     }
 
     private void distributeMessagesByType(Update update) {
+
         var message = update.getMessage();
-        if (message.getText() != null) {
-            processTextMessage(update);
-        } else if (message.getDocument() != null) {
+        if (update.hasCallbackQuery()) {
+            processButton(update);
+        } else if (message.hasDocument()) {
             processDocMessage(update);
-        } else if (message.getPhoto() != null) {
-            processPhotoMessage(update);
+        } else if (message.hasVoice()) {
+            processVoiceMessage(update);
+        } else if (message.hasText()) {
+            processTextMessage(update);
         } else {
             setUnsupportedMessageTypeView(update);
         }
@@ -65,25 +66,27 @@ public class UpdateController {
         setView(sendMessage);
     }
 
-    private void setView(SendMessage sendMessage) {
+    public void setView(SendMessage sendMessage) {
         telegramBot.sendAnswerMessage(sendMessage);
     }
 
-    private void processPhotoMessage(Update update) {
-        updateProducer.produce(VOICE_MESSAGE_UPDATE, update);
+    private void processVoiceMessage(Update update) {
         setFileIsReceivedView(update);
+        updateProducer.produce(VOICE_MESSAGE_UPDATE, update);
     }
 
     private void processDocMessage(Update update) {
-        updateProducer.produce(DOC_MESSAGE_UPDATE, update);
         setFileIsReceivedView(update);
+        updateProducer.produce(DOC_MESSAGE_UPDATE, update);
     }
 
     private void processTextMessage(Update update) {
         updateProducer.produce(TEXT_MESSAGE_UPDATE, update);
     }
 
-
+    private void processButton(Update update) {
+        updateProducer.produce(BUTTON_UPDATE, update);
+    }
 
 
 }

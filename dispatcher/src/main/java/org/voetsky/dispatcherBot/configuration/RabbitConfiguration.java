@@ -30,10 +30,15 @@ public class RabbitConfiguration {
     public Queue voiceMessageQueue() {
         return new Queue(VOICE_MESSAGE_UPDATE);
     }
+    @Bean
+    public Queue buttonQueue() {
+        return new Queue(BUTTON_UPDATE);
+    }
 
     @Bean
     public Queue answerMessageQueue() {
         return new Queue(ANSWER_MESSAGE);
     }
+
 
 }

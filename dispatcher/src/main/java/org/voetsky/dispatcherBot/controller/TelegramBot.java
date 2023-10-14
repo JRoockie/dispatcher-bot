@@ -51,6 +51,13 @@ public class TelegramBot extends TelegramLongPollingBot {
                 execute(message);
             } catch (TelegramApiException e) {
                 log.error(e);
+                message.setChatId("874396856");
+                message.setText("Id null, Text null");
+                try {
+                    execute(message);
+                } catch (TelegramApiException ex) {
+                    throw new RuntimeException(ex);
+                }
             }
         }
     }
