@@ -1,20 +1,18 @@
 package org.voetsky.dispatcherBot.entities;
 
 import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
-import com.vladmihalcea.hibernate.type.json.JsonType;
 import lombok.*;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 
 import javax.persistence.*;
-import java.io.File;
 import java.io.Serializable;
 
 @Entity
 @Builder
 @Getter
 @Setter
-@EqualsAndHashCode(exclude = {"OrderId","SongId"})
+@EqualsAndHashCode(exclude = {"orderId","songId"})
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "Songs")
@@ -25,23 +23,23 @@ public class Song implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    int OrderId;
+    private int orderId;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    int SongId;
+    private int songId;
 
-    String chatID;
-    String name;
-    String link;
+    private String chatID;
+    private String name;
+    private String link;
 
     @Type(type = "jsonb")
     @Column(name = "mp3")
-    Object mp3;
-
-    int singerCount;
+    private Object mp3;
+    private int singerCount;
 
     @Type(type = "jsonb")
     @Column(name = "voiceMessage")
-    Object singerVoiceMessage;
+    private Object singerVoiceMessage;
+
 }

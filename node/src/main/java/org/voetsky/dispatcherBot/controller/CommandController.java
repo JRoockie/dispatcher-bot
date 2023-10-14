@@ -8,7 +8,8 @@ import org.voetsky.dispatcherBot.commands.CommandInterface;
 import org.voetsky.dispatcherBot.commands.impl.SongAddCommand;
 import org.voetsky.dispatcherBot.commands.impl.SongNameCommand;
 import org.voetsky.dispatcherBot.commands.impl.StartCommand;
-import org.voetsky.dispatcherBot.dao.imp.OrderDao;
+import org.voetsky.dispatcherBot.dao.AppUserDao;
+import org.voetsky.dispatcherBot.dao.imp.OrderDaoImpl;
 import org.voetsky.dispatcherBot.services.MessageService;
 
 import java.util.List;
@@ -19,13 +20,15 @@ import java.util.concurrent.ConcurrentHashMap;
 @Controller
 public class CommandController {
 
-    private final OrderDao orderDao;
+    private final OrderDaoImpl orderDaoImpl;
+    private final AppUserDao appUserDao;
     private final Map<String, String> bindingBy = new ConcurrentHashMap<>();
     private final MessageService messageService;
     private Map<String, CommandInterface> actions;
 
-    public CommandController(OrderDao orderDao, MessageService messageService) {
-        this.orderDao = orderDao;
+    public CommandController(OrderDaoImpl orderDaoImpl, AppUserDao appUserDao, MessageService messageService) {
+        this.orderDaoImpl = orderDaoImpl;
+        this.appUserDao = appUserDao;
         this.messageService = messageService;
         init();
     }

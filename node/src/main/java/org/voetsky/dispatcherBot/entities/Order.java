@@ -10,7 +10,7 @@ import java.io.Serializable;
 @Builder
 @Getter
 @Setter
-@EqualsAndHashCode(exclude = "OrderId")
+@EqualsAndHashCode(exclude = {"orderId", "userId"})
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "Orders")
@@ -18,12 +18,14 @@ public class Order implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long OrderId;
+    Long orderId;
 
-    String chatID;
-    String phoneNumber;
-    String comment;
-    String price;
-    boolean status;
-    String Date;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long userId;
+    private String chatID;
+    private String comment;
+    private String price;
+    private boolean status;
+    private String date;
 }
