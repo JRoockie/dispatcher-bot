@@ -12,7 +12,7 @@ import java.io.Serializable;
 @Builder
 @Getter
 @Setter
-@EqualsAndHashCode(exclude = {"orderId","songId"})
+@EqualsAndHashCode(exclude = "songId")
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "Songs")
@@ -21,13 +21,10 @@ public class Song implements Serializable {
     //    Order order;
     //TODO Добавить интеграцию с другой таблицей
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int orderId;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int songId;
+    private Long songId;
 
     private String chatID;
     private String name;

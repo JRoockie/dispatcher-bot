@@ -8,6 +8,7 @@
         <artifactId>dispatcherBot</artifactId>
         <version>1.0-SNAPSHOT</version>
     </parent>
+
     <artifactId>node</artifactId>
 
     <properties>

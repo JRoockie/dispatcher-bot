@@ -17,13 +17,15 @@ import java.time.LocalDateTime;
 public class AppUser {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long userid;
+    private Long userId;
     private Long telegramUserId;
+//    @OneToMany
+//    private Long orderId;
+
     @CreationTimestamp
     private LocalDateTime firstLoginDate;
     private String firstName;
     private String lastName;
     private String username;
-    private Long phoneNumber;
 
 }

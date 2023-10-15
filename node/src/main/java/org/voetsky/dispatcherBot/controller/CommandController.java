@@ -4,12 +4,15 @@ import lombok.extern.log4j.Log4j;
 import org.springframework.stereotype.Controller;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
+import org.telegram.telegrambots.meta.api.objects.User;
 import org.voetsky.dispatcherBot.commands.CommandInterface;
 import org.voetsky.dispatcherBot.commands.impl.SongAddCommand;
 import org.voetsky.dispatcherBot.commands.impl.SongNameCommand;
 import org.voetsky.dispatcherBot.commands.impl.StartCommand;
 import org.voetsky.dispatcherBot.dao.AppUserDao;
-import org.voetsky.dispatcherBot.dao.imp.OrderDaoImpl;
+import org.voetsky.dispatcherBot.dao.OrderDao;
+import org.voetsky.dispatcherBot.dao.SongDao;
+import org.voetsky.dispatcherBot.entity.AppUser;
 import org.voetsky.dispatcherBot.services.MessageService;
 
 import java.util.List;
@@ -20,15 +23,11 @@ import java.util.concurrent.ConcurrentHashMap;
 @Controller
 public class CommandController {
 
-    private final OrderDaoImpl orderDaoImpl;
-    private final AppUserDao appUserDao;
     private final Map<String, String> bindingBy = new ConcurrentHashMap<>();
     private final MessageService messageService;
     private Map<String, CommandInterface> actions;
 
-    public CommandController(OrderDaoImpl orderDaoImpl, AppUserDao appUserDao, MessageService messageService) {
-        this.orderDaoImpl = orderDaoImpl;
-        this.appUserDao = appUserDao;
+    public CommandController(MessageService messageService) {
         this.messageService = messageService;
         init();
     }
@@ -53,7 +52,6 @@ public class CommandController {
     public SendMessage updateReceiver(Update update) {
 
         if (update.hasMessage()) {
-
             var key = update.getMessage().getText();
             var chatId = update.getMessage().getChatId().toString();
             if (actions.containsKey(key)) {
@@ -71,13 +69,6 @@ public class CommandController {
         }
         return null;
     }
-
-    public SendMessage chainOfCommands(Update update) {
-
-        //добавить песню и заполнить ее
-        return null;
-    }
-
 
     public SendMessage callbackExecute(Update update) {
         try {

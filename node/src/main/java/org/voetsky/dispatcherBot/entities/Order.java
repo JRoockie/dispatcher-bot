@@ -2,6 +2,7 @@ package org.voetsky.dispatcherBot.entities;
 
 
 import lombok.*;
+import org.voetsky.dispatcherBot.entity.AppUser;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -10,7 +11,7 @@ import java.io.Serializable;
 @Builder
 @Getter
 @Setter
-@EqualsAndHashCode(exclude = {"orderId", "userId"})
+@EqualsAndHashCode(exclude = "orderId")
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "Orders")
@@ -18,14 +19,13 @@ public class Order implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long orderId;
+    private Long orderId;
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long userId;
     private String chatID;
     private String comment;
     private String price;
     private boolean status;
     private String date;
+    private Long phoneNumber;
+
 }
