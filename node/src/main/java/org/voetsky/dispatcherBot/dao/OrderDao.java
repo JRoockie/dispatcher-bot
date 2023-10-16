@@ -1,7 +1,7 @@
 package org.voetsky.dispatcherBot.dao;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.voetsky.dispatcherBot.entities.Order;
+import org.voetsky.dispatcherBot.entities.OrderClient;
 
-public interface OrderDao extends JpaRepository<Order,Long> {
+public interface OrderDao extends JpaRepository<OrderClient,Long> {
 }

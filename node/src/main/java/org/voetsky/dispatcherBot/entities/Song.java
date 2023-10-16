@@ -26,7 +26,10 @@ public class Song implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long songId;
 
-    private String chatID;
+    @ManyToOne
+    @JoinColumn(name = "orderId", referencedColumnName = "orderClient_Id")
+    private OrderClient orderClient;
+
     private String name;
     private String link;
 

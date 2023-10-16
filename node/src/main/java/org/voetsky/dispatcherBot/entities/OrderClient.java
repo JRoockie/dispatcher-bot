@@ -6,22 +6,30 @@ import org.voetsky.dispatcherBot.entity.AppUser;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.List;
 
 @Entity
 @Builder
 @Getter
 @Setter
-@EqualsAndHashCode(exclude = "orderId")
+@EqualsAndHashCode(exclude = "orderClient_Id")
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "Orders")
-public class Order implements Serializable {
+public class OrderClient implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long orderId;
+    private Long orderClient_Id;
 
-    private String chatID;
+    @ManyToOne
+    @JoinColumn(name = "appUserid", referencedColumnName = "appUserid")
+    private AppUser appUser;
+
+    @OneToMany(mappedBy = "orderId")
+    private List<Song> songs;
+
+    private String chatId;
     private String comment;
     private String price;
     private boolean status;
