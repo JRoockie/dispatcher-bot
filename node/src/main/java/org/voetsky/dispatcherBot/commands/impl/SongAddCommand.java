@@ -4,16 +4,16 @@ package org.voetsky.dispatcherBot.commands.impl;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.voetsky.dispatcherBot.commands.CommandInterface;
-import org.voetsky.dispatcherBot.controller.CommandController;
+import org.voetsky.dispatcherBot.controller.CommandHandler;
 
 public class SongAddCommand implements CommandInterface {
 
     private final String action;
-    private final CommandController controller;
+    private final CommandHandler commandHandler;
 
-    public SongAddCommand(String action, CommandController controller) {
+    public SongAddCommand(String action, CommandHandler controller) {
         this.action = action;
-        this.controller = controller;
+        this.commandHandler = controller;
     }
 
 
@@ -26,5 +26,10 @@ public class SongAddCommand implements CommandInterface {
     @Override
     public SendMessage callback(Update update) {
         return handle(update);
+    }
+
+    @Override
+    public void changeState(Update update) {
+
     }
 }

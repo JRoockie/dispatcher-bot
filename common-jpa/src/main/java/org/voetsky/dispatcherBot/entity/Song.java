@@ -1,4 +1,4 @@
-package org.voetsky.dispatcherBot.entities;
+package org.voetsky.dispatcherBot.entity;
 
 import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
 import lombok.*;
@@ -7,30 +7,29 @@ import org.hibernate.annotations.TypeDef;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.List;
 
 @Entity
 @Builder
 @Getter
 @Setter
-@EqualsAndHashCode(exclude = "songId")
+@EqualsAndHashCode(exclude = {"id", "orderClient"})
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "Songs")
+@Table(name = "songs")
 @TypeDef(name = "jsonb", typeClass = JsonBinaryType.class)
 public class Song implements Serializable {
     //    Order order;
     //TODO Добавить интеграцию с другой таблицей
-
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long songId;
+    private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "orderId", referencedColumnName = "orderClient_Id")
+    @JoinColumn(name = "order_client_id", referencedColumnName = "id")
     private OrderClient orderClient;
 
-    private String name;
+    private String songName;
     private String link;
 
     @Type(type = "jsonb")

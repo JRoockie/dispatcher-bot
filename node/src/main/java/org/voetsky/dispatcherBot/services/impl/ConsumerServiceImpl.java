@@ -24,9 +24,9 @@ public class ConsumerServiceImpl implements ConsumerService {
     }
 
     @Override
-    @RabbitListener(queues = DOC_MESSAGE_UPDATE)
-    public void consumeDocMessageUpdates(Update update) {
-        mainServiceImpl.consumeDocMessageUpdates(update);
+    @RabbitListener(queues = AUDIO_MESSAGE_UPDATE)
+    public void consumeAudioMessageUpdates(Update update) {
+        mainServiceImpl.consumeAudioMessageUpdates(update);
 //        log.debug("NODE: Doc message is received");
 //        var message = update.getMessage();
 //        var sendMessage = new SendMessage();

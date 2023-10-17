@@ -23,4 +23,9 @@ public class MessageServiceImpl implements MessageService {
             return sendMessage;
         }
     }
+
+    @Override
+    public SendMessage send(SendMessage sendMessage) {
+        return sendMessage;
+    }
 }

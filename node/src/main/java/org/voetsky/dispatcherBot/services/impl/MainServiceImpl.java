@@ -5,81 +5,132 @@ import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.User;
-import org.voetsky.dispatcherBot.controller.CommandController;
-import org.voetsky.dispatcherBot.dao.AppUserDao;
-import org.voetsky.dispatcherBot.dao.OrderDao;
+import org.voetsky.dispatcherBot.controller.CommandHandler;
+import org.voetsky.dispatcherBot.dao.TgUserDao;
+import org.voetsky.dispatcherBot.dao.OrderClientDao;
 import org.voetsky.dispatcherBot.dao.SongDao;
-import org.voetsky.dispatcherBot.entity.AppUser;
+import org.voetsky.dispatcherBot.entity.TgUser;
 import org.voetsky.dispatcherBot.services.MainService;
+
+import static org.voetsky.dispatcherBot.UserState.*;
 
 @Service
 @Log4j
 public class MainServiceImpl implements MainService {
 
-    private final CommandController controller;
+    private final CommandHandler commandHandler;
     private final ProducerServiceImpl producerService;
-    private final OrderDao orderDao;
-    private final SongDao songDao;
-    private final AppUserDao appUserDao;
+//    private final OrderClientDao orderClientDao;
+//    private final SongDao songDao;
+//    private final TgUserDao tgUserDao;
+    private final MessageServiceImpl messageService;
 
-    public MainServiceImpl(CommandController controller, ProducerServiceImpl producerService, OrderDao orderDao, SongDao songDao, AppUserDao appUserDao) {
-        this.controller = controller;
+    public MainServiceImpl(CommandHandler commandHandler, ProducerServiceImpl producerService, OrderClientDao orderClientDao, SongDao songDao, TgUserDao tgUserDao, MessageServiceImpl messageService) {
+        this.commandHandler = commandHandler;
         this.producerService = producerService;
-        this.orderDao = orderDao;
-        this.songDao = songDao;
-        this.appUserDao = appUserDao;
+//        this.orderClientDao = orderClientDao;
+//        this.songDao = songDao;
+//        this.tgUserDao = tgUserDao;
+        this.messageService = messageService;
     }
 
-    public AppUser findOrSaveAppUser(User telegramUser){
-        AppUser persistentAppUser = appUserDao.findAppUsersByTelegramUserId(telegramUser.getId());
-        if (persistentAppUser == null){
-            //Объект еще не представлен в бд и его предстоит сохранить
-            AppUser transientAppUser = AppUser.builder()
-                    .telegramUserId(telegramUser.getId())
-                    .username(telegramUser.getUserName())
-                    .firstName(telegramUser.getFirstName())
-                    .lastName(telegramUser.getLastName())
-                    .build();
-            return appUserDao.save(transientAppUser);
-        }
-        return persistentAppUser;
-    }
     @Override
     public void processTextMessage(Update update) {
+        log.debug("NODE: Text message is received");
+
         var textMessage = update.getMessage();
         var telegramUser = textMessage.getFrom();
-        var appUser = findOrSaveAppUser(telegramUser);
+        var user = commandHandler.findOrSaveAppUser(telegramUser);
 
-
-
-        log.debug("NODE: Text message is received");
-        producerService.producerAnswer(controller.updateReceiver(update));
+        if (stateCheck(update)) {
+            log.debug("NODE: Sending message to controller");
+            producerService.producerAnswer(commandHandler.updateReceiver(update));
+        } else {
+            errorSender(update, "textError, write /start");
+        }
     }
 
-    public void consumeDocMessageUpdates(Update update) {
-        log.debug("NODE: Doc message is received");
-        var message = update.getMessage();
-        var sendMessage = new SendMessage();
-        sendMessage.setChatId(message.getChatId().toString());
-        sendMessage.setText("Doc message is received from NODE");
-        producerService.producerAnswer(sendMessage);
+    public void consumeAudioMessageUpdates(Update update) {
+        log.debug("NODE: Mp3 message is received");
+
+        if (stateCheck(update)) {
+            producerService.producerAnswer(messageService.send(update, "Audio message is received from NODE"));
+        } else {
+            errorSender(update, "mp3Error");
+        }
     }
 
     public void consumeVoiceMessageUpdates(Update update) {
         log.debug("NODE: Voice message is received");
-        var message = update.getMessage();
-        var sendMessage = new SendMessage();
-        sendMessage.setChatId(message.getChatId().toString());
-        sendMessage.setText("Voice message is received from NODE");
-        producerService.producerAnswer(sendMessage);
+        if (stateCheck(update)) {
+            producerService.producerAnswer(messageService.send(update, "Voice message is received from NODE"));
+        } else {
+            errorSender(update, "voiceError");
+        }
     }
 
     public void consumeButtonUpdates(Update update) {
         log.debug("NODE: Button message is received");
-        var sendMessage = new SendMessage();
-        sendMessage.setChatId(update.getCallbackQuery().getId());
-        sendMessage.setText("Button click is received from NODE");
-        producerService.producerAnswer(controller.updateReceiver(update));
+        if (stateCheck(update)) {
+            producerService.producerAnswer(commandHandler.updateReceiver(update));
+        } else {
+            errorSender(update, "buttonError");
+        }
+    }
+
+    public void errorSender(Update update, String s) {
+        String error = "Некорректный state. Текущий state: " + getState(update);
+        producerService.producerAnswer(messageService.send(update, s + " " + error));
+    }
+
+    public String getState(Update update) {
+        String state;
+        if (update.hasCallbackQuery()) {
+            state = String.valueOf(commandHandler.findAppUsersByTelegramUserId(
+                    update.getCallbackQuery().getFrom().getId()).getUserState());
+        } else {
+            var telegramUser = update.getMessage().getFrom();
+            state = String.valueOf(commandHandler.findAppUsersByTelegramUserId(telegramUser.getId()).getUserState());
+        }
+        return state;
+    }
+
+    public boolean stateCheck(Update update) {
+// 2 state: awaiting for text, command state, awaiting for doc, awaiting for mp3,
+        // в стейте awaiting нельзя ввести команду и запустится предыдущая. В стейте command
+        // команда вводится но нельзя ввести кастом ввод, запуск пред команды
+        String state = getState(update);
+        if (update.getMessage() != null) {
+            if (update.getMessage().getText() != null) {
+                log.debug("VALID: Choosing command ");
+                var key = update.getMessage().getText();
+                var chatId = update.getMessage().getChatId().toString();
+
+                if (commandHandler.getActions().containsKey(key)) {
+                    log.debug("VALID: It is COMMAND " + commandHandler.getActions().get(key));
+                    return String.valueOf(AWAITING_FOR_COMMAND).equals(state);
+
+                } else if (commandHandler.getBindingBy().containsKey(chatId)) {
+                    log.debug("VALID: It is text for CALLBACK part of : " + commandHandler.getBindingBy().get(chatId));
+                    return String.valueOf(AWAITING_FOR_TEXT).equals(state);
+                }
+            } else if (update.getMessage().hasVoice()) {
+                log.debug("VALID: It is VOICE ");
+                return String.valueOf(AWAITING_FOR_VOICE).equals(state);
+
+            } else if (update.getMessage().hasAudio()) {
+                log.debug("VALID: It is mp3 ");
+                return String.valueOf(AWAITING_FOR_AUDIO).equals(state);
+            }
+        } else if (update.hasCallbackQuery()) {
+            log.debug("VALID: It is BUTTON ");
+            return String.valueOf(AWAITING_FOR_BUTTON).equals(state);
+
+        } else {
+            log.debug("VALID: Callback not found, command not found ");
+            return false;
+        }
+        return false;
     }
 
 

@@ -6,7 +6,7 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 import org.voetsky.dispatcherBot.commands.CommandInterface;
-import org.voetsky.dispatcherBot.controller.CommandController;
+import org.voetsky.dispatcherBot.controller.CommandHandler;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,13 +14,12 @@ import java.util.List;
 public class StartCommand implements CommandInterface {
 
     private final List<String> actions;
-    private final CommandController controller;
+    private final CommandHandler commandHandler;
 
-    public StartCommand(List<String> actions, CommandController controller) {
+    public StartCommand(List<String> actions, CommandHandler controller) {
         this.actions = actions;
-        this.controller = controller;
+        this.commandHandler = controller;
     }
-
 
     @Override
     public SendMessage handle(Update update) {
@@ -41,13 +40,19 @@ public class StartCommand implements CommandInterface {
 
         SendMessage sendMessage = new SendMessage(chatId, out.toString());
         sendMessage.setReplyMarkup(markupInline);
-        return sendMessage;
+
+        return commandHandler.send(sendMessage);
 
     }
 
     @Override
     public SendMessage callback(Update update) {
         return handle(update);
+    }
+
+    @Override
+    public void changeState(Update update) {
+
     }
 
 

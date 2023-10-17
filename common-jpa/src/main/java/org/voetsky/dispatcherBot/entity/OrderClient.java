@@ -1,8 +1,8 @@
-package org.voetsky.dispatcherBot.entities;
+package org.voetsky.dispatcherBot.entity;
 
 
 import lombok.*;
-import org.voetsky.dispatcherBot.entity.AppUser;
+import org.voetsky.dispatcherBot.UserState;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -12,27 +12,28 @@ import java.util.List;
 @Builder
 @Getter
 @Setter
-@EqualsAndHashCode(exclude = "orderClient_Id")
+@EqualsAndHashCode(exclude = "id")
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "Orders")
+@Table(name = "orders")
 public class OrderClient implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long orderClient_Id;
+    private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "appUserid", referencedColumnName = "appUserid")
-    private AppUser appUser;
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    private TgUser tgUser;
 
-    @OneToMany(mappedBy = "orderId")
+    @OneToMany(mappedBy = "orderClient")
     private List<Song> songs;
 
     private String chatId;
+    private String inputName;
     private String comment;
     private String price;
-    private boolean status;
+    private boolean isAccepted;
     private String date;
     private Long phoneNumber;
 

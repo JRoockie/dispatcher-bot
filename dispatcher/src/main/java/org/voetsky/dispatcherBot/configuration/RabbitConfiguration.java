@@ -22,8 +22,8 @@ public class RabbitConfiguration {
     }
 
     @Bean
-    public Queue docMessageQueue() {
-        return new Queue(DOC_MESSAGE_UPDATE);
+    public Queue mp3MessageQueue() {
+        return new Queue(AUDIO_MESSAGE_UPDATE);
     }
 
     @Bean

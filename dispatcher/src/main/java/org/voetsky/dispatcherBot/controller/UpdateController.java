@@ -41,10 +41,11 @@ public class UpdateController {
     private void distributeMessagesByType(Update update) {
 
         var message = update.getMessage();
+
         if (update.hasCallbackQuery()) {
             processButton(update);
-        } else if (message.hasDocument()) {
-            processDocMessage(update);
+        } else if (message.hasAudio()) {
+            processAudioMessage(update);
         } else if (message.hasVoice()) {
             processVoiceMessage(update);
         } else if (message.hasText()) {
@@ -75,9 +76,9 @@ public class UpdateController {
         updateProducer.produce(VOICE_MESSAGE_UPDATE, update);
     }
 
-    private void processDocMessage(Update update) {
+    private void processAudioMessage(Update update) {
         setFileIsReceivedView(update);
-        updateProducer.produce(DOC_MESSAGE_UPDATE, update);
+        updateProducer.produce(AUDIO_MESSAGE_UPDATE, update);
     }
 
     private void processTextMessage(Update update) {

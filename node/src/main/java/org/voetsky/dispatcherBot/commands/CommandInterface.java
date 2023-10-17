@@ -8,4 +8,7 @@ public interface CommandInterface {
     SendMessage handle(Update update);
 
     SendMessage callback(Update update);
+
+    void changeState(Update update);
+
 }
