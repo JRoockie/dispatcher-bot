@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.User;
+import org.voetsky.dispatcherBot.UserState;
 import org.voetsky.dispatcherBot.controller.CommandHandler;
 import org.voetsky.dispatcherBot.dao.TgUserDao;
 import org.voetsky.dispatcherBot.dao.OrderClientDao;
@@ -83,14 +84,14 @@ public class MainServiceImpl implements MainService {
         producerService.producerAnswer(messageService.send(update, s + " " + error));
     }
 
-    public String getState(Update update) {
-        String state;
+    public UserState getState(Update update) {
+        UserState state;
         if (update.hasCallbackQuery()) {
-            state = String.valueOf(commandHandler.findAppUsersByTelegramUserId(
-                    update.getCallbackQuery().getFrom().getId()).getUserState());
+            state = commandHandler.findAppUsersByTelegramUserId(
+                    update.getCallbackQuery().getFrom().getId()).getUserState();
         } else {
             var telegramUser = update.getMessage().getFrom();
-            state = String.valueOf(commandHandler.findAppUsersByTelegramUserId(telegramUser.getId()).getUserState());
+            state = commandHandler.findAppUsersByTelegramUserId(telegramUser.getId()).getUserState();
         }
         return state;
     }
@@ -99,7 +100,7 @@ public class MainServiceImpl implements MainService {
 // 2 state: awaiting for text, command state, awaiting for doc, awaiting for mp3,
         // в стейте awaiting нельзя ввести команду и запустится предыдущая. В стейте command
         // команда вводится но нельзя ввести кастом ввод, запуск пред команды
-        String state = getState(update);
+        UserState state = getState(update);
         if (update.getMessage() != null) {
             if (update.getMessage().getText() != null) {
                 log.debug("VALID: Choosing command ");
@@ -108,23 +109,23 @@ public class MainServiceImpl implements MainService {
 
                 if (commandHandler.getActions().containsKey(key)) {
                     log.debug("VALID: It is COMMAND " + commandHandler.getActions().get(key));
-                    return String.valueOf(AWAITING_FOR_COMMAND).equals(state);
+                    return AWAITING_FOR_COMMAND.equals(state);
 
                 } else if (commandHandler.getBindingBy().containsKey(chatId)) {
                     log.debug("VALID: It is text for CALLBACK part of : " + commandHandler.getBindingBy().get(chatId));
-                    return String.valueOf(AWAITING_FOR_TEXT).equals(state);
+                    return AWAITING_FOR_TEXT.equals(state);
                 }
             } else if (update.getMessage().hasVoice()) {
                 log.debug("VALID: It is VOICE ");
-                return String.valueOf(AWAITING_FOR_VOICE).equals(state);
+                return AWAITING_FOR_VOICE.equals(state);
 
             } else if (update.getMessage().hasAudio()) {
                 log.debug("VALID: It is mp3 ");
-                return String.valueOf(AWAITING_FOR_AUDIO).equals(state);
+                return AWAITING_FOR_AUDIO.equals(state);
             }
         } else if (update.hasCallbackQuery()) {
             log.debug("VALID: It is BUTTON ");
-            return String.valueOf(AWAITING_FOR_BUTTON).equals(state);
+            return AWAITING_FOR_BUTTON.equals(state);
 
         } else {
             log.debug("VALID: Callback not found, command not found ");

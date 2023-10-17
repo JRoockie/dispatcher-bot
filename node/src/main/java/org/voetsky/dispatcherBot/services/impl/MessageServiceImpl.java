@@ -14,12 +14,14 @@ public class MessageServiceImpl implements MessageService {
 
         if (update.hasCallbackQuery()) {
             sendMessage.setChatId(update.getCallbackQuery().getFrom().getId().toString());
-            sendMessage.setText(text + " " + update.getCallbackQuery().getData()
-                    + " " + update.getCallbackQuery().getFrom().getId());
+//            sendMessage.setText(text + " " + update.getCallbackQuery().getData()
+//                    + " " + update.getCallbackQuery().getFrom().getId());
+            sendMessage.setText(text);
             return sendMessage;
         } else {
             sendMessage.setChatId(update.getMessage().getChatId().toString());
-            sendMessage.setText(text + " " + update.getMessage().getChatId());
+//            sendMessage.setText(text + " " + update.getMessage().getChatId());
+            sendMessage.setText(text);
             return sendMessage;
         }
     }

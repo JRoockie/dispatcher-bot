@@ -33,6 +33,10 @@ public class TgUser {
     private String lastName;
     private String username;
     private String nameAsClient;
+
+    private Long currentSongId;
+    private Long currentOrderId;
+
     @Enumerated(EnumType.STRING)
     private UserState userState;
 

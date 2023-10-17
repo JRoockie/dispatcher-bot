@@ -6,7 +6,9 @@ import org.springframework.stereotype.Controller;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.User;
+import org.voetsky.dispatcherBot.UserState;
 import org.voetsky.dispatcherBot.commands.CommandInterface;
+import org.voetsky.dispatcherBot.commands.impl.AskNameCommand;
 import org.voetsky.dispatcherBot.commands.impl.SongAddCommand;
 import org.voetsky.dispatcherBot.commands.impl.SongNameCommand;
 import org.voetsky.dispatcherBot.commands.impl.StartCommand;
@@ -15,7 +17,6 @@ import org.voetsky.dispatcherBot.dao.SongDao;
 import org.voetsky.dispatcherBot.dao.TgUserDao;
 import org.voetsky.dispatcherBot.entity.TgUser;
 import org.voetsky.dispatcherBot.services.MessageService;
-import org.voetsky.dispatcherBot.services.impl.MainServiceImpl;
 
 import javax.annotation.PostConstruct;
 import java.util.List;
@@ -37,7 +38,7 @@ public class CommandHandler {
     private final SongDao songDao;
     private final TgUserDao tgUserDao;
 
-    public CommandHandler( MessageService messageService,
+    public CommandHandler(MessageService messageService,
                           OrderClientDao orderClientDao,
                           SongDao songDao,
                           TgUserDao tgUserDao) {
@@ -57,6 +58,7 @@ public class CommandHandler {
                                 "/start - Команды бота",
                                 "/echo - Ввод данных для команды",
                                 "/songNameCommand"), this),
+                "/askNameCommand", new AskNameCommand("/askNameCommand", this),
                 "/songNameCommand", new SongNameCommand("/songNameCommand", this),
                 "/songAddCommand", new SongAddCommand("/songAddCommand", this));
     }
@@ -85,7 +87,7 @@ public class CommandHandler {
                 var msg = actions.get(bindingBy.get(chatId)).callback(update);
                 log.debug("CONTROLLER: Executing CALLBACK command part : " +
                         bindingBy.get(chatId));
-                bindingBy.remove(chatId);
+//                bindingBy.remove(chatId);
                 return msg;
             }
 
@@ -93,7 +95,7 @@ public class CommandHandler {
             return buttonExecute(update);
         }
         log.debug("Callback doesn't found, command not found");
-        return messageService.send(update, "Command not found, callback not found.");
+        return send(update, "Command not found, callback not found.");
     }
 
     public SendMessage buttonExecute(Update update) {
@@ -104,10 +106,10 @@ public class CommandHandler {
             if (actions.containsKey(callBack)) {
                 SendMessage sendMessage = actions.get(callBack).handle(update);
                 bindingBy.put(update.getCallbackQuery().getFrom().getId().toString(), callBack);
-                return sendMessage;
+                return send(sendMessage);
             }
         } catch (RuntimeException e) {
-            return send(update,"Ошибка нажатия кнопки. Введите /start ");
+            return send(update, "Ошибка нажатия кнопки. Введите /start ");
         }
         return null;
     }
@@ -130,8 +132,22 @@ public class CommandHandler {
         return persistentTgUser;
     }
 
-    public TgUser findAppUsersByTelegramUserId(Long id){
+    public TgUser findAppUsersByTelegramUserId(Long id) {
         return tgUserDao.findAppUsersByTelegramUserId(id);
+    }
+
+    public User getTelegramUserIdFromUpdate(Update update) {
+        if (update.getMessage() != null) {
+            return update.getMessage().getFrom();
+        } else {
+            return update.getCallbackQuery().getFrom();
+        }
+    }
+
+    public void setUserState(User user, UserState userState) {
+        TgUser tgUser = tgUserDao.findAppUsersByTelegramUserId(user.getId());
+        tgUser.setUserState(userState);
+        tgUserDao.save(tgUser);
     }
 
 
