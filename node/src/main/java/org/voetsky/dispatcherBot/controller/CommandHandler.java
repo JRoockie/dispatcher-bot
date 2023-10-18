@@ -8,10 +8,7 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.User;
 import org.voetsky.dispatcherBot.UserState;
 import org.voetsky.dispatcherBot.commands.CommandInterface;
-import org.voetsky.dispatcherBot.commands.impl.AskNameCommand;
-import org.voetsky.dispatcherBot.commands.impl.SongAddCommand;
-import org.voetsky.dispatcherBot.commands.impl.SongNameCommand;
-import org.voetsky.dispatcherBot.commands.impl.StartCommand;
+import org.voetsky.dispatcherBot.commands.impl.*;
 import org.voetsky.dispatcherBot.dao.OrderClientDao;
 import org.voetsky.dispatcherBot.dao.SongDao;
 import org.voetsky.dispatcherBot.dao.TgUserDao;
@@ -60,7 +57,8 @@ public class CommandHandler {
                                 "/songNameCommand"), this),
                 "/askNameCommand", new AskNameCommand("/askNameCommand", this),
                 "/songNameCommand", new SongNameCommand("/songNameCommand", this),
-                "/songAddCommand", new SongAddCommand("/songAddCommand", this));
+                "/songAddAndSongNameCommand", new SongAddAndSongNameCommand("/songAddAndSongNameCommand", this),
+                "/choosingNameOrAnotherWay", new ChoosingNameOrAnotherWayCommand("/choosingNameOrAnotherWay", this));
     }
 
     public SendMessage send(Update update, String text) {
@@ -92,6 +90,7 @@ public class CommandHandler {
             }
 
         } else if (update.hasCallbackQuery()) {
+            log.debug("CONTROLLER: Executing BUTTON ");
             return buttonExecute(update);
         }
         log.debug("Callback doesn't found, command not found");
@@ -107,11 +106,12 @@ public class CommandHandler {
                 SendMessage sendMessage = actions.get(callBack).handle(update);
                 bindingBy.put(update.getCallbackQuery().getFrom().getId().toString(), callBack);
                 return send(sendMessage);
+            } else {
+                throw new RuntimeException("CONTROLLER: Button command not found");
             }
         } catch (RuntimeException e) {
             return send(update, "Ошибка нажатия кнопки. Введите /start ");
         }
-        return null;
     }
 
     public TgUser findOrSaveAppUser(org.telegram.telegrambots.meta.api.objects.User telegramUser) {

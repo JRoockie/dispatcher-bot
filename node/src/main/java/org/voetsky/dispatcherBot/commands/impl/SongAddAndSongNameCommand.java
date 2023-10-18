@@ -12,16 +12,15 @@ import static org.voetsky.dispatcherBot.UserState.*;
 
 
 @Log4j
-public class SongAddCommand implements CommandInterface {
+public class SongAddAndSongNameCommand implements CommandInterface {
 
     private final String action;
     private final CommandHandler commandHandler;
 
-    public SongAddCommand(String action, CommandHandler controller) {
+    public SongAddAndSongNameCommand(String action, CommandHandler controller) {
         this.action = action;
         this.commandHandler = controller;
     }
-
 
     @Override
     public SendMessage handle(Update update) {
@@ -33,12 +32,12 @@ public class SongAddCommand implements CommandInterface {
     public SendMessage callback(Update update) {
         changeState(update, AWAITING_FOR_COMMAND);
         return commandHandler.send(update
-                ,"Песня: "+update.getMessage().getText()+" принята");
+                ,"Название: "+update.getMessage().getText()+" принято");
     }
 
     @Override
     public void changeState(Update update, UserState userState) {
-        commandHandler.setUserState(update.getMessage().getFrom(), userState);
+        commandHandler.setUserState(commandHandler.getTelegramUserIdFromUpdate(update), userState);
         log.debug("State changed to " + userState.toString());
     }
 }

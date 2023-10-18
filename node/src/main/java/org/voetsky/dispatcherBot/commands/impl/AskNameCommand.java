@@ -28,7 +28,7 @@ public class AskNameCommand implements CommandInterface {
     @Override
     public SendMessage callback(Update update) {
         changeState(update, AWAITING_FOR_COMMAND);
-        String command ="/songAddCommand";
+        String command ="/choosingNameOrAnotherWay";
         update.getMessage().setText(command);
         return commandHandler.updateReceiver(update);
     }
