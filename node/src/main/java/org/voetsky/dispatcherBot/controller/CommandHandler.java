@@ -9,18 +9,14 @@ import org.telegram.telegrambots.meta.api.objects.User;
 import org.voetsky.dispatcherBot.UserState;
 import org.voetsky.dispatcherBot.commands.CommandInterface;
 import org.voetsky.dispatcherBot.commands.impl.*;
-import org.voetsky.dispatcherBot.dao.OrderClientDao;
-import org.voetsky.dispatcherBot.dao.SongDao;
-import org.voetsky.dispatcherBot.dao.TgUserDao;
 import org.voetsky.dispatcherBot.entity.TgUser;
 import org.voetsky.dispatcherBot.services.MessageService;
+import org.voetsky.dispatcherBot.services.impl.BigDaoService;
 
 import javax.annotation.PostConstruct;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-
-import static org.voetsky.dispatcherBot.UserState.AWAITING_FOR_COMMAND;
 
 @Log4j
 @Controller
@@ -31,19 +27,17 @@ public class CommandHandler {
     private final MessageService messageService;
     private Map<String, CommandInterface> actions;
 
-    private final OrderClientDao orderClientDao;
-    private final SongDao songDao;
-    private final TgUserDao tgUserDao;
+//    private final OrderClientDao orderClientDao;
+//    private final SongDao songDao;
+//    private final TgUserDao tgUserDao;
+    private final BigDaoService bigDaoService;
 
-    public CommandHandler(MessageService messageService,
-                          OrderClientDao orderClientDao,
-                          SongDao songDao,
-                          TgUserDao tgUserDao) {
-
+    public CommandHandler(MessageService messageService, BigDaoService bigDaoService) {
         this.messageService = messageService;
-        this.orderClientDao = orderClientDao;
-        this.songDao = songDao;
-        this.tgUserDao = tgUserDao;
+        this.bigDaoService = bigDaoService;
+//        this.orderClientDao = orderClientDao;
+//        this.songDao = songDao;
+//        this.tgUserDao = tgUserDao;
         init();
     }
 
@@ -59,16 +53,10 @@ public class CommandHandler {
                 "/songNameCommand", new SongNameCommand("/songNameCommand", this),
                 "/songAddAndSongNameCommand", new SongAddAndSongNameCommand("/songAddAndSongNameCommand", this),
                 "/choosingNameOrAnotherWay", new ChoosingNameOrAnotherWayCommand("/choosingNameOrAnotherWay", this));
-    }
 
-    public SendMessage send(Update update, String text) {
-        return messageService.send(update, text);
-    }
 
-    public SendMessage send(SendMessage sendMessage) {
-        return messageService.send(sendMessage);
-    }
 
+    }
 
     public SendMessage updateReceiver(Update update) {
 
@@ -114,41 +102,35 @@ public class CommandHandler {
         }
     }
 
-    public TgUser findOrSaveAppUser(org.telegram.telegrambots.meta.api.objects.User telegramUser) {
-        TgUser persistentTgUser = tgUserDao.findAppUsersByTelegramUserId(telegramUser.getId());
-        if (persistentTgUser == null) {
-            log.debug("NODE: NEW user in system, adding: " + telegramUser.getId());
-            //Объект еще не представлен в бд и его предстоит сохранить
-            TgUser transientTgUser = TgUser.builder()
-                    .telegramUserId(telegramUser.getId())
-                    .username(telegramUser.getUserName())
-                    .firstName(telegramUser.getFirstName())
-                    .lastName(telegramUser.getLastName())
-                    .userState(AWAITING_FOR_COMMAND)
-                    .build();
-            return tgUserDao.save(transientTgUser);
-        }
-        log.debug("NODE: User ALREADY in system");
-        return persistentTgUser;
+    public TgUser findOrSaveAppUser(User telegramUser) {
+        return bigDaoService.findOrSaveAppUser(telegramUser);
     }
 
     public TgUser findAppUsersByTelegramUserId(Long id) {
-        return tgUserDao.findAppUsersByTelegramUserId(id);
+        return bigDaoService.findAppUsersByTelegramUserId(id);
     }
 
-    public User getTelegramUserIdFromUpdate(Update update) {
-        if (update.getMessage() != null) {
-            return update.getMessage().getFrom();
-        } else {
-            return update.getCallbackQuery().getFrom();
-        }
+    public User findTelegramUserIdFromUpdate(Update update) {
+        return bigDaoService.findTelegramUserIdFromUpdate(update);
     }
 
     public void setUserState(User user, UserState userState) {
-        TgUser tgUser = tgUserDao.findAppUsersByTelegramUserId(user.getId());
-        tgUser.setUserState(userState);
-        tgUserDao.save(tgUser);
+        bigDaoService.setState(user,userState);
     }
+
+    public String getClientName(Update update) {
+        return bigDaoService.getClientName(update);
+    }
+
+    public SendMessage send(Update update, String text) {
+        return messageService.send(update, text);
+    }
+
+    public SendMessage send(SendMessage sendMessage) {
+        return messageService.send(sendMessage);
+    }
+
+
 
 
 }

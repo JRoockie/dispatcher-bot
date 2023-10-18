@@ -27,6 +27,7 @@ public class AskNameCommand implements CommandInterface {
 
     @Override
     public SendMessage callback(Update update) {
+        commandHandler.getBigDaoService().setClientName(update,update.getMessage().getText());
         changeState(update, AWAITING_FOR_COMMAND);
         String command ="/choosingNameOrAnotherWay";
         update.getMessage().setText(command);
@@ -36,6 +37,6 @@ public class AskNameCommand implements CommandInterface {
     @Override
     public void changeState(Update update, UserState userState) {
         log.debug("State changed to " + userState.toString());
-        commandHandler.setUserState(commandHandler.getTelegramUserIdFromUpdate(update), userState);
+        commandHandler.setUserState(commandHandler.findTelegramUserIdFromUpdate(update),userState);
     }
 }

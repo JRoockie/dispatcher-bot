@@ -43,6 +43,6 @@ public class SongNameCommand implements CommandInterface {
     @Override
     public void changeState(Update update, UserState userState) {
         log.debug("State changed to " + AWAITING_FOR_COMMAND);
-        commandHandler.setUserState(commandHandler.getTelegramUserIdFromUpdate(update), AWAITING_FOR_COMMAND);
+        commandHandler.setUserState(commandHandler.findTelegramUserIdFromUpdate(update),userState);
     }
 }

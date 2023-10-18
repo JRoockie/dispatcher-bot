@@ -27,8 +27,9 @@ public class ChoosingNameOrAnotherWayCommand implements CommandInterface {
 
     @Override
     public SendMessage handle(Update update) {
+        String username =commandHandler.getClientName(update);
         String text = "Чтобы мы могли максимально точно подобрать для вас фонограмму, вам необходимо ответить на следующие вопросы: " +
-                "\n\n🙋Вы знаете исполнителя и название песни?";
+                "\n\n🙋"+username+", Вы знаете исполнителя и название песни?";
         changeState(update, AWAITING_FOR_BUTTON);
         InlineKeyboardMarkup markupInline = new InlineKeyboardMarkup();
         List<List<InlineKeyboardButton>> rowsInline = new ArrayList<>();
@@ -44,7 +45,7 @@ public class ChoosingNameOrAnotherWayCommand implements CommandInterface {
         rowsInline.add(rowInline);
         markupInline.setKeyboard(rowsInline);
 
-        SendMessage sendMessage = new SendMessage(commandHandler.getTelegramUserIdFromUpdate(update).getId().toString(), text);
+        SendMessage sendMessage = new SendMessage(commandHandler.findTelegramUserIdFromUpdate(update).getId().toString(), text);
         sendMessage.setReplyMarkup(markupInline);
         sendMessage.setText(text);
         return commandHandler.send(sendMessage);
@@ -63,6 +64,6 @@ public class ChoosingNameOrAnotherWayCommand implements CommandInterface {
     @Override
     public void changeState(Update update, UserState userState) {
         log.debug("State changed to " + userState.toString());
-        commandHandler.setUserState(commandHandler.getTelegramUserIdFromUpdate(update), userState);
+        commandHandler.setUserState(commandHandler.getBigDaoService().findTelegramUserIdFromUpdate(update),userState);
     }
 }

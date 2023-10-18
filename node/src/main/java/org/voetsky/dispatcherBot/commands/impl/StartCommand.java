@@ -28,8 +28,7 @@ public class StartCommand implements CommandInterface {
 
     @Override
     public SendMessage handle(Update update) {
-        var out = new StringBuilder();
-        out.append("Здравствуйте, вас привествует чат бот VocalPlus. Я помогу вам выбрать время для звукозаписи в нашей студии.\n").append("\n");
+        String out = "Здравствуйте, вас привествует чат бот VocalPlus. Я помогу вам выбрать время для звукозаписи в нашей студии.\n" + "\n";
 
         InlineKeyboardMarkup markupInline = new InlineKeyboardMarkup();
         List<List<InlineKeyboardButton>> rowsInline = new ArrayList<>();
@@ -41,7 +40,7 @@ public class StartCommand implements CommandInterface {
         rowsInline.add(rowInline);
         markupInline.setKeyboard(rowsInline);
 
-        SendMessage sendMessage = new SendMessage(commandHandler.getTelegramUserIdFromUpdate(update).getId().toString(), out.toString());
+        SendMessage sendMessage = new SendMessage(commandHandler.findTelegramUserIdFromUpdate(update).getId().toString(), out);
         sendMessage.setReplyMarkup(markupInline);
 
         changeState(update, AWAITING_FOR_BUTTON);
@@ -57,7 +56,7 @@ public class StartCommand implements CommandInterface {
     @Override
     public void changeState(Update update, UserState userState) {
         log.debug("State changed to " + AWAITING_FOR_BUTTON);
-        commandHandler.setUserState(commandHandler.getTelegramUserIdFromUpdate(update), AWAITING_FOR_BUTTON);
+        commandHandler.setUserState(commandHandler.findTelegramUserIdFromUpdate(update), userState);
     }
 
 

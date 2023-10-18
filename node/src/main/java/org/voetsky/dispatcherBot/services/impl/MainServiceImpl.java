@@ -2,15 +2,12 @@ package org.voetsky.dispatcherBot.services.impl;
 
 import lombok.extern.log4j.Log4j;
 import org.springframework.stereotype.Service;
-import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
-import org.telegram.telegrambots.meta.api.objects.User;
 import org.voetsky.dispatcherBot.UserState;
 import org.voetsky.dispatcherBot.controller.CommandHandler;
 import org.voetsky.dispatcherBot.dao.TgUserDao;
 import org.voetsky.dispatcherBot.dao.OrderClientDao;
 import org.voetsky.dispatcherBot.dao.SongDao;
-import org.voetsky.dispatcherBot.entity.TgUser;
 import org.voetsky.dispatcherBot.services.MainService;
 
 import static org.voetsky.dispatcherBot.UserState.*;
@@ -21,17 +18,11 @@ public class MainServiceImpl implements MainService {
 
     private final CommandHandler commandHandler;
     private final ProducerServiceImpl producerService;
-//    private final OrderClientDao orderClientDao;
-//    private final SongDao songDao;
-//    private final TgUserDao tgUserDao;
     private final MessageServiceImpl messageService;
 
-    public MainServiceImpl(CommandHandler commandHandler, ProducerServiceImpl producerService, OrderClientDao orderClientDao, SongDao songDao, TgUserDao tgUserDao, MessageServiceImpl messageService) {
+    public MainServiceImpl(CommandHandler commandHandler, ProducerServiceImpl producerService, MessageServiceImpl messageService) {
         this.commandHandler = commandHandler;
         this.producerService = producerService;
-//        this.orderClientDao = orderClientDao;
-//        this.songDao = songDao;
-//        this.tgUserDao = tgUserDao;
         this.messageService = messageService;
     }
 
@@ -41,7 +32,7 @@ public class MainServiceImpl implements MainService {
 
         var textMessage = update.getMessage();
         var telegramUser = textMessage.getFrom();
-        var user = commandHandler.findOrSaveAppUser(telegramUser);
+//        var user = commandHandler.findOrSaveAppUser(telegramUser);
 
         if (stateCheck(update)) {
             log.debug("NODE: Sending message to controller");
