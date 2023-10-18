@@ -60,8 +60,8 @@ public class BigDaoService {
         }
     }
 
-    public void setState(User user, UserState userState) {
-        TgUser tgUser = tgUserDao.findAppUsersByTelegramUserId(user.getId());
+    public void setState(Update update, UserState userState) {
+        TgUser tgUser = tgUserDao.findAppUsersByTelegramUserId(findTelegramUserIdFromUpdate(update).getId());
         tgUser.setUserState(userState);
         tgUserDao.save(tgUser);
     }

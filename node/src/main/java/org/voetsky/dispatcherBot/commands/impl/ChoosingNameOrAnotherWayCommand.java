@@ -64,6 +64,6 @@ public class ChoosingNameOrAnotherWayCommand implements CommandInterface {
     @Override
     public void changeState(Update update, UserState userState) {
         log.debug("State changed to " + userState.toString());
-        commandHandler.setUserState(commandHandler.getBigDaoService().findTelegramUserIdFromUpdate(update),userState);
+        commandHandler.setUserState(update,userState);
     }
 }

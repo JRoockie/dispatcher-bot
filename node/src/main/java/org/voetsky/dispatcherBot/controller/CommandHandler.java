@@ -114,8 +114,8 @@ public class CommandHandler {
         return bigDaoService.findTelegramUserIdFromUpdate(update);
     }
 
-    public void setUserState(User user, UserState userState) {
-        bigDaoService.setState(user,userState);
+    public void setUserState(Update update, UserState userState) {
+        bigDaoService.setState(update,userState);
     }
 
     public String getClientName(Update update) {
