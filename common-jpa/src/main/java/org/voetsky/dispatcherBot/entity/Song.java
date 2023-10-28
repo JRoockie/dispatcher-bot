@@ -7,7 +7,6 @@ import org.hibernate.annotations.TypeDef;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.List;
 
 @Entity
 @Builder
@@ -19,11 +18,10 @@ import java.util.List;
 @Table(name = "songs")
 @TypeDef(name = "jsonb", typeClass = JsonBinaryType.class)
 public class Song implements Serializable {
-    //    Order order;
-    //TODO Добавить интеграцию с другой таблицей
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private java.lang.Long id;
 
     @ManyToOne
     @JoinColumn(name = "order_client_id", referencedColumnName = "id")
@@ -35,7 +33,7 @@ public class Song implements Serializable {
     @Type(type = "jsonb")
     @Column(name = "mp3")
     private Object mp3;
-    private int singerCount;
+    private Long singerCount;
 
     @Type(type = "jsonb")
     @Column(name = "voiceMessage")

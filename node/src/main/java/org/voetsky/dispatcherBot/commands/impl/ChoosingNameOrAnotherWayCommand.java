@@ -13,6 +13,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.voetsky.dispatcherBot.UserState.*;
+import static org.voetsky.dispatcherBot.commands.Commands.SONG_ADD_AND_ADD_SONG_NAME_COMMAND;
+import static org.voetsky.dispatcherBot.commands.Commands.START_COMMAND;
 
 @Log4j
 public class ChoosingNameOrAnotherWayCommand implements CommandInterface {
@@ -37,9 +39,9 @@ public class ChoosingNameOrAnotherWayCommand implements CommandInterface {
         var inlineKeyboardButton1 = new InlineKeyboardButton();
         var inlineKeyboardButton2 = new InlineKeyboardButton();
         inlineKeyboardButton1.setText("Да");
-        inlineKeyboardButton1.setCallbackData("/songAddAndSongNameCommand");
+        inlineKeyboardButton1.setCallbackData(SONG_ADD_AND_ADD_SONG_NAME_COMMAND.toString());
         inlineKeyboardButton2.setText("Нет");
-        inlineKeyboardButton2.setCallbackData("/start");
+        inlineKeyboardButton2.setCallbackData(START_COMMAND.toString());
         rowInline.add(inlineKeyboardButton1);
         rowInline.add(inlineKeyboardButton2);
         rowsInline.add(rowInline);
@@ -53,9 +55,9 @@ public class ChoosingNameOrAnotherWayCommand implements CommandInterface {
 
     @Override
     public SendMessage callback(Update update) {
-        if (update.getMessage().getText().equals("/songAddAndSongNameCommand")){
+        if (update.getMessage().getText().equals(SONG_ADD_AND_ADD_SONG_NAME_COMMAND.toString())){
             return commandHandler.updateReceiver(update);
-        } else if (update.getMessage().getText().equals("/start")){
+        } else if (update.getMessage().getText().equals(START_COMMAND.toString())){
             return commandHandler.updateReceiver(update);
         }
         return commandHandler.send(update, "ошибка в " + ChoosingNameOrAnotherWayCommand.class);

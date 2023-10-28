@@ -9,14 +9,16 @@ import org.telegram.telegrambots.meta.api.objects.User;
 import org.voetsky.dispatcherBot.UserState;
 import org.voetsky.dispatcherBot.commands.CommandInterface;
 import org.voetsky.dispatcherBot.commands.impl.*;
+import org.voetsky.dispatcherBot.entity.Song;
 import org.voetsky.dispatcherBot.entity.TgUser;
 import org.voetsky.dispatcherBot.services.MessageService;
 import org.voetsky.dispatcherBot.services.impl.BigDaoService;
 
 import javax.annotation.PostConstruct;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+
+import static org.voetsky.dispatcherBot.commands.Commands.*;
 
 @Log4j
 @Controller
@@ -27,35 +29,30 @@ public class CommandHandler {
     private final MessageService messageService;
     private Map<String, CommandInterface> actions;
 
-//    private final OrderClientDao orderClientDao;
-//    private final SongDao songDao;
-//    private final TgUserDao tgUserDao;
     private final BigDaoService bigDaoService;
 
     public CommandHandler(MessageService messageService, BigDaoService bigDaoService) {
         this.messageService = messageService;
         this.bigDaoService = bigDaoService;
-//        this.orderClientDao = orderClientDao;
-//        this.songDao = songDao;
-//        this.tgUserDao = tgUserDao;
         init();
     }
+
+
 
     @PostConstruct
     public void init() {
         actions = Map.of(
-                "/start", new StartCommand(
-                        List.of(
-                                "/start - Команды бота",
-                                "/echo - Ввод данных для команды",
-                                "/songNameCommand"), this),
-                "/askNameCommand", new AskNameCommand("/askNameCommand", this),
-                "/songNameCommand", new SongNameCommand("/songNameCommand", this),
-                "/songAddAndSongNameCommand", new SongAddAndSongNameCommand("/songAddAndSongNameCommand", this),
-                "/choosingNameOrAnotherWay", new ChoosingNameOrAnotherWayCommand("/choosingNameOrAnotherWay", this));
+                START_COMMAND.toString()
+                , new StartCommand(START_COMMAND.toString(), this),
 
+                ASK_NAME_COMMAND.toString()
+                , new AskNameCommand(ASK_NAME_COMMAND.toString(), this),
 
+                SONG_ADD_AND_ADD_SONG_NAME_COMMAND.toString()
+                , new SongAddAndSongNameCommand(ASK_NAME_COMMAND.toString(), this),
 
+                CHOOSING_NAME_OR_ANOTHER_WAY.toString()
+                , new ChoosingNameOrAnotherWayCommand(ASK_NAME_COMMAND.toString(), this));
     }
 
     public SendMessage updateReceiver(Update update) {
@@ -113,9 +110,16 @@ public class CommandHandler {
     public User findTelegramUserIdFromUpdate(Update update) {
         return bigDaoService.findTelegramUserIdFromUpdate(update);
     }
+    public void addNewOrder(Update update){
+        bigDaoService.addOrder(update);
+    }
 
     public void setUserState(Update update, UserState userState) {
         bigDaoService.setState(update,userState);
+    }
+
+    public void updateSong(Update update, Song song){
+        bigDaoService.updateSong(update,song);
     }
 
     public String getClientName(Update update) {
@@ -129,7 +133,6 @@ public class CommandHandler {
     public SendMessage send(SendMessage sendMessage) {
         return messageService.send(sendMessage);
     }
-
 
 
 

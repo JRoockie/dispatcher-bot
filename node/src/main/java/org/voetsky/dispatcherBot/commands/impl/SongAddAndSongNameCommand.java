@@ -7,6 +7,7 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import org.voetsky.dispatcherBot.UserState;
 import org.voetsky.dispatcherBot.commands.CommandInterface;
 import org.voetsky.dispatcherBot.controller.CommandHandler;
+import org.voetsky.dispatcherBot.entity.Song;
 
 import static org.voetsky.dispatcherBot.UserState.*;
 
@@ -17,9 +18,9 @@ public class SongAddAndSongNameCommand implements CommandInterface {
     private final String action;
     private final CommandHandler commandHandler;
 
-    public SongAddAndSongNameCommand(String action, CommandHandler controller) {
+    public SongAddAndSongNameCommand(String action, CommandHandler commandHandler) {
         this.action = action;
-        this.commandHandler = controller;
+        this.commandHandler = commandHandler;
     }
 
     @Override
@@ -31,6 +32,15 @@ public class SongAddAndSongNameCommand implements CommandInterface {
     @Override
     public SendMessage callback(Update update) {
         changeState(update, AWAITING_FOR_COMMAND);
+
+        String songName = update.getMessage().getText();
+        update.getMessage().setText(songName);
+
+        Song newSong = Song.builder()
+                .songName(songName)
+                .build();
+        commandHandler.updateSong(update,newSong);
+
         return commandHandler.send(update
                 ,"Название: "+update.getMessage().getText()+" принято");
     }

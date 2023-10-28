@@ -20,22 +20,22 @@ public class TgUser {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private java.lang.Long id;
 
-    @OneToMany(mappedBy = "tgUser")
+    @OneToMany(mappedBy = "tgUser", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderClient> orderList;
 
     @CreationTimestamp
     private LocalDateTime firstLoginDate;
 
-    private Long telegramUserId;
+    private java.lang.Long telegramUserId;
     private String firstName;
     private String lastName;
     private String username;
     private String nameAsClient;
 
-    private Long currentSongId;
-    private Long currentOrderId;
+    private java.lang.Long currentSongId;
+    private java.lang.Long currentOrderId;
 
     @Enumerated(EnumType.STRING)
     private UserState userState;

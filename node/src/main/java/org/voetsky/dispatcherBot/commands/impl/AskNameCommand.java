@@ -7,6 +7,8 @@ import org.voetsky.dispatcherBot.UserState;
 import org.voetsky.dispatcherBot.commands.CommandInterface;
 import org.voetsky.dispatcherBot.controller.CommandHandler;
 import static org.voetsky.dispatcherBot.UserState.*;
+import static org.voetsky.dispatcherBot.commands.Commands.CHOOSING_NAME_OR_ANOTHER_WAY;
+
 @Log4j
 public class AskNameCommand implements CommandInterface {
 
@@ -29,8 +31,7 @@ public class AskNameCommand implements CommandInterface {
     public SendMessage callback(Update update) {
         commandHandler.getBigDaoService().setClientName(update,update.getMessage().getText());
         changeState(update, AWAITING_FOR_COMMAND);
-        String command ="/choosingNameOrAnotherWay";
-        update.getMessage().setText(command);
+        update.getMessage().setText(CHOOSING_NAME_OR_ANOTHER_WAY.toString());
         return commandHandler.updateReceiver(update);
     }
 

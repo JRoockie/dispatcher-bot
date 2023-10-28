@@ -14,16 +14,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.voetsky.dispatcherBot.UserState.*;
+import static org.voetsky.dispatcherBot.commands.Commands.ASK_NAME_COMMAND;
 
 @Log4j
 public class StartCommand implements CommandInterface {
 
-    private final List<String> actions;
+    private final String action;
     private final CommandHandler commandHandler;
 
-    public StartCommand(List<String> actions, CommandHandler controller) {
-        this.actions = actions;
-        this.commandHandler = controller;
+    public StartCommand(String action, CommandHandler commandHandler) {
+        this.action = action;
+        this.commandHandler = commandHandler;
     }
 
     @Override
@@ -34,7 +35,7 @@ public class StartCommand implements CommandInterface {
         List<List<InlineKeyboardButton>> rowsInline = new ArrayList<>();
         List<InlineKeyboardButton> rowInline = new ArrayList<>();
         var inlineKeyboardButton = new InlineKeyboardButton();
-        inlineKeyboardButton.setCallbackData("/askNameCommand");
+        inlineKeyboardButton.setCallbackData(ASK_NAME_COMMAND.toString());
         inlineKeyboardButton.setText("Начать");
         rowInline.add(inlineKeyboardButton);
         rowsInline.add(rowInline);
@@ -43,6 +44,11 @@ public class StartCommand implements CommandInterface {
         SendMessage sendMessage = new SendMessage(commandHandler.findTelegramUserIdFromUpdate(update).getId().toString(), out);
         sendMessage.setReplyMarkup(markupInline);
 
+// todo make new order
+
+//        commandHandler.getBigDaoService().addNewOrder(update);
+
+        commandHandler.getBigDaoService().addOrder(update);
         changeState(update, AWAITING_FOR_BUTTON);
         return commandHandler.send(sendMessage);
 
