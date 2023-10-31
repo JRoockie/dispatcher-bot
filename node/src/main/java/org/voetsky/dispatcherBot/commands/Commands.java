@@ -1,9 +1,6 @@
 package org.voetsky.dispatcherBot.commands;
 
 
-import org.voetsky.dispatcherBot.commands.impl.*;
-
-import java.util.Map;
 
 public enum Commands {
 

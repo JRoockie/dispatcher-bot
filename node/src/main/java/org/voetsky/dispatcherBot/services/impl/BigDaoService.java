@@ -170,15 +170,14 @@ public class BigDaoService {
     }
 
     public void addVoice(Update update) {
-        TgVoice tgVoice = tgVoiceRepository.save(fileService.processVoice(update));
+        TgVoice tgVoice = fileService.processVoice(update);
+        tgVoice = tgVoiceRepository.save(tgVoice);
+
         TgUser tgUser = findOrSaveAppUser(findTelegramUserIdFromUpdate(update));
         Song song = songRepository.findSongById(tgUser.getCurrentSongId());
-        List<TgVoice> tgVoices = tgVoiceRepository.findBySong(song);
-        tgVoices.add(tgVoice);
-        song.setTgVoices(tgVoices);
-        songRepository.save(song);
-//        updateSong(update, song);
-//        tgVoiceRepository.save(fileService.processVoice(update));
+
+        tgVoice.setSong(song);
+        tgVoiceRepository.save(tgVoice);
     }
 }
 
