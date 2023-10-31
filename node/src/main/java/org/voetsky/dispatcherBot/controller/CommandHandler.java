@@ -38,27 +38,21 @@ public class CommandHandler {
     }
 
 
-
     @PostConstruct
     public void init() {
         actions = Map.of(
-                START_COMMAND.toString()
-                , new StartCommand(START_COMMAND.toString(), this),
-
-                ASK_NAME_COMMAND.toString()
-                , new AskNameCommand(ASK_NAME_COMMAND.toString(), this),
-
-                SONG_ADD_AND_ADD_SONG_NAME_COMMAND.toString()
-                , new SongAddAndSongNameCommand(ASK_NAME_COMMAND.toString(), this),
-
-                CHOOSING_NAME_OR_ANOTHER_WAY.toString()
-                , new ChoosingNameOrAnotherWayCommand(ASK_NAME_COMMAND.toString(), this));
+                START_COMMAND.toString(), new StartCommand(START_COMMAND.toString(), this),
+                ASK_NAME_COMMAND.toString(), new AskNameCommand(ASK_NAME_COMMAND.toString(), this),
+                SONG_ADD_AND_ADD_SONG_NAME_COMMAND.toString(), new SongAddAndSongNameCommand(ASK_NAME_COMMAND.toString(), this),
+                CHOOSING_NAME_OR_ANOTHER_WAY.toString(), new ChoosingNameOrAnotherWayCommand(ASK_NAME_COMMAND.toString(), this),
+                MP3_ADD_COMMAND.toString(), new Mp3AddCommand(MP3_ADD_COMMAND.toString(), this),
+                VOICE_ADD_COMMAND.toString(), new VoiceAddCommand(VOICE_ADD_COMMAND.toString(), this));
     }
 
     public SendMessage updateReceiver(Update update) {
 
         log.debug("CONTROLLER: Choosing command");
-        if (update.hasMessage()) {
+        if (update.hasMessage() && update.getMessage().getText() != null) {
             var key = update.getMessage().getText();
             var chatId = update.getMessage().getChatId().toString();
             if (actions.containsKey(key)) {
@@ -77,7 +71,22 @@ public class CommandHandler {
         } else if (update.hasCallbackQuery()) {
             log.debug("CONTROLLER: Executing BUTTON ");
             return buttonExecute(update);
-        }
+
+        } else if (update.getMessage().hasAudio()){
+
+            var chatId = update.getMessage().getChatId().toString();
+            var msg = actions.get(bindingBy.get(chatId)).callback(update);
+            log.debug("CONTROLLER: Executing CALLBACK command part : " +
+                    bindingBy.get(chatId));
+            return msg;
+
+        } else if (update.getMessage().hasVoice()){
+        var chatId = update.getMessage().getChatId().toString();
+        var msg = actions.get(bindingBy.get(chatId)).callback(update);
+        log.debug("CONTROLLER: Executing CALLBACK command part : " +
+                bindingBy.get(chatId));
+        return msg;
+    }
         log.debug("Callback doesn't found, command not found");
         return send(update, "Command not found, callback not found.");
     }
@@ -110,16 +119,29 @@ public class CommandHandler {
     public User findTelegramUserIdFromUpdate(Update update) {
         return bigDaoService.findTelegramUserIdFromUpdate(update);
     }
-    public void addNewOrder(Update update){
-        bigDaoService.addOrder(update);
-    }
+
+//    public void addNewOrder(Update update) {
+//        bigDaoService.addOrder(bigDaoService.findAppUsersByTelegramUserId(update.getMessage().getFrom().getId()));
+//    }
 
     public void setUserState(Update update, UserState userState) {
-        bigDaoService.setState(update,userState);
+        bigDaoService.setState(update, userState);
     }
 
-    public void updateSong(Update update, Song song){
-        bigDaoService.updateSong(update,song);
+    public void addMp3(Update update) {
+        try {
+            bigDaoService.addMp3(update);
+            var answer = "Аудио успешно загружено! ";
+            send(update, answer);
+        } catch (RuntimeException ex) {
+            log.error(ex);
+            String error = "К сожалению, загрузка файла не удалась. Повторите попытку позже.";
+            send(update, error);
+        }
+    }
+
+    public void updateSong(Update update, Song song) {
+        bigDaoService.updateSong(update, song);
     }
 
     public String getClientName(Update update) {
@@ -135,5 +157,16 @@ public class CommandHandler {
     }
 
 
+    public void addVoice(Update update) {
+        try {
+            bigDaoService.addVoice(update);
+            var answer = "ГС успешно загружен! ";
+            send(update, answer);
+        } catch (RuntimeException ex) {
+            log.error(ex);
+            String error = "К сожалению, загрузка файла не удалась. Повторите попытку позже.";
+            send(update, error);
+        }
 
+    }
 }

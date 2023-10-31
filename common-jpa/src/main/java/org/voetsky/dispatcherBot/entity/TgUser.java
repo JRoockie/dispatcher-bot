@@ -20,7 +20,7 @@ public class TgUser {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private java.lang.Long id;
+    private Long id;
 
     @OneToMany(mappedBy = "tgUser", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderClient> orderList;
@@ -28,7 +28,7 @@ public class TgUser {
     @CreationTimestamp
     private LocalDateTime firstLoginDate;
 
-    private java.lang.Long telegramUserId;
+    private Long telegramUserId;
     private String firstName;
     private String lastName;
     private String username;

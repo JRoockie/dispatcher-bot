@@ -21,7 +21,7 @@ public class OrderClient implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private java.lang.Long id;
+    private Long id;
 
     @ManyToOne
     @JoinColumn(name = "user_id", referencedColumnName = "id")
@@ -30,7 +30,6 @@ public class OrderClient implements Serializable {
     @OneToMany(mappedBy = "orderClient", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Song> songs;
 
-    private String inputName;
     private String comment;
     private String price;
     private boolean isAccepted;

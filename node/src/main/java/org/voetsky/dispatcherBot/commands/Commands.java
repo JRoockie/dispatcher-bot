@@ -11,6 +11,8 @@ public enum Commands {
     ASK_NAME_COMMAND("/askNameCommand"),
     SONG_ADD_AND_ADD_SONG_NAME_COMMAND("/songAddAndSongNameCommand"),
     CHOOSING_NAME_OR_ANOTHER_WAY("/choosingNameOrAnotherWay"),
+    MP3_ADD_COMMAND("/mp3AddCommand"),
+    VOICE_ADD_COMMAND("/voiceAddCommand"),
 
     ;
 

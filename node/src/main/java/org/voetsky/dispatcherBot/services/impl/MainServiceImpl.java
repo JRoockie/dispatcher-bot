@@ -41,10 +41,11 @@ public class MainServiceImpl implements MainService {
     }
 
     public void consumeAudioMessageUpdates(Update update) {
-        log.debug("NODE: Mp3 message is received");
+        log.debug("NODE: Mp3 message received");
 
         if (stateCheck(update)) {
-            producerService.producerAnswer(messageService.send(update, "Audio message is received from NODE"));
+//            producerService.producerAnswer(messageService.send(update, "Audio message is received from NODE"));
+            producerService.producerAnswer(commandHandler.updateReceiver(update));
         } else {
             errorSender(update, "mp3Error");
         }
@@ -53,7 +54,7 @@ public class MainServiceImpl implements MainService {
     public void consumeVoiceMessageUpdates(Update update) {
         log.debug("NODE: Voice message is received");
         if (stateCheck(update)) {
-            producerService.producerAnswer(messageService.send(update, "Voice message is received from NODE"));
+            producerService.producerAnswer(commandHandler.updateReceiver(update));
         } else {
             errorSender(update, "voiceError");
         }

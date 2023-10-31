@@ -48,7 +48,6 @@ public class StartCommand implements CommandInterface {
 
 //        commandHandler.getBigDaoService().addNewOrder(update);
 
-        commandHandler.getBigDaoService().addOrder(update);
         changeState(update, AWAITING_FOR_BUTTON);
         return commandHandler.send(sendMessage);
 

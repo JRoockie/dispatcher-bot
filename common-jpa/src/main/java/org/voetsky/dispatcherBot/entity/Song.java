@@ -7,6 +7,8 @@ import org.hibernate.annotations.TypeDef;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Builder
@@ -21,22 +23,22 @@ public class Song implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private java.lang.Long id;
+    private Long id;
 
     @ManyToOne
     @JoinColumn(name = "order_client_id", referencedColumnName = "id")
     private OrderClient orderClient;
 
+
+    @OneToMany(mappedBy = "song", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<TgAudio> tgAudios;
+
+
+    @OneToMany(mappedBy = "song", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<TgVoice> tgVoices;
+
     private String songName;
     private String link;
-
-    @Type(type = "jsonb")
-    @Column(name = "mp3")
-    private Object mp3;
     private Long singerCount;
-
-    @Type(type = "jsonb")
-    @Column(name = "voiceMessage")
-    private Object singerVoiceMessage;
 
 }

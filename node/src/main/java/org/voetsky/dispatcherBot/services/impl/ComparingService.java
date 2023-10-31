@@ -15,16 +15,15 @@ public class ComparingService {
         if (newSong.getLink() != null){
             updatableSong.setLink(newSong.getLink());
         }
-        if (newSong.getMp3() != null){
-            updatableSong.setMp3(newSong.getMp3());
-        }
         if (newSong.getSingerCount() != null){
             updatableSong.setSingerCount(newSong.getSingerCount());
         }
-        if (newSong.getSingerVoiceMessage() != null){
-            updatableSong.setSingerVoiceMessage(newSong.getSingerVoiceMessage());
+        if (newSong.getTgVoices() != null){
+            updatableSong.setTgVoices(newSong.getTgVoices());
         }
-
+        if (newSong.getTgAudios() != null){
+            updatableSong.setTgAudios(newSong.getTgAudios());
+        }
         return updatableSong;
     }
 

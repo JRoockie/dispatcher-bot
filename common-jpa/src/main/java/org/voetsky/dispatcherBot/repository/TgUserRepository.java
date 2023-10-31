@@ -5,7 +5,6 @@ import org.voetsky.dispatcherBot.entity.TgUser;
 
 public interface TgUserRepository extends JpaRepository<TgUser,Long> {
 
-    TgUser findAppUsersByTelegramUserId(Long telegramUserId);
-
+    TgUser findByTelegramUserId(Long telegramUserId);
 
 }
