@@ -27,7 +27,7 @@
 
         <dependency>
             <groupId>org.voetsky.dispatcherBot</groupId>
-            <artifactId>common-rabbitmq</artifactId>
+            <artifactId>rabbitQueues</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
 
