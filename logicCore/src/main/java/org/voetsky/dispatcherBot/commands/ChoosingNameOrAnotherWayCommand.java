@@ -8,7 +8,6 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKe
 import org.voetsky.dispatcherBot.UserState;
 import org.voetsky.dispatcherBot.commands.interf.CommandInterface;
 import org.voetsky.dispatcherBot.controller.CommandHandler;
-
 import java.util.ArrayList;
 import java.util.List;
 
