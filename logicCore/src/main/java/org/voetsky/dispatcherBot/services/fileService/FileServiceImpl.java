@@ -1,4 +1,4 @@
-package org.voetsky.dispatcherBot.services;
+package org.voetsky.dispatcherBot.services.fileService;
 
 import lombok.extern.log4j.Log4j;
 import org.json.JSONObject;
@@ -13,7 +13,6 @@ import org.voetsky.dispatcherBot.entity.BinaryContent;
 import org.voetsky.dispatcherBot.entity.TgAudio;
 import org.voetsky.dispatcherBot.entity.TgVoice;
 import org.voetsky.dispatcherBot.repository.BinaryContentRepository;
-import org.voetsky.dispatcherBot.services.interf.FileService;
 
 import java.io.IOException;
 import java.io.InputStream;

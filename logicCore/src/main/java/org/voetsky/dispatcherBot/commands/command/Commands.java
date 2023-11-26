@@ -1,4 +1,4 @@
-package org.voetsky.dispatcherBot.commands;
+package org.voetsky.dispatcherBot.commands.command;
 
 
 

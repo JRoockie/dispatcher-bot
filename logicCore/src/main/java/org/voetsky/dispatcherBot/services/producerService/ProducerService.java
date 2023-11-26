@@ -1,4 +1,4 @@
-package org.voetsky.dispatcherBot.services.interf;
+package org.voetsky.dispatcherBot.services.producerService;
 
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 

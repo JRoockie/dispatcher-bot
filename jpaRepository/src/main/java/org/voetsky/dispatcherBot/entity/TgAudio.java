@@ -1,8 +1,10 @@
 package org.voetsky.dispatcherBot.entity;
 
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @Builder
 @NoArgsConstructor
@@ -15,6 +17,10 @@ public class TgAudio {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @CreationTimestamp
+    private LocalDateTime date;
+
     private String telegramFileId;
     private String audioName;
 

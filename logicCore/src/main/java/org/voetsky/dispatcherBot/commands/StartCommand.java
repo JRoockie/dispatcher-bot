@@ -1,36 +1,46 @@
 package org.voetsky.dispatcherBot.commands;
 
 
+import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 import org.voetsky.dispatcherBot.UserState;
-import org.voetsky.dispatcherBot.commands.interf.CommandInterface;
-import org.voetsky.dispatcherBot.controller.CommandHandler;
+import org.voetsky.dispatcherBot.commands.command.CommandInterface;
+import org.voetsky.dispatcherBot.controller.RepoController;
+import org.voetsky.dispatcherBot.services.messageMakerService.MessageMakerService;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
-import static org.voetsky.dispatcherBot.UserState.*;
-import static org.voetsky.dispatcherBot.commands.Commands.ASK_NAME_COMMAND;
+import static org.voetsky.dispatcherBot.UserState.AWAITING_FOR_BUTTON;
+import static org.voetsky.dispatcherBot.commands.command.Commands.ASK_NAME_COMMAND;
+import static org.voetsky.dispatcherBot.commands.command.Commands.START_COMMAND;
 
 @Log4j
+@AllArgsConstructor
 public class StartCommand implements CommandInterface {
 
-    private final String action;
-    private final CommandHandler commandHandler;
-
-    public StartCommand(String action, CommandHandler commandHandler) {
-        this.action = action;
-        this.commandHandler = commandHandler;
-    }
+    private final String action = START_COMMAND.toString();
+    private final RepoController repoController;
+    private final MessageMakerService messageMakerService;
 
     @Override
-    public SendMessage handle(Update update) {
-        String out = "Здравствуйте, вас привествует чат бот VocalPlus. Я помогу вам выбрать время для звукозаписи в нашей студии.\n" + "\n";
+    public HashMap<Boolean, SendMessage> handle(Update update) {
+        String out = "Здравствуйте, вас привествует чат бот VocalPlus."
+                + " Я помогу вам выбрать время для звукозаписи в нашей студии.\n" + "\n";
+        InlineKeyboardMarkup markupInline = getInlineKeyboardMarkup();
+        SendMessage sendMessage = new SendMessage(repoController.findTelegramUserIdFromUpdate(update).getId().toString(), out);
+        sendMessage.setReplyMarkup(markupInline);
+        changeState(update, AWAITING_FOR_BUTTON);
+        return messageMakerService.setCommandEvokeFalse(sendMessage);
 
+    }
+
+    private InlineKeyboardMarkup getInlineKeyboardMarkup() {
         InlineKeyboardMarkup markupInline = new InlineKeyboardMarkup();
         List<List<InlineKeyboardButton>> rowsInline = new ArrayList<>();
         List<InlineKeyboardButton> rowInline = new ArrayList<>();
@@ -40,30 +50,20 @@ public class StartCommand implements CommandInterface {
         rowInline.add(inlineKeyboardButton);
         rowsInline.add(rowInline);
         markupInline.setKeyboard(rowsInline);
-
-        SendMessage sendMessage = new SendMessage(commandHandler.findTelegramUserIdFromUpdate(update).getId().toString(), out);
-        sendMessage.setReplyMarkup(markupInline);
-
-
-// todo make new order
-
-//        commandHandler.getBigDaoService().addNewOrder(update);
-
-        changeState(update, AWAITING_FOR_BUTTON);
-        return commandHandler.send(sendMessage);
-
+        return markupInline;
     }
 
     @Override
-    public SendMessage callback(Update update) {
+    public HashMap<Boolean, SendMessage> callback(Update update) {
         return handle(update);
     }
 
     @Override
     public void changeState(Update update, UserState userState) {
-        log.debug("State changed to " + AWAITING_FOR_BUTTON);
-        commandHandler.setUserState(update, userState);
+        if (log.isDebugEnabled()) {
+            log.debug(String.format("State changed to %s", AWAITING_FOR_BUTTON));
+        }
+        repoController.setUserState(update, userState);
     }
-
 
 }

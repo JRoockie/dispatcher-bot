@@ -1,9 +1,8 @@
-package org.voetsky.dispatcherBot.services;
+package org.voetsky.dispatcherBot.services.producerService;
 
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
-import org.voetsky.dispatcherBot.services.interf.ProducerService;
 
 import static org.voetsky.model.RabbitQueue.ANSWER_MESSAGE;
 
