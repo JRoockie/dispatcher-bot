@@ -29,15 +29,13 @@ public class StartCommand implements CommandInterface {
     private final MessageMakerService messageMakerService;
 
     @Override
-    public HashMap<Boolean, SendMessage> handle(Update update) {
-        String out = "Здравствуйте, вас привествует чат бот VocalPlus."
+    public SendMessage handle(Update update) {
+        String text = "Здравствуйте, вас привествует чат бот VocalPlus."
                 + " Я помогу вам выбрать время для звукозаписи в нашей студии.\n" + "\n";
-        InlineKeyboardMarkup markupInline = getInlineKeyboardMarkup();
-        SendMessage sendMessage = new SendMessage(repoController.findTelegramUserIdFromUpdate(update).getId().toString(), out);
-        sendMessage.setReplyMarkup(markupInline);
-        changeState(update, AWAITING_FOR_BUTTON);
-        return messageMakerService.setCommandEvokeFalse(sendMessage);
 
+        InlineKeyboardMarkup markupInline = getInlineKeyboardMarkup();
+        changeState(update, AWAITING_FOR_BUTTON);
+        return messageMakerService.makeSendMessage(update, text, markupInline);
     }
 
     private InlineKeyboardMarkup getInlineKeyboardMarkup() {
@@ -54,7 +52,7 @@ public class StartCommand implements CommandInterface {
     }
 
     @Override
-    public HashMap<Boolean, SendMessage> callback(Update update) {
+    public SendMessage callback(Update update) {
         return handle(update);
     }
 

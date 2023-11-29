@@ -25,23 +25,22 @@ public class AskNameCommand implements CommandInterface {
     private final MessageMakerService messageMakerService;
 
     @Override
-    public HashMap<Boolean, SendMessage> handle(Update update) {
+    public SendMessage handle(Update update) {
         String text = "Пожалуйста, введите ваше имя: ";
         repoController.addDefaultOrder(update);
         changeState(update, AWAITING_FOR_TEXT);
-        return messageMakerService.makeMap(update, text);
+
+        return messageMakerService.makeSendMessage(update, text);
     }
 
     @Override
-    public HashMap<Boolean, SendMessage> callback(Update update) {
+    public SendMessage callback(Update update) {
         repoController.setClientName(update, update.getMessage().getText());
 
         changeState(update, AWAITING_FOR_COMMAND);
 
-        SendMessage s = messageMakerService.makeSendMessage(
+        return messageMakerService.makeSendMessage(
                 update, CHOOSING_NAME_OR_ANOTHER_WAY.toString());
-
-        return messageMakerService.setCommandEvokeTrue(s);
     }
 
     @Override

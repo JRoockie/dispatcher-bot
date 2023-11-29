@@ -9,8 +9,6 @@ import org.voetsky.dispatcherBot.commands.command.CommandInterface;
 import org.voetsky.dispatcherBot.controller.RepoController;
 import org.voetsky.dispatcherBot.services.messageMakerService.MessageMakerService;
 
-import java.util.HashMap;
-
 import static org.voetsky.dispatcherBot.UserState.*;
 import static org.voetsky.dispatcherBot.commands.command.Commands.VOICE_ADD_COMMAND;
 
@@ -23,16 +21,21 @@ public class VoiceAddCommand implements CommandInterface {
     private final MessageMakerService messageMakerService;
 
     @Override
-    public HashMap<Boolean, SendMessage> handle(Update update) {
+    public SendMessage handle(Update update) {
+        String text = "Отправьте голосовое сообщение";
         changeState(update, AWAITING_FOR_VOICE);
-        return messageMakerService.makeMap(update, "Отправьте голосовое сообщение");
+
+        return messageMakerService.makeSendMessage(update, text);
     }
 
     @Override
-    public HashMap<Boolean, SendMessage> callback(Update update) {
+    public SendMessage callback(Update update) {
+        String text = "Успешное добавление ГС в бд";
         changeState(update, AWAITING_FOR_COMMAND);
         repoController.addVoice(update);
-        return messageMakerService.makeMap(update, "Успешное добавление ГС в бд");
+
+        return messageMakerService.makeSendMessage(
+                update, text);
     }
 
     @Override

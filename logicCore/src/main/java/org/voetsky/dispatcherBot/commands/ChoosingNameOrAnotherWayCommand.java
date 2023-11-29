@@ -12,7 +12,6 @@ import org.voetsky.dispatcherBot.controller.RepoController;
 import org.voetsky.dispatcherBot.services.messageMakerService.MessageMakerService;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import static org.voetsky.dispatcherBot.UserState.AWAITING_FOR_BUTTON;
@@ -27,7 +26,7 @@ public class ChoosingNameOrAnotherWayCommand implements CommandInterface {
     private final MessageMakerService messageMakerService;
 
     @Override
-    public HashMap<Boolean, SendMessage> handle(Update update) {
+    public SendMessage handle(Update update) {
         String username = repoController.getClientName(update);
         String text = String.format("Чтобы мы могли максимально точно подобрать для вас"
                 + " фонограмму, вам необходимо ответить на следующие вопросы:"
@@ -35,9 +34,7 @@ public class ChoosingNameOrAnotherWayCommand implements CommandInterface {
 
         changeState(update, AWAITING_FOR_BUTTON);
         InlineKeyboardMarkup markupInline = getInlineKeyboardMarkup();
-        SendMessage sendMessage = messageMakerService.makeSendMessage(update, text);
-        sendMessage.setReplyMarkup(markupInline);
-        return messageMakerService.makeMap(sendMessage);
+        return messageMakerService.makeSendMessage(update, text, markupInline);
     }
 
     private static InlineKeyboardMarkup getInlineKeyboardMarkup() {
@@ -58,15 +55,15 @@ public class ChoosingNameOrAnotherWayCommand implements CommandInterface {
     }
 
     @Override
-    public HashMap<Boolean, SendMessage> callback(Update update) {
+    public SendMessage callback(Update update) {
         if (update.getMessage().getText().equals(SONG_ADD_AND_ADD_SONG_NAME_COMMAND.toString())) {
-            return messageMakerService.makeMap(
+            return messageMakerService.makeSendMessage(
                     update, SONG_ADD_AND_ADD_SONG_NAME_COMMAND.toString());
         } else if (update.getMessage().getText().equals(START_COMMAND.toString())) {
-            return messageMakerService.makeMap(
+            return messageMakerService.makeSendMessage(
                     update, START_COMMAND.toString());
         }
-        return messageMakerService.makeMap(update, String.format("Ошибка в %s", ChoosingNameOrAnotherWayCommand.class));
+        return messageMakerService.makeSendMessage(update, String.format("Ошибка в %s", ChoosingNameOrAnotherWayCommand.class));
     }
 
     @Override

@@ -27,9 +27,8 @@ public class ReceiverController {
         if (messageValidationService.isRequiredText(update)) {
             HashMap<Boolean, SendMessage> map = updateReceived(update);
 
-            while (messageValidationService.isCommandEvoking(map))
+            while (messageValidationService.isCommandEvoking(map)) {
                 sendMessageToView(map);
-            {
                 map = updateReceivedCommandEvoke(map);
             }
             sendMessageToView(messageValidationService.getSendMessageFromMap(map));

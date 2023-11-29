@@ -8,9 +8,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 public interface CommandInterface {
-    HashMap<Boolean, SendMessage> handle(Update update);
+    SendMessage handle(Update update);
 
-    HashMap<Boolean, SendMessage> callback(Update update);
+    SendMessage callback(Update update);
 
     void changeState(Update update, UserState userState);
 

@@ -24,16 +24,20 @@ public class Mp3AddCommand implements CommandInterface {
     private final MessageMakerService messageMakerService;
 
     @Override
-    public HashMap<Boolean, SendMessage> handle(Update update) {
+    public SendMessage handle(Update update) {
+        String text = "Отправьте песню mp3 файлом";
+
         changeState(update, AWAITING_FOR_AUDIO);
-        return messageMakerService.makeMap(update, "Отправьте песню mp3 файлом");
+        return messageMakerService.makeSendMessage(update, text);
     }
 
     @Override
-    public HashMap<Boolean, SendMessage> callback(Update update) {
+    public SendMessage callback(Update update) {
+        String text = "Успешное добавление аудио в бд";
+
         changeState(update, AWAITING_FOR_COMMAND);
         repoController.addMp3(update);
-       return messageMakerService.makeMap(update, "Успешное добавление аудио в бд");
+       return messageMakerService.makeSendMessage(update, text);
     }
 
     @Override

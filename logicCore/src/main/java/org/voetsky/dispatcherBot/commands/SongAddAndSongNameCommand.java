@@ -11,8 +11,6 @@ import org.voetsky.dispatcherBot.controller.RepoController;
 import org.voetsky.dispatcherBot.entity.Song;
 import org.voetsky.dispatcherBot.services.messageMakerService.MessageMakerService;
 
-import java.util.HashMap;
-
 import static org.voetsky.dispatcherBot.UserState.*;
 import static org.voetsky.dispatcherBot.commands.command.Commands.SONG_ADD_AND_ADD_SONG_NAME_COMMAND;
 
@@ -26,25 +24,27 @@ public class SongAddAndSongNameCommand implements CommandInterface {
     private final MessageMakerService messageMakerService;
 
     @Override
-    public HashMap<Boolean, SendMessage> handle(Update update) {
+    public SendMessage handle(Update update) {
+        String text = "Введите название песни";
+
         changeState(update, AWAITING_FOR_TEXT);
-        return messageMakerService.makeMap(update, "Введите название песни");
+        return messageMakerService.makeSendMessage(update, text);
     }
 
     @Override
-    public HashMap<Boolean, SendMessage> callback(Update update) {
+    public SendMessage callback(Update update) {
+        String text = String.format("Название: %s принято", update.getMessage().getText());
         changeState(update, AWAITING_FOR_COMMAND);
 
         String songName = update.getMessage().getText();
-        update.getMessage().setText(songName);
+//        update.getMessage().setText(songName);
 
         Song newSong = Song.builder()
                 .songName(songName)
                 .build();
-        repoController.updateSong(update,newSong);
+        repoController.updateSong(update, newSong);
 
-        return messageMakerService.makeMap(update,
-                String.format("Название: %s принято", update.getMessage().getText()));
+        return messageMakerService.makeSendMessage(update, text);
     }
 
     @Override
@@ -52,6 +52,6 @@ public class SongAddAndSongNameCommand implements CommandInterface {
         if (log.isDebugEnabled()) {
             log.debug(String.format("State changed to %s", AWAITING_FOR_BUTTON));
         }
-        repoController.setUserState(update,userState);
+        repoController.setUserState(update, userState);
     }
 }

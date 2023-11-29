@@ -7,10 +7,8 @@ import java.util.HashMap;
 
 public interface CommandHandler {
 
-    HashMap<Boolean, SendMessage> updateReceived(Update update);
+    SendMessage updateReceived(Update update);
 
-    HashMap<Boolean, SendMessage> buttonExecute(Update update);
-
-    HashMap<Boolean, SendMessage> updateReceivedCommandEvoke(SendMessage s);
+    SendMessage buttonExecute(Update update);
 
 }

@@ -6,17 +6,18 @@ import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.User;
-import org.voetsky.dispatcherBot.commands.*;
+import org.voetsky.dispatcherBot.commands.AskNameCommand;
+import org.voetsky.dispatcherBot.commands.StartCommand;
 import org.voetsky.dispatcherBot.commands.command.CommandInterface;
 import org.voetsky.dispatcherBot.controller.RepoController;
 import org.voetsky.dispatcherBot.services.messageMakerService.MessageMakerService;
+
 import javax.annotation.PostConstruct;
-import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
-import static org.voetsky.dispatcherBot.commands.command.Commands.*;
+import static org.voetsky.dispatcherBot.commands.command.Commands.ASK_NAME_COMMAND;
+import static org.voetsky.dispatcherBot.commands.command.Commands.START_COMMAND;
 
 @Log4j
 @Getter
@@ -51,7 +52,7 @@ public class CommandHandlerService implements CommandHandler {
         );
     }
 
-    public HashMap<Boolean, SendMessage> updateReceived(Update update) {
+    public SendMessage updateReceived(Update update) {
 
         log.debug("CONTROLLER: Choosing command");
         if (update.hasMessage() && update.getMessage().getText() != null) {
@@ -61,12 +62,12 @@ public class CommandHandlerService implements CommandHandler {
                 log.debug("CONTROLLER: Executing NON-CALLBACK command part: " + actions.get(key));
                 var msg = actions.get(key).handle(update);
                 bindingBy.put(chatId, key);
-                return msg;
+                return processChain(msg, update);
             } else if (bindingBy.containsKey(chatId)) {
                 var msg = actions.get(bindingBy.get(chatId)).callback(update);
                 log.debug("CONTROLLER: Executing CALLBACK command part : "
                         + bindingBy.get(chatId));
-                return msg;
+                return processChain(msg, update);
             }
 
         } else if (update.hasCallbackQuery()) {
@@ -78,44 +79,46 @@ public class CommandHandlerService implements CommandHandler {
             var msg = actions.get(bindingBy.get(chatId)).callback(update);
             log.debug("CONTROLLER: Executing CALLBACK command part : "
                     + bindingBy.get(chatId));
-            return msg;
+            return processChain(msg, update);
 
         } else if (update.getMessage().hasVoice()) {
             var chatId = update.getMessage().getChatId().toString();
             var msg = actions.get(bindingBy.get(chatId)).callback(update);
             log.debug("CONTROLLER: Executing CALLBACK command part : "
                     + bindingBy.get(chatId));
-            return msg;
+            return processChain(msg, update);
         }
         log.debug("Callback doesn't found, command not found");
-        return messageMakerService.makeMap(update, "Command not found, callback not found.");
+        return messageMakerService.makeSendMessage(update, "Command not found, callback not found.");
     }
 
     //todo переписать
-    public HashMap<Boolean, SendMessage> buttonExecute(Update update) {
+    public SendMessage buttonExecute(Update update) {
         try {
             User user = update.getCallbackQuery().getFrom();
             String callBack = update.getCallbackQuery().getData();
             log.debug("CONTROLLER: Button has pressed by: " + user.getId() + " with attribute: " + callBack);
             if (actions.containsKey(callBack)) {
-                HashMap<Boolean, SendMessage> map = actions.get(callBack).handle(update);
-                Optional<SendMessage> o = map.values().stream().findFirst();
-                SendMessage sendMessage = o.orElseThrow();
+                var msg = actions.get(callBack).handle(update);
                 bindingBy.put(update.getCallbackQuery().getFrom().getId().toString(), callBack);
-                return messageMakerService.makeMap(sendMessage);
+                return processChain(msg, update);
             } else {
                 throw new RuntimeException("CONTROLLER: Button command not found");
             }
         } catch (RuntimeException e) {
-            return messageMakerService.makeMap(update, "Ошибка нажатия кнопки. Введите /start ");
+            return messageMakerService.makeSendMessage(update, "Ошибка нажатия кнопки. Введите /start ");
         }
     }
 
-    @Override
-    public HashMap<Boolean, SendMessage> updateReceivedCommandEvoke(SendMessage s) {
-        //todo
-        return null;
+    public Boolean hasChain(SendMessage s) {
+        return actions.containsKey(s.getText());
     }
 
+    public SendMessage processChain(SendMessage s, Update update) {
+        if (hasChain(s)) {
+            return updateReceived(update);
+        }
+        return s;
+    }
 
 }
