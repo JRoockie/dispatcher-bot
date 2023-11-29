@@ -10,8 +10,6 @@ import org.voetsky.dispatcherBot.services.messageMakerService.MessageMakerServic
 import org.voetsky.dispatcherBot.services.messageValidationService.MessageValidationService;
 import org.voetsky.dispatcherBot.services.producerService.ProducerService;
 
-import java.util.HashMap;
-
 @Log4j
 @Component
 @AllArgsConstructor
@@ -23,25 +21,13 @@ public class ReceiverController {
     private final ProducerService producerService;
 
     public void processTextMessage(Update update) {
-
         if (messageValidationService.isRequiredText(update)) {
-            HashMap<Boolean, SendMessage> map = updateReceived(update);
-
-            while (messageValidationService.isCommandEvoking(map)) {
-                sendMessageToView(map);
-                map = updateReceivedCommandEvoke(map);
-            }
-            sendMessageToView(messageValidationService.getSendMessageFromMap(map));
-
+            SendMessage sendMessage = updateReceived(update);
+            sendMessageToView(sendMessage);
         } else {
             sendErrorMessageToView(update,
                     messageValidationService.whichStateError(update));
         }
-    }
-
-    private HashMap<Boolean, SendMessage> updateReceivedCommandEvoke(HashMap<Boolean, SendMessage> map) {
-        SendMessage s = messageValidationService.getSendMessageFromMap(map);
-        return commandHandler.updateReceivedCommandEvoke(s);
     }
 
     public void consumeAudioMessageUpdates(Update update) {
@@ -57,7 +43,8 @@ public class ReceiverController {
         if (messageValidationService.isRequiredVoice(update)) {
             sendMessageToView(updateReceived(update));
         } else {
-            sendErrorMessageToView(update, messageValidationService.whichStateError(update));
+            sendErrorMessageToView(update,
+                    messageValidationService.whichStateError(update));
         }
     }
 
@@ -65,11 +52,12 @@ public class ReceiverController {
         if (messageValidationService.isRequiredButton(update)) {
             sendMessageToView(updateReceived(update));
         } else {
-            sendErrorMessageToView(update, messageValidationService.whichStateError(update));
+            sendErrorMessageToView(update,
+                    messageValidationService.whichStateError(update));
         }
     }
 
-    public HashMap<Boolean, SendMessage> updateReceived(Update update) {
+    public SendMessage updateReceived(Update update) {
         return commandHandler.updateReceived(update);
     }
 
@@ -83,11 +71,6 @@ public class ReceiverController {
 
     public void sendMessageToView(Update update, String text) {
         producerService.producerAnswer(makeSendMessage(update, text));
-    }
-
-    public void sendMessageToView(HashMap<Boolean, SendMessage> map) {
-        producerService.producerAnswer(
-                messageValidationService.getSendMessageFromMap(map));
     }
 
     public void sendErrorMessageToView(Update update, String err) {

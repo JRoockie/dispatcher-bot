@@ -42,7 +42,7 @@ public class SongAddAndSongNameCommand implements CommandInterface {
         Song newSong = Song.builder()
                 .songName(songName)
                 .build();
-        repoController.updateSong(update, newSong);
+        repoController.addSong(update, newSong);
 
         return messageMakerService.makeSendMessage(update, text);
     }

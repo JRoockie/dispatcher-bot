@@ -27,7 +27,7 @@ public class MessageMakerServiceImpl implements MessageMakerService {
             SendMessage sendMessage = new SendMessage();
             sendMessage.enableMarkdown(true);
             sendMessage.setChatId(getIdFromUpdate(update));
-            sendMessage.setReplyToMessageId(update.getMessage().getMessageId());
+//            sendMessage.setReplyToMessageId(update.getMessage().getMessageId());
             sendMessage.setText(text);
             return sendMessage;
         } catch (Exception e) {
@@ -43,7 +43,7 @@ public class MessageMakerServiceImpl implements MessageMakerService {
             sendMessage.enableMarkdown(true);
             sendMessage.setChatId(getIdFromUpdate(update));
             sendMessage.setReplyMarkup(i);
-            sendMessage.setReplyToMessageId(update.getMessage().getMessageId());
+//            sendMessage.setReplyToMessageId(update.getMessage().getMessageId());
             sendMessage.setText(text);
             return sendMessage;
         } catch (Exception e) {

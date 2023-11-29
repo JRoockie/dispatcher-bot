@@ -52,7 +52,6 @@ public class OrderClientRepositoryService implements OrderClientRepo {
                 .isAccepted(false)
                 .build();
 
-        orderClient = orderClientRepository.save(orderClient);
 //        tgUser = tgUserRepositoryService.findAppUsersByTelegramUserId(tgUser.getTelegramUserId());
 //        tgUser.setCurrentOrderId(orderClient.getId());
 //        tgUser = tgUserRepositoryService.save(tgUser);
@@ -63,7 +62,7 @@ public class OrderClientRepositoryService implements OrderClientRepo {
 //        tgUser.setCurrentSongId(song.getId());
 //        tgUser = tgUserRepositoryService.save(tgUser);
 
-        return orderClientRepository.findOrderClientById(tgUser.getCurrentOrderId());
+        return orderClientRepository.save(orderClient);
     }
 
     public List<OrderClient> hasUnacceptedOrders(List<OrderClient> orderList) {
@@ -76,4 +75,9 @@ public class OrderClientRepositoryService implements OrderClientRepo {
     public OrderClient save(OrderClient orderClient) {
         return orderClientRepository.save(orderClient);
     }
+
+    public OrderClient findOrderClientById(Long id){
+        return orderClientRepository.findOrderClientById(id);
+    }
+
 }

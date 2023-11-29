@@ -3,14 +3,11 @@ package org.voetsky.dispatcherBot.commands;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
-import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.voetsky.dispatcherBot.UserState;
 import org.voetsky.dispatcherBot.commands.command.CommandInterface;
 import org.voetsky.dispatcherBot.controller.RepoController;
 import org.voetsky.dispatcherBot.services.messageMakerService.MessageMakerService;
-
-import java.util.HashMap;
 
 import static org.voetsky.dispatcherBot.UserState.*;
 import static org.voetsky.dispatcherBot.commands.command.Commands.ASK_NAME_COMMAND;
@@ -27,7 +24,7 @@ public class AskNameCommand implements CommandInterface {
     @Override
     public SendMessage handle(Update update) {
         String text = "Пожалуйста, введите ваше имя: ";
-        repoController.addDefaultOrder(update);
+        repoController.addOrder(update);
         changeState(update, AWAITING_FOR_TEXT);
 
         return messageMakerService.makeSendMessage(update, text);

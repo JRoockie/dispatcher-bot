@@ -6,8 +6,12 @@ import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.User;
 import org.voetsky.dispatcherBot.UserState;
+import org.voetsky.dispatcherBot.entity.OrderClient;
 import org.voetsky.dispatcherBot.entity.TgUser;
 import org.voetsky.dispatcherBot.repository.TgUserRepository;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.voetsky.dispatcherBot.UserState.AWAITING_FOR_COMMAND;
 
@@ -62,9 +66,14 @@ public class TgUserRepositoryService implements TgUserRepo {
     }
 
     public TgUser findTgUserIdFromUpdate(Update update) {
-        TgUser tgUser = tgUserRepository.findByTelegramUserId(getIdFromUpdate(update));
-        return tgUser;
+        return tgUserRepository.findByTelegramUserId(getIdFromUpdate(update));
 
+    }
+
+    @Override
+    public void addOrderToTgUser(TgUser tgUser, OrderClient orderClient) {
+        tgUser.setCurrentOrderId(orderClient.getId());
+        tgUserRepository.save(tgUser);
     }
 
     public User findUserIdFromUpdate(Update update) {
@@ -92,6 +101,12 @@ public class TgUserRepositoryService implements TgUserRepo {
     public void setClientName(Update update, String clientName) {
         TgUser tgUser = tgUserRepository.findByTelegramUserId(findUserIdFromUpdate(update).getId());
         tgUser.setNameAsClient(clientName);
+        tgUserRepository.save(tgUser);
+    }
+
+    public void setCurrentSong(Update update, Long songId) {
+        TgUser tgUser = tgUserRepository.findByTelegramUserId(findUserIdFromUpdate(update).getId());
+        tgUser.setCurrentSongId(songId);
         tgUserRepository.save(tgUser);
     }
 

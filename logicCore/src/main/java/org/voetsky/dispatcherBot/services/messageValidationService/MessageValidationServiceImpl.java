@@ -30,14 +30,6 @@ public class MessageValidationServiceImpl implements MessageValidationService {
         return stateCheck(update);
     }
 
-    public boolean isCommandEvoking(HashMap<Boolean, SendMessage> map) {
-        return map.containsKey(Boolean.TRUE);
-    }
-
-    public SendMessage getSendMessageFromMap(HashMap<Boolean, SendMessage> map) {
-        return map.values().stream().findFirst().orElse(null);
-    }
-
     public boolean isRequiredAudio(Update update) {
         log.debug("NODE: Mp3 message received");
         return stateCheck(update);

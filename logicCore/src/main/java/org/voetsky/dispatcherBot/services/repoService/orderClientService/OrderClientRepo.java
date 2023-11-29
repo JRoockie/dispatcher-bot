@@ -15,4 +15,6 @@ public interface OrderClientRepo {
 
     public OrderClient save(OrderClient orderClient);
 
+    OrderClient findOrderClientById(Long id);
+
 }

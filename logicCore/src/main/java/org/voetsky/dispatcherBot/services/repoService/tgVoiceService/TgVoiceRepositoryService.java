@@ -15,7 +15,7 @@ import org.voetsky.dispatcherBot.services.repoService.tgUserService.TgUserReposi
 @Component
 @AllArgsConstructor
 @Log4j
-public class TgVoiceRepositoryService implements TgVoiceRepo{
+public class TgVoiceRepositoryService implements TgVoiceRepo {
 
     private final TgVoiceRepository tgVoiceRepository;
     private final SongRepositoryService songRepositoryService;

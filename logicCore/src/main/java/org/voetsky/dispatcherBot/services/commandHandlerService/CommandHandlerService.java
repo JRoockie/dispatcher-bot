@@ -6,8 +6,7 @@ import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.User;
-import org.voetsky.dispatcherBot.commands.AskNameCommand;
-import org.voetsky.dispatcherBot.commands.StartCommand;
+import org.voetsky.dispatcherBot.commands.*;
 import org.voetsky.dispatcherBot.commands.command.CommandInterface;
 import org.voetsky.dispatcherBot.controller.RepoController;
 import org.voetsky.dispatcherBot.services.messageMakerService.MessageMakerService;
@@ -16,8 +15,7 @@ import javax.annotation.PostConstruct;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import static org.voetsky.dispatcherBot.commands.command.Commands.ASK_NAME_COMMAND;
-import static org.voetsky.dispatcherBot.commands.command.Commands.START_COMMAND;
+import static org.voetsky.dispatcherBot.commands.command.Commands.*;
 
 @Log4j
 @Getter
@@ -43,13 +41,11 @@ public class CommandHandlerService implements CommandHandler {
     public void init() {
         actions = Map.of(
                 START_COMMAND.toString(), new StartCommand(repoController, messageMakerService),
-                ASK_NAME_COMMAND.toString(), new AskNameCommand(repoController, messageMakerService)
-//                SONG_ADD_AND_ADD_SONG_NAME_COMMAND.toString(), new SongAddAndSongNameCommand(ASK_NAME_COMMAND.toString(), this),
-//                CHOOSING_NAME_OR_ANOTHER_WAY.toString(), new ChoosingNameOrAnotherWayCommand(ASK_NAME_COMMAND.toString(), this),
-//                MP3_ADD_COMMAND.toString(), new Mp3AddCommand(MP3_ADD_COMMAND.toString(), this),
-//                VOICE_ADD_COMMAND.toString(), new VoiceAddCommand(VOICE_ADD_COMMAND.toString(), this));
-
-        );
+                ASK_NAME_COMMAND.toString(), new AskNameCommand(repoController, messageMakerService),
+                SONG_ADD_AND_ADD_SONG_NAME_COMMAND.toString(), new SongAddAndSongNameCommand(repoController, messageMakerService),
+                CHOOSING_NAME_OR_ANOTHER_WAY.toString(), new ChoosingNameOrAnotherWayCommand(repoController, messageMakerService),
+                MP3_ADD_COMMAND.toString(), new Mp3AddCommand(repoController, messageMakerService),
+                VOICE_ADD_COMMAND.toString(), new VoiceAddCommand(repoController, messageMakerService));
     }
 
     public SendMessage updateReceived(Update update) {
@@ -116,6 +112,7 @@ public class CommandHandlerService implements CommandHandler {
 
     public SendMessage processChain(SendMessage s, Update update) {
         if (hasChain(s)) {
+            update.getMessage().setText(s.getText());
             return updateReceived(update);
         }
         return s;

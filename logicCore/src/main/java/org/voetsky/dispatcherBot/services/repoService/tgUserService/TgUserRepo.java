@@ -3,6 +3,7 @@ package org.voetsky.dispatcherBot.services.repoService.tgUserService;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.User;
 import org.voetsky.dispatcherBot.UserState;
+import org.voetsky.dispatcherBot.entity.OrderClient;
 import org.voetsky.dispatcherBot.entity.TgUser;
 
 public interface TgUserRepo {
@@ -29,4 +30,7 @@ public interface TgUserRepo {
 
     TgUser findTgUserIdFromUpdate(Update update);
 
+    void setCurrentSong(Update update, Long songId);
+
+    void addOrderToTgUser(TgUser tgUser, OrderClient orderClient);
 }

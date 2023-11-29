@@ -5,10 +5,11 @@ import org.voetsky.dispatcherBot.entity.Song;
 
 public interface SongRepo {
 
-    public Song findSongById(Long id);
+    Song findSongById(Long id);
 
-    public Song save(Song song);
+    Song save(Song song);
 
-    public Song defaultSong(OrderClient orderClient);
+    Song defaultSong(OrderClient orderClient);
+
 
 }
