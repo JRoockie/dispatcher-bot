@@ -1,7 +1,7 @@
 package org.voetsky.dispatcherBot.services.repoAcess.orderClientService;
 
-import org.voetsky.dispatcherBot.entity.OrderClient;
-import org.voetsky.dispatcherBot.entity.TgUser;
+import org.voetsky.dispatcherBot.repository.orderClient.OrderClient;
+import org.voetsky.dispatcherBot.repository.tgUser.TgUser;
 
 import java.util.List;
 

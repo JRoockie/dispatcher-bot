@@ -5,7 +5,7 @@ import lombok.extern.log4j.Log4j;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.voetsky.dispatcherBot.UserState;
-import org.voetsky.dispatcherBot.commandLogic.commandHandlerService.CommandHandlerService;
+import org.voetsky.dispatcherBot.services.logic.commandHandlerService.CommandHandlerService;
 import org.voetsky.dispatcherBot.services.repoAcess.tgUserService.TgUserRepositoryService;
 
 import static org.voetsky.dispatcherBot.UserState.*;

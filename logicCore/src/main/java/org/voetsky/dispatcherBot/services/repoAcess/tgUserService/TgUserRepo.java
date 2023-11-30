@@ -3,8 +3,8 @@ package org.voetsky.dispatcherBot.services.repoAcess.tgUserService;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.User;
 import org.voetsky.dispatcherBot.UserState;
-import org.voetsky.dispatcherBot.entity.OrderClient;
-import org.voetsky.dispatcherBot.entity.TgUser;
+import org.voetsky.dispatcherBot.repository.orderClient.OrderClient;
+import org.voetsky.dispatcherBot.repository.tgUser.TgUser;
 
 public interface TgUserRepo {
 

@@ -3,9 +3,9 @@ package org.voetsky.dispatcherBot.services.repoAcess.orderClientService;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j;
 import org.springframework.stereotype.Component;
-import org.voetsky.dispatcherBot.entity.OrderClient;
-import org.voetsky.dispatcherBot.entity.TgUser;
-import org.voetsky.dispatcherBot.repository.OrderClientRepository;
+import org.voetsky.dispatcherBot.repository.orderClient.OrderClient;
+import org.voetsky.dispatcherBot.repository.tgUser.TgUser;
+import org.voetsky.dispatcherBot.repository.orderClient.OrderClientRepository;
 
 import java.util.List;
 import java.util.stream.Collectors;

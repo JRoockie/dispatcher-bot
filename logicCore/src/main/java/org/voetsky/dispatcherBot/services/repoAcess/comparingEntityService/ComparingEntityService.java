@@ -1,8 +1,8 @@
 package org.voetsky.dispatcherBot.services.repoAcess.comparingEntityService;
 
 import org.springframework.stereotype.Service;
-import org.voetsky.dispatcherBot.entity.Song;
-import org.voetsky.dispatcherBot.entity.TgUser;
+import org.voetsky.dispatcherBot.repository.song.Song;
+import org.voetsky.dispatcherBot.repository.tgUser.TgUser;
 
 @Service
 public interface ComparingEntityService {

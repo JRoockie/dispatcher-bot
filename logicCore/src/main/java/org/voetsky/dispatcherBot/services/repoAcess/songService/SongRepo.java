@@ -1,7 +1,7 @@
 package org.voetsky.dispatcherBot.services.repoAcess.songService;
 
-import org.voetsky.dispatcherBot.entity.OrderClient;
-import org.voetsky.dispatcherBot.entity.Song;
+import org.voetsky.dispatcherBot.repository.orderClient.OrderClient;
+import org.voetsky.dispatcherBot.repository.song.Song;
 
 public interface SongRepo {
 

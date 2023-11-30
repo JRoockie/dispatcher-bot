@@ -1,10 +1,10 @@
 package org.voetsky.dispatcherBot.services.repoAcess.songService;
 
 import org.springframework.stereotype.Component;
-import org.voetsky.dispatcherBot.entity.OrderClient;
-import org.voetsky.dispatcherBot.entity.Song;
-import org.voetsky.dispatcherBot.repository.SongRepository;
-import org.voetsky.dispatcherBot.repository.TgUserRepository;
+import org.voetsky.dispatcherBot.repository.orderClient.OrderClient;
+import org.voetsky.dispatcherBot.repository.song.Song;
+import org.voetsky.dispatcherBot.repository.song.SongRepository;
+import org.voetsky.dispatcherBot.repository.tgUser.TgUserRepository;
 
 @Component
 public class SongRepositoryService implements SongRepo {

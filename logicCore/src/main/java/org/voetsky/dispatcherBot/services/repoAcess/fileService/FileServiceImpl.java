@@ -9,10 +9,10 @@ import org.springframework.web.client.RestTemplate;
 import org.telegram.telegrambots.meta.api.objects.Audio;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.Voice;
-import org.voetsky.dispatcherBot.entity.BinaryContent;
-import org.voetsky.dispatcherBot.entity.TgAudio;
-import org.voetsky.dispatcherBot.entity.TgVoice;
-import org.voetsky.dispatcherBot.repository.BinaryContentRepository;
+import org.voetsky.dispatcherBot.repository.binaryContent.BinaryContent;
+import org.voetsky.dispatcherBot.repository.tgAudio.TgAudio;
+import org.voetsky.dispatcherBot.repository.tgVoice.TgVoice;
+import org.voetsky.dispatcherBot.repository.binaryContent.BinaryContentRepository;
 
 import java.io.IOException;
 import java.io.InputStream;

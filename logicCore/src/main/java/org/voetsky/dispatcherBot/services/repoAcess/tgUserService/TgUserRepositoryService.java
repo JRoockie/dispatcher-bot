@@ -6,9 +6,9 @@ import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.User;
 import org.voetsky.dispatcherBot.UserState;
-import org.voetsky.dispatcherBot.entity.OrderClient;
-import org.voetsky.dispatcherBot.entity.TgUser;
-import org.voetsky.dispatcherBot.repository.TgUserRepository;
+import org.voetsky.dispatcherBot.repository.orderClient.OrderClient;
+import org.voetsky.dispatcherBot.repository.tgUser.TgUser;
+import org.voetsky.dispatcherBot.repository.tgUser.TgUserRepository;
 
 import static org.voetsky.dispatcherBot.UserState.AWAITING_FOR_COMMAND;
 
