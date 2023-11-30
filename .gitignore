@@ -2,8 +2,12 @@ target/
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
+checkstyle.xml
+workspace.xml
 
 ### IntelliJ IDEA ###
+.idea/
+.logs/
 /.idea
 *.iws
 *.iml
