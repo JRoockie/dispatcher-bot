@@ -7,9 +7,9 @@ import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.voetsky.dispatcherBot.UserState;
 import org.voetsky.dispatcherBot.commands.command.CommandInterface;
-import org.voetsky.dispatcherBot.controller.RepoController;
+import org.voetsky.dispatcherBot.services.repoAcess.RepoController;
 import org.voetsky.dispatcherBot.entity.Song;
-import org.voetsky.dispatcherBot.services.messageMakerService.MessageMakerService;
+import org.voetsky.dispatcherBot.services.output.messageMakerService.MessageMakerService;
 
 import static org.voetsky.dispatcherBot.UserState.*;
 import static org.voetsky.dispatcherBot.commands.command.Commands.SONG_ADD_AND_ADD_SONG_NAME_COMMAND;

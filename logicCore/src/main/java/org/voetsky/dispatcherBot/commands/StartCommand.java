@@ -9,11 +9,10 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMa
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 import org.voetsky.dispatcherBot.UserState;
 import org.voetsky.dispatcherBot.commands.command.CommandInterface;
-import org.voetsky.dispatcherBot.controller.RepoController;
-import org.voetsky.dispatcherBot.services.messageMakerService.MessageMakerService;
+import org.voetsky.dispatcherBot.services.repoAcess.RepoController;
+import org.voetsky.dispatcherBot.services.output.messageMakerService.MessageMakerService;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import static org.voetsky.dispatcherBot.UserState.AWAITING_FOR_BUTTON;
