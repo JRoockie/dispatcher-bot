@@ -28,7 +28,9 @@ public class ReceiverController {
                 sendMessageToView(sendMessage);
             }
         } catch (LogicCoreException e) {
-            log.error(e);
+            if (log.isDebugEnabled()) {
+                log.debug(e);
+            }
             sendErrorMessageToView(update, e.getMessage());
         }
     }
@@ -39,7 +41,9 @@ public class ReceiverController {
                 sendMessageToView(updateReceived(update));
             }
         } catch (LogicCoreException e) {
-            log.error(e);
+            if (log.isDebugEnabled()) {
+                log.debug(e);
+            }
             sendErrorMessageToView(update, e.getMessage());
         }
     }
@@ -50,7 +54,9 @@ public class ReceiverController {
                 sendMessageToView(updateReceived(update));
             }
         } catch (LogicCoreException e) {
-            log.error(e);
+            if (log.isDebugEnabled()) {
+                log.debug(e);
+            }
             sendErrorMessageToView(update, e.getMessage());
         }
     }
@@ -61,7 +67,9 @@ public class ReceiverController {
                 sendMessageToView(updateReceived(update));
             }
         } catch (LogicCoreException e) {
-            log.error(e);
+            if (log.isDebugEnabled()) {
+                log.debug(e);
+            }
             sendErrorMessageToView(update, e.getMessage());
         }
     }
@@ -76,10 +84,6 @@ public class ReceiverController {
 
     public void sendMessageToView(SendMessage s) {
         producerService.producerAnswer(s);
-    }
-
-    public void sendMessageToView(Update update, String text) {
-        producerService.producerAnswer(makeSendMessage(update, text));
     }
 
     public void sendErrorMessageToView(Update update, String err) {

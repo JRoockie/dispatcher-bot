@@ -1,4 +1,4 @@
-package org.voetsky.dispatcherBot.services.repoAcess.tgUserService;
+package org.voetsky.dispatcherBot.services.repo.tgUserService;
 
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.User;

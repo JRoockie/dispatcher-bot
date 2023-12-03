@@ -1,4 +1,4 @@
-package org.voetsky.dispatcherBot.services.repoAcess.songService;
+package org.voetsky.dispatcherBot.services.repo.songService;
 
 import org.springframework.stereotype.Component;
 import org.voetsky.dispatcherBot.repository.orderClient.OrderClient;
@@ -11,7 +11,7 @@ public class SongRepositoryService implements SongRepo {
 
     private final SongRepository songRepository;
 
-    public SongRepositoryService(SongRepository songRepository, TgUserRepository tgUserRepository) {
+    public SongRepositoryService(SongRepository songRepository) {
         this.songRepository = songRepository;
     }
 

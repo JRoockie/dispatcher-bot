@@ -1,4 +1,4 @@
-package org.voetsky.dispatcherBot.services.repoAcess.songService;
+package org.voetsky.dispatcherBot.services.repo.songService;
 
 import org.voetsky.dispatcherBot.repository.orderClient.OrderClient;
 import org.voetsky.dispatcherBot.repository.song.Song;

@@ -7,7 +7,7 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import org.voetsky.dispatcherBot.UserState;
 import org.voetsky.dispatcherBot.exceptions.IncorrectInputException;
 import org.voetsky.dispatcherBot.services.logic.commandHandlerService.CommandHandlerService;
-import org.voetsky.dispatcherBot.services.repoAcess.tgUserService.TgUserRepositoryService;
+import org.voetsky.dispatcherBot.services.repo.tgUserService.TgUserRepositoryService;
 
 import static org.voetsky.dispatcherBot.UserState.*;
 
@@ -39,6 +39,9 @@ public class MessageValidationServiceImpl implements MessageValidationService {
     }
 
     public boolean isValid(Update update){
+        if (log.isDebugEnabled()) {
+            log.debug("Validation...");
+        }
         return stateCheck(update) || throwValidationException(update);
     }
 

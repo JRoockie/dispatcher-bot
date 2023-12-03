@@ -1,4 +1,4 @@
-package org.voetsky.dispatcherBot.services.repoAcess;
+package org.voetsky.dispatcherBot.services.repo;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j;
@@ -10,11 +10,11 @@ import org.voetsky.dispatcherBot.repository.orderClient.OrderClient;
 import org.voetsky.dispatcherBot.repository.song.Song;
 import org.voetsky.dispatcherBot.repository.tgUser.TgUser;
 import org.voetsky.dispatcherBot.services.repoServices.comparingEntityService.ComparingEntityService;
-import org.voetsky.dispatcherBot.services.repoAcess.orderClientService.OrderClientRepo;
-import org.voetsky.dispatcherBot.services.repoAcess.songService.SongRepo;
-import org.voetsky.dispatcherBot.services.repoAcess.tgAudioService.TgAudioRepo;
-import org.voetsky.dispatcherBot.services.repoAcess.tgUserService.TgUserRepo;
-import org.voetsky.dispatcherBot.services.repoAcess.tgVoiceService.TgVoiceRepo;
+import org.voetsky.dispatcherBot.services.repo.orderClientService.OrderClientRepo;
+import org.voetsky.dispatcherBot.services.repo.songService.SongRepo;
+import org.voetsky.dispatcherBot.services.repo.tgAudioService.TgAudioRepo;
+import org.voetsky.dispatcherBot.services.repo.tgUserService.TgUserRepo;
+import org.voetsky.dispatcherBot.services.repo.tgVoiceService.TgVoiceRepo;
 
 @Log4j
 @Component
@@ -41,7 +41,7 @@ public class RepoController {
     }
 
     public void addMp3(Update update) {
-        tgVoiceRepo.addVoice(update);
+        tgAudioRepo.addMp3(update);
     }
 
     public String getClientName(Update update) {
@@ -49,7 +49,7 @@ public class RepoController {
     }
 
     public void addVoice(Update update) {
-        tgAudioRepo.addMp3(update);
+       tgVoiceRepo.addVoice(update);
     }
 
     public void addSong(Update update, Song song) {

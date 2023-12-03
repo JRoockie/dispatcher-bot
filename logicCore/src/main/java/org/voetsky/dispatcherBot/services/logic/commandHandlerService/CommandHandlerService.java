@@ -5,11 +5,11 @@ import lombok.extern.log4j.Log4j;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
-import org.telegram.telegrambots.meta.api.objects.User;
+import org.voetsky.dispatcherBot.exceptions.ParentException.LogicCoreException;
 import org.voetsky.dispatcherBot.services.logic.commands.*;
 import org.voetsky.dispatcherBot.services.logic.commands.command.CommandInterface;
 import org.voetsky.dispatcherBot.services.output.messageMakerService.MessageMakerService;
-import org.voetsky.dispatcherBot.services.repoAcess.RepoController;
+import org.voetsky.dispatcherBot.services.repo.RepoController;
 
 import javax.annotation.PostConstruct;
 import java.util.Map;
@@ -48,59 +48,55 @@ public class CommandHandlerService implements CommandHandler {
     }
 
     public SendMessage updateReceived(Update update) {
+        var key = getMessageText(update);
+        var chatId = getChatId(update);
 
-        log.debug("CONTROLLER: Choosing command");
         if (update.hasMessage() && update.getMessage().getText() != null) {
-            var key = update.getMessage().getText();
-            var chatId = update.getMessage().getChatId().toString();
-            if (actions.containsKey(key)) {
-                log.debug("CONTROLLER: Executing NON-CALLBACK command part: " + actions.get(key));
-                var msg = actions.get(key).handle(update);
-                bindingBy.put(chatId, key);
-                return processChain(msg, update);
-            } else if (bindingBy.containsKey(chatId)) {
-                var msg = actions.get(bindingBy.get(chatId)).callback(update);
-                log.debug("CONTROLLER: Executing CALLBACK command part : "
-                        + bindingBy.get(chatId));
-                return processChain(msg, update);
-            }
-
+            return processCommand(update, key, chatId);
         } else if (update.hasCallbackQuery()) {
-            log.debug("CONTROLLER: Executing BUTTON ");
-            return buttonExecute(update);
-
+            return processButton(update, key);
         } else if (update.getMessage().hasAudio()) {
-            var chatId = update.getMessage().getChatId().toString();
-            var msg = actions.get(bindingBy.get(chatId)).callback(update);
-            log.debug("CONTROLLER: Executing CALLBACK command part : "
-                    + bindingBy.get(chatId));
-            return processChain(msg, update);
-
+            return processCallBack(update, chatId);
         } else if (update.getMessage().hasVoice()) {
-            var chatId = update.getMessage().getChatId().toString();
-            var msg = actions.get(bindingBy.get(chatId)).callback(update);
-            log.debug("CONTROLLER: Executing CALLBACK command part : "
-                    + bindingBy.get(chatId));
-            return processChain(msg, update);
+            return processCallBack(update, chatId);
         }
-        log.debug("Callback doesn't found, command not found");
-        return messageMakerService.makeSendMessage(update, "Command not found, callback not found.");
+        throw new LogicCoreException("Непредвиденная ошибка");
     }
 
-    public SendMessage buttonExecute(Update update) {
-        try {
-            User user = update.getCallbackQuery().getFrom();
-            String callBack = update.getCallbackQuery().getData();
-            log.debug("CONTROLLER: Button has pressed by: " + user.getId() + " with attribute: " + callBack);
-            if (actions.containsKey(callBack)) {
-                var msg = actions.get(callBack).handle(update);
-                bindingBy.put(update.getCallbackQuery().getFrom().getId().toString(), callBack);
-                return processChain(msg, update);
-            } else {
-                throw new RuntimeException("CONTROLLER: Button command not found");
-            }
-        } catch (RuntimeException e) {
-            return messageMakerService.makeSendMessage(update, "Ошибка нажатия кнопки. Введите /start ");
+    public SendMessage processCommand(Update update, String key, String chatId) {
+        if (actions.containsKey(key)) {
+            return processHandle(update, key, chatId);
+        } else if (bindingBy.containsKey(chatId)) {
+            return processCallBack(update, chatId);
+        }
+        throw new LogicCoreException("Ошибка команды");
+    }
+
+    public SendMessage processHandle(Update update, String key, String chatId) {
+        log.debug(String.format("NON-CALLBACK command part: %s",
+                actions.get(key)));
+        var msg = actions.get(key).handle(update);
+        bindingBy.put(chatId, key);
+        return processChain(msg, update);
+    }
+
+    public SendMessage processCallBack(Update update, String chatId) {
+        var msg = actions.get(bindingBy.get(chatId)).callback(update);
+        log.debug(String.format("Executing CALLBACK command part: %s",
+                bindingBy.get(chatId)));
+        return processChain(msg, update);
+    }
+
+    @Override
+    public SendMessage processButton(Update update, String callBackText) {
+        log.debug(String.format("Button has pressed by: %s with attribute: %s",
+                getChatId(update), callBackText));
+        if (actions.containsKey(callBackText)) {
+            var msg = actions.get(callBackText).handle(update);
+            bindingBy.put(getChatId(update), callBackText);
+            return processChain(msg, update);
+        } else {
+            throw new LogicCoreException("Button command not found");
         }
     }
 
@@ -116,17 +112,26 @@ public class CommandHandlerService implements CommandHandler {
         return s;
     }
 
+    public String getChatId(Update update) {
+        if (update.hasCallbackQuery()) {
+            return update.getCallbackQuery().getMessage().getChatId().toString();
+        }
+        return update.getMessage().getChatId().toString();
+    }
+
+    public String getMessageText(Update update) {
+        if (update.hasCallbackQuery()) {
+            return update.getCallbackQuery().getData();
+        }
+        return update.getMessage().getText();
+    }
+
     //todo после того как вылетело исключение
     // в течение работы с бд, вызвать этот
     // метод чтобы предыдущую команду запустить заново
 
     public SendMessage forceEvokePreviousCommand(Update update) {
-        String chatId;
-        if (update.hasCallbackQuery()) {
-            chatId = update.getCallbackQuery().getFrom().getId().toString();
-            return actions.get(bindingBy.get(chatId)).handle(update);
-        }
-        chatId = update.getMessage().getChatId().toString();
+        String chatId = getChatId(update);
         return actions.get(bindingBy.get(chatId)).handle(update);
     }
 }

@@ -1,4 +1,4 @@
-package org.voetsky.dispatcherBot.services.repoAcess.tgUserService;
+package org.voetsky.dispatcherBot.services.repo.tgUserService;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j;
@@ -24,11 +24,11 @@ public class TgUserRepositoryService implements TgUserRepo {
         TgUser persistentTgUser = tgUserRepository.findByTelegramUserId(telegramUser.getId());
 //        TgUser persistentTgUser = null;
         if (persistentTgUser == null) {
-            log.debug("NODE: NEW user in system, adding: " + telegramUser.getId());
+            log.debug("NEW user in system, adding: " + telegramUser.getId());
             //Объект еще не представлен в бд и его предстоит сохранить
             return makeTgUser(telegramUser);
         }
-        log.debug("NODE: User ALREADY in system");
+        log.debug("User ALREADY in system");
         return persistentTgUser;
     }
 

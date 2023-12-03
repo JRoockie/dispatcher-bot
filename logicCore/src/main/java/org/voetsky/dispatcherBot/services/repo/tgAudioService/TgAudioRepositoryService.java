@@ -1,4 +1,4 @@
-package org.voetsky.dispatcherBot.services.repoAcess.tgAudioService;
+package org.voetsky.dispatcherBot.services.repo.tgAudioService;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -8,8 +8,8 @@ import org.voetsky.dispatcherBot.repository.tgAudio.TgAudio;
 import org.voetsky.dispatcherBot.repository.tgUser.TgUser;
 import org.voetsky.dispatcherBot.repository.tgAudio.TgAudioRepository;
 import org.voetsky.dispatcherBot.services.repoServices.fileService.FileService;
-import org.voetsky.dispatcherBot.services.repoAcess.songService.SongRepositoryService;
-import org.voetsky.dispatcherBot.services.repoAcess.tgUserService.TgUserRepositoryService;
+import org.voetsky.dispatcherBot.services.repo.songService.SongRepositoryService;
+import org.voetsky.dispatcherBot.services.repo.tgUserService.TgUserRepositoryService;
 
 @AllArgsConstructor
 @Component

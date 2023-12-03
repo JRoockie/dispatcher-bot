@@ -6,7 +6,7 @@ import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.voetsky.dispatcherBot.UserState;
 import org.voetsky.dispatcherBot.services.logic.commands.command.CommandInterface;
-import org.voetsky.dispatcherBot.services.repoAcess.RepoController;
+import org.voetsky.dispatcherBot.services.repo.RepoController;
 import org.voetsky.dispatcherBot.services.output.messageMakerService.MessageMakerService;
 
 import static org.voetsky.dispatcherBot.UserState.*;

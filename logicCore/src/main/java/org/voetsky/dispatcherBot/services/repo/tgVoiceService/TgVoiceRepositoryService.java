@@ -1,4 +1,4 @@
-package org.voetsky.dispatcherBot.services.repoAcess.tgVoiceService;
+package org.voetsky.dispatcherBot.services.repo.tgVoiceService;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j;
@@ -9,8 +9,8 @@ import org.voetsky.dispatcherBot.repository.tgUser.TgUser;
 import org.voetsky.dispatcherBot.repository.tgVoice.TgVoice;
 import org.voetsky.dispatcherBot.repository.tgVoice.TgVoiceRepository;
 import org.voetsky.dispatcherBot.services.repoServices.fileService.FileService;
-import org.voetsky.dispatcherBot.services.repoAcess.songService.SongRepositoryService;
-import org.voetsky.dispatcherBot.services.repoAcess.tgUserService.TgUserRepositoryService;
+import org.voetsky.dispatcherBot.services.repo.songService.SongRepositoryService;
+import org.voetsky.dispatcherBot.services.repo.tgUserService.TgUserRepositoryService;
 
 @Component
 @AllArgsConstructor
