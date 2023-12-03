@@ -7,11 +7,10 @@ workspace.xml
 
 ### IntelliJ IDEA ###
 .idea/
-.logs/
 /.idea
 *.iws
-*.iml
 *.ipr
+
 
 ### Eclipse ###
 .apt_generated
@@ -40,3 +39,9 @@ build/
 
 !**/src/main/**/log4j.properties
 !**/src/main/**/application.properties
+
+### Custom ###
+.log
+*.iml
+logs
+*.log
