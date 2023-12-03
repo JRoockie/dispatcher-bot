@@ -1,4 +1,4 @@
-package org.voetsky.dispatcherBot.services.repoAcess.fileService;
+package org.voetsky.dispatcherBot.services.repoServices.fileService;
 
 import lombok.extern.log4j.Log4j;
 import org.json.JSONObject;

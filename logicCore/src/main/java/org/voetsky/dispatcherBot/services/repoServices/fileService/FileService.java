@@ -1,4 +1,4 @@
-package org.voetsky.dispatcherBot.services.repoAcess.fileService;
+package org.voetsky.dispatcherBot.services.repoServices.fileService;
 
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.voetsky.dispatcherBot.repository.tgAudio.TgAudio;

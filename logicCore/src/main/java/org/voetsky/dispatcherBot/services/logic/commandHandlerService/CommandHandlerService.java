@@ -8,8 +8,8 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.User;
 import org.voetsky.dispatcherBot.services.logic.commands.*;
 import org.voetsky.dispatcherBot.services.logic.commands.command.CommandInterface;
-import org.voetsky.dispatcherBot.services.repoAcess.RepoController;
 import org.voetsky.dispatcherBot.services.output.messageMakerService.MessageMakerService;
+import org.voetsky.dispatcherBot.services.repoAcess.RepoController;
 
 import javax.annotation.PostConstruct;
 import java.util.Map;
@@ -34,7 +34,6 @@ public class CommandHandlerService implements CommandHandler {
     public CommandHandlerService(MessageMakerService messageMakerService, RepoController repoController) {
         this.messageMakerService = messageMakerService;
         this.repoController = repoController;
-//        init();
     }
 
     @PostConstruct
@@ -88,7 +87,6 @@ public class CommandHandlerService implements CommandHandler {
         return messageMakerService.makeSendMessage(update, "Command not found, callback not found.");
     }
 
-    //todo переписать
     public SendMessage buttonExecute(Update update) {
         try {
             User user = update.getCallbackQuery().getFrom();
@@ -118,4 +116,17 @@ public class CommandHandlerService implements CommandHandler {
         return s;
     }
 
+    //todo после того как вылетело исключение
+    // в течение работы с бд, вызвать этот
+    // метод чтобы предыдущую команду запустить заново
+
+    public SendMessage forceEvokePreviousCommand(Update update) {
+        String chatId;
+        if (update.hasCallbackQuery()) {
+            chatId = update.getCallbackQuery().getFrom().getId().toString();
+            return actions.get(bindingBy.get(chatId)).handle(update);
+        }
+        chatId = update.getMessage().getChatId().toString();
+        return actions.get(bindingBy.get(chatId)).handle(update);
+    }
 }

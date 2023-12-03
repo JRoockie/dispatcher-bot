@@ -1,11 +1,11 @@
-package org.voetsky.dispatcherBot.services.repoAcess.comparingEntityService;
+package org.voetsky.dispatcherBot.services.repoServices.comparingEntityService;
 
 import org.springframework.stereotype.Service;
 import org.voetsky.dispatcherBot.repository.song.Song;
 import org.voetsky.dispatcherBot.repository.tgUser.TgUser;
 
 @Service
-public class ComparingEntityServiceImpl {
+public class ComparingEntityServiceImpl implements ComparingEntityService{
 
     public Song songUpdate(Song newSong, Song updatableSong) {
 

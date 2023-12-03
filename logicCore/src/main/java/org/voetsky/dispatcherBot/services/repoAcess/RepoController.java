@@ -9,7 +9,7 @@ import org.voetsky.dispatcherBot.UserState;
 import org.voetsky.dispatcherBot.repository.orderClient.OrderClient;
 import org.voetsky.dispatcherBot.repository.song.Song;
 import org.voetsky.dispatcherBot.repository.tgUser.TgUser;
-import org.voetsky.dispatcherBot.services.repoAcess.comparingEntityService.ComparingEntityService;
+import org.voetsky.dispatcherBot.services.repoServices.comparingEntityService.ComparingEntityService;
 import org.voetsky.dispatcherBot.services.repoAcess.orderClientService.OrderClientRepo;
 import org.voetsky.dispatcherBot.services.repoAcess.songService.SongRepo;
 import org.voetsky.dispatcherBot.services.repoAcess.tgAudioService.TgAudioRepo;

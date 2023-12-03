@@ -7,7 +7,7 @@ import org.voetsky.dispatcherBot.repository.song.Song;
 import org.voetsky.dispatcherBot.repository.tgAudio.TgAudio;
 import org.voetsky.dispatcherBot.repository.tgUser.TgUser;
 import org.voetsky.dispatcherBot.repository.tgAudio.TgAudioRepository;
-import org.voetsky.dispatcherBot.services.repoAcess.fileService.FileService;
+import org.voetsky.dispatcherBot.services.repoServices.fileService.FileService;
 import org.voetsky.dispatcherBot.services.repoAcess.songService.SongRepositoryService;
 import org.voetsky.dispatcherBot.services.repoAcess.tgUserService.TgUserRepositoryService;
 

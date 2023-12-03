@@ -1,4 +1,4 @@
-package org.voetsky.dispatcherBot.services.repoAcess.comparingEntityService;
+package org.voetsky.dispatcherBot.services.repoServices.comparingEntityService;
 
 import org.springframework.stereotype.Service;
 import org.voetsky.dispatcherBot.repository.song.Song;

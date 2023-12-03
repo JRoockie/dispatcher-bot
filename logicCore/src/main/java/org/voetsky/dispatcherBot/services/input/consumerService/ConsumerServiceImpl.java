@@ -4,7 +4,7 @@ import lombok.extern.log4j.Log4j;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.objects.Update;
-import org.voetsky.dispatcherBot.services.logic.ReceiverController;
+import org.voetsky.dispatcherBot.services.input.ReceiverController;
 
 import static org.voetsky.model.RabbitQueue.*;
 

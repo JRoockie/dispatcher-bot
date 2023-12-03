@@ -5,17 +5,13 @@ import org.voetsky.dispatcherBot.UserState;
 
 public interface MessageValidationService {
 
-    boolean isRequiredText(Update update);
-
-    boolean isRequiredAudio(Update update);
-
-    boolean isRequiredVoice(Update update);
-
-    boolean isRequiredButton(Update update);
-
     String whichStateError(Update update);
 
     UserState getState(Update update);
+
+    boolean isValid(Update update);
+
+    boolean throwValidationException(Update update);
 
     boolean stateCheck(Update update);
 

@@ -1,13 +1,14 @@
-package org.voetsky.dispatcherBot.services.logic;
+package org.voetsky.dispatcherBot.services.input;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
+import org.voetsky.dispatcherBot.exceptions.ParentException.LogicCoreException;
+import org.voetsky.dispatcherBot.services.input.messageValidationService.MessageValidationService;
 import org.voetsky.dispatcherBot.services.logic.commandHandlerService.CommandHandler;
 import org.voetsky.dispatcherBot.services.output.messageMakerService.MessageMakerServiceImpl;
-import org.voetsky.dispatcherBot.services.input.messageValidationService.MessageValidationService;
 import org.voetsky.dispatcherBot.services.output.producerService.ProducerService;
 
 @Log4j
@@ -21,39 +22,47 @@ public class ReceiverController {
     private final ProducerService producerService;
 
     public void processTextMessage(Update update) {
-        if (messageValidationService.isRequiredText(update)) {
-            SendMessage sendMessage = updateReceived(update);
-            sendMessageToView(sendMessage);
-        } else {
-            sendErrorMessageToView(update,
-                    messageValidationService.whichStateError(update));
+        try {
+            if (messageValidationService.isValid(update)) {
+                SendMessage sendMessage = updateReceived(update);
+                sendMessageToView(sendMessage);
+            }
+        } catch (LogicCoreException e) {
+            log.error(e);
+            sendErrorMessageToView(update, e.getMessage());
         }
     }
 
     public void consumeAudioMessageUpdates(Update update) {
-        if (messageValidationService.isRequiredAudio(update)) {
-            sendMessageToView(updateReceived(update));
-        } else {
-            sendErrorMessageToView(update,
-                    messageValidationService.whichStateError(update));
+        try {
+            if (messageValidationService.isValid(update)) {
+                sendMessageToView(updateReceived(update));
+            }
+        } catch (LogicCoreException e) {
+            log.error(e);
+            sendErrorMessageToView(update, e.getMessage());
         }
     }
 
     public void consumeVoiceMessageUpdates(Update update) {
-        if (messageValidationService.isRequiredVoice(update)) {
-            sendMessageToView(updateReceived(update));
-        } else {
-            sendErrorMessageToView(update,
-                    messageValidationService.whichStateError(update));
+        try {
+            if (messageValidationService.isValid(update)) {
+                sendMessageToView(updateReceived(update));
+            }
+        } catch (LogicCoreException e) {
+            log.error(e);
+            sendErrorMessageToView(update, e.getMessage());
         }
     }
 
     public void consumeButtonUpdates(Update update) {
-        if (messageValidationService.isRequiredButton(update)) {
-            sendMessageToView(updateReceived(update));
-        } else {
-            sendErrorMessageToView(update,
-                    messageValidationService.whichStateError(update));
+        try {
+            if (messageValidationService.isValid(update)) {
+                sendMessageToView(updateReceived(update));
+            }
+        } catch (LogicCoreException e) {
+            log.error(e);
+            sendErrorMessageToView(update, e.getMessage());
         }
     }
 
