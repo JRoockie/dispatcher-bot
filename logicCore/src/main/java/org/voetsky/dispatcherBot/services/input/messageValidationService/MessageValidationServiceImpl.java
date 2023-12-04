@@ -42,7 +42,7 @@ public class MessageValidationServiceImpl implements MessageValidationService {
         if (log.isDebugEnabled()) {
             log.debug("Validation...");
         }
-        return stateCheck(update) || throwValidationException(update);
+        return isActualState(update) || throwValidationException(update);
     }
 
     public boolean throwValidationException(Update update) {
@@ -55,15 +55,15 @@ public class MessageValidationServiceImpl implements MessageValidationService {
         return tgUserRepositoryService.getState(update);
     }
 
-    public boolean stateCheck(Update update) {
+    public boolean isActualState(Update update) {
         UserState state = getState(update);
 
         if (update.getMessage() != null) {
             if (update.getMessage().getText() != null) {
-                var key = update.getMessage().getText();
+                var text = update.getMessage().getText();
                 var chatId = update.getMessage().getChatId().toString();
 
-                if (commandHandlerService.getActions().containsKey(key)) {
+                if (commandHandlerService.getActions().containsKey(text)) {
                     return AWAITING_FOR_COMMAND == state;
                 } else if (commandHandlerService.getBindingBy().containsKey(chatId)) {
                     return AWAITING_FOR_TEXT == state;

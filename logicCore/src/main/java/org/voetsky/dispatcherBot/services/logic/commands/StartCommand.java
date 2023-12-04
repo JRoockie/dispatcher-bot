@@ -31,7 +31,6 @@ public class StartCommand implements CommandInterface {
     public SendMessage handle(Update update) {
         String text = "Здравствуйте, вас привествует чат бот VocalPlus."
                 + " Я помогу вам выбрать время для звукозаписи в нашей студии.\n" + "\n";
-
         InlineKeyboardMarkup markupInline = getInlineKeyboardMarkup();
         changeState(update, AWAITING_FOR_BUTTON);
         return messageMakerService.makeSendMessage(update, text, markupInline);

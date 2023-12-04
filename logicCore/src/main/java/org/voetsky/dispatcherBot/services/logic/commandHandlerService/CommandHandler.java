@@ -7,13 +7,13 @@ public interface CommandHandler {
 
     SendMessage updateReceived(Update update);
 
-    SendMessage processCommand(Update update, String key, String chatId);
+    SendMessage processCommand(Update update, String text, String chatId);
 
-    SendMessage processHandle(Update update, String key, String chatId);
+    SendMessage processHandle(Update update, String text, String chatId);
 
     SendMessage processCallBack(Update update, String chatId);
 
-    SendMessage processButton(Update update, String callBackText);
+    SendMessage processButton(Update update, String text, String chatId);
 
     Boolean hasChain(SendMessage s);
 

@@ -26,16 +26,13 @@ public class AskNameCommand implements CommandInterface {
         String text = "Пожалуйста, введите ваше имя: ";
         repoController.addOrder(update);
         changeState(update, AWAITING_FOR_TEXT);
-
         return messageMakerService.makeSendMessage(update, text);
     }
 
     @Override
     public SendMessage callback(Update update) {
         repoController.setClientName(update, update.getMessage().getText());
-
         changeState(update, AWAITING_FOR_COMMAND);
-
         return messageMakerService.makeSendMessage(
                 update, CHOOSING_NAME_OR_ANOTHER_WAY.toString());
     }

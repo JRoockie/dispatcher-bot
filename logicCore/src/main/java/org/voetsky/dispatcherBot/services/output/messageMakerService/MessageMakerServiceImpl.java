@@ -21,32 +21,23 @@ public class MessageMakerServiceImpl implements MessageMakerService {
 
     @Override
     public SendMessage makeSendMessage(Update update, String text) {
-        try {
-            SendMessage sendMessage = new SendMessage();
-            sendMessage.enableMarkdown(true);
-            sendMessage.setChatId(getIdFromUpdate(update));
-//            sendMessage.setReplyToMessageId(update.getMessage().getMessageId());
-            sendMessage.setText(text);
-            return sendMessage;
-        } catch (Exception e) {
-            return new SendMessage("874396856", "Ошибка");
-        }
-
+            return createSendMessage(update, text, null);
     }
 
     @Override
-    public SendMessage makeSendMessage(Update update, String text, InlineKeyboardMarkup i) {
-        try {
-            SendMessage sendMessage = new SendMessage();
-            sendMessage.enableMarkdown(true);
-            sendMessage.setChatId(getIdFromUpdate(update));
-            sendMessage.setReplyMarkup(i);
-//            sendMessage.setReplyToMessageId(update.getMessage().getMessageId());
-            sendMessage.setText(text);
-            return sendMessage;
-        } catch (Exception e) {
-            return new SendMessage("874396856", "Ошибка");
-        }
-
+    public SendMessage makeSendMessage(Update update, String text, InlineKeyboardMarkup markup) {
+            return createSendMessage(update, text, markup);
     }
+
+    private SendMessage createSendMessage(Update update, String text, InlineKeyboardMarkup markup) {
+        SendMessage sendMessage = new SendMessage();
+        sendMessage.enableMarkdown(true);
+        sendMessage.setChatId(getIdFromUpdate(update));
+        sendMessage.setText(text);
+        if (markup != null) {
+            sendMessage.setReplyMarkup(markup);
+        }
+        return sendMessage;
+    }
+
 }

@@ -47,16 +47,13 @@ public class TelegramBot extends TelegramLongPollingBot {
     public void sendAnswerMessage(SendMessage message) {
         if (message.getText() != null) {
             try {
-                log.debug(message.getText());
+                if (log.isDebugEnabled()) {
+                    log.debug(message.getText());
+                }
                 execute(message);
             } catch (TelegramApiException e) {
-                log.error(e);
-                message.setChatId("874396856");
-                message.setText("Id null, Text null");
-                try {
-                    execute(message);
-                } catch (TelegramApiException ex) {
-                    throw new RuntimeException();
+                if (log.isDebugEnabled()) {
+                    log.error(e.getMessage());
                 }
             }
         }

@@ -12,5 +12,5 @@ public interface MessageMakerService {
 
     SendMessage makeSendMessage(Update update, String string);
 
-    SendMessage makeSendMessage(Update update, String text, InlineKeyboardMarkup i);
+    SendMessage makeSendMessage(Update update, String text, InlineKeyboardMarkup markup);
 }

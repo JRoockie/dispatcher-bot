@@ -16,10 +16,14 @@ public class UpdateProducerImpl implements UpdateProducer {
 
     @Override
     public void produce(String rabbitQueue, Update update) {
-        if (update.hasCallbackQuery()){
-            log.debug(update.getCallbackQuery().getFrom().getId());
+        if (update.hasCallbackQuery()) {
+            if (log.isDebugEnabled()) {
+                log.debug(update.getCallbackQuery().getFrom().getId());
+            }
         } else {
-            log.debug(update.getMessage().getText());
+            if (log.isDebugEnabled()) {
+                log.debug(update.getMessage().getText());
+            }
         }
         rabbitTemplate.convertAndSend(rabbitQueue, update);
     }

@@ -35,10 +35,7 @@ public class SongAddAndSongNameCommand implements CommandInterface {
     public SendMessage callback(Update update) {
         String text = String.format("Название: %s принято", update.getMessage().getText());
         changeState(update, AWAITING_FOR_COMMAND);
-
         String songName = update.getMessage().getText();
-//        update.getMessage().setText(songName);
-
         Song newSong = Song.builder()
                 .songName(songName)
                 .build();

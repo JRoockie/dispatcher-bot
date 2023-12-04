@@ -6,16 +6,15 @@ import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.voetsky.dispatcherBot.exceptions.ParentException.LogicCoreException;
-import org.voetsky.dispatcherBot.services.logic.commands.*;
 import org.voetsky.dispatcherBot.services.logic.commands.command.CommandInterface;
+import org.voetsky.dispatcherBot.services.logic.logicUtil.CommandInit;
+import org.voetsky.dispatcherBot.services.logic.logicUtil.Initialization;
 import org.voetsky.dispatcherBot.services.output.messageMakerService.MessageMakerService;
 import org.voetsky.dispatcherBot.services.repo.RepoController;
 
 import javax.annotation.PostConstruct;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-
-import static org.voetsky.dispatcherBot.services.logic.commands.command.Commands.*;
 
 @Log4j
 @Getter
@@ -25,36 +24,26 @@ public class CommandHandlerService implements CommandHandler {
     private final Map<String, String> bindingBy = new ConcurrentHashMap<>();
     private final MessageMakerService messageMakerService;
     private Map<String, CommandInterface> actions;
+    private final Initialization initialization;
 
-    //todo ТУТ ЕГО ЮЫТЬ НЕ ДОЛЖНО, ПЕРЕКИНУТЬ repocontroller в ДРУГОЙ СЕРВИС
-    //О нем не должен знать CommandHandler
-    //также перекинуть метод INIT И инитить команды в другом месте
-    private final RepoController repoController;
-
-    public CommandHandlerService(MessageMakerService messageMakerService, RepoController repoController) {
+    public CommandHandlerService(MessageMakerService messageMakerService, RepoController repoController, CommandInit commandInit) {
         this.messageMakerService = messageMakerService;
-        this.repoController = repoController;
+        this.initialization = commandInit;
     }
 
     @PostConstruct
-    public void init() {
-        actions = Map.of(
-                START_COMMAND.toString(), new StartCommand(repoController, messageMakerService),
-                ASK_NAME_COMMAND.toString(), new AskNameCommand(repoController, messageMakerService),
-                SONG_ADD_AND_ADD_SONG_NAME_COMMAND.toString(), new SongAddAndSongNameCommand(repoController, messageMakerService),
-                CHOOSING_NAME_OR_ANOTHER_WAY.toString(), new ChoosingNameOrAnotherWayCommand(repoController, messageMakerService),
-                MP3_ADD_COMMAND.toString(), new Mp3AddCommand(repoController, messageMakerService),
-                VOICE_ADD_COMMAND.toString(), new VoiceAddCommand(repoController, messageMakerService));
+    public void initCommands(){
+        actions = initialization.initCommands();
     }
 
     public SendMessage updateReceived(Update update) {
-        var key = getMessageText(update);
+        var text = getMessageText(update);
         var chatId = getChatId(update);
 
         if (update.hasMessage() && update.getMessage().getText() != null) {
-            return processCommand(update, key, chatId);
+            return processCommand(update, text, chatId);
         } else if (update.hasCallbackQuery()) {
-            return processButton(update, key);
+            return processButton(update, text, chatId);
         } else if (update.getMessage().hasAudio()) {
             return processCallBack(update, chatId);
         } else if (update.getMessage().hasVoice()) {
@@ -63,41 +52,41 @@ public class CommandHandlerService implements CommandHandler {
         throw new LogicCoreException("Непредвиденная ошибка");
     }
 
-    public SendMessage processCommand(Update update, String key, String chatId) {
-        if (actions.containsKey(key)) {
-            return processHandle(update, key, chatId);
+    public SendMessage processCommand(Update update, String text, String chatId) {
+        if (actions.containsKey(text)) {
+            return processHandle(update, text, chatId);
         } else if (bindingBy.containsKey(chatId)) {
             return processCallBack(update, chatId);
         }
         throw new LogicCoreException("Ошибка команды");
     }
 
-    public SendMessage processHandle(Update update, String key, String chatId) {
-        log.debug(String.format("NON-CALLBACK command part: %s",
-                actions.get(key)));
-        var msg = actions.get(key).handle(update);
-        bindingBy.put(chatId, key);
+    public SendMessage processHandle(Update update, String text, String chatId) {
+        if (log.isDebugEnabled()) {
+            log.debug(String.format("NON-CALLBACK command part: %s",
+                    actions.get(text)));
+        }
+        var msg = actions.get(text).handle(update);
+        bindingBy.put(chatId, text);
         return processChain(msg, update);
     }
 
     public SendMessage processCallBack(Update update, String chatId) {
+        if (log.isDebugEnabled()) {
+            log.debug(String.format("Executing CALLBACK command part: %s",
+                    bindingBy.get(chatId)));
+        }
         var msg = actions.get(bindingBy.get(chatId)).callback(update);
-        log.debug(String.format("Executing CALLBACK command part: %s",
-                bindingBy.get(chatId)));
         return processChain(msg, update);
     }
 
     @Override
-    public SendMessage processButton(Update update, String callBackText) {
-        log.debug(String.format("Button has pressed by: %s with attribute: %s",
-                getChatId(update), callBackText));
-        if (actions.containsKey(callBackText)) {
-            var msg = actions.get(callBackText).handle(update);
-            bindingBy.put(getChatId(update), callBackText);
-            return processChain(msg, update);
-        } else {
-            throw new LogicCoreException("Button command not found");
+    public SendMessage processButton(Update update, String text, String chatId) {
+        if (log.isDebugEnabled()) {
+            log.debug(String.format("Button has pressed by: %s with attribute: %s",
+                    chatId, text));
         }
+        return processHandle(update, text, chatId);
     }
 
     public Boolean hasChain(SendMessage s) {

@@ -24,16 +24,14 @@ public class VoiceAddCommand implements CommandInterface {
     public SendMessage handle(Update update) {
         String text = "Отправьте голосовое сообщение";
         changeState(update, AWAITING_FOR_VOICE);
-
         return messageMakerService.makeSendMessage(update, text);
     }
 
     @Override
     public SendMessage callback(Update update) {
-        String text = "Успешное добавление ГС в бд";
+        String text = "Ваше голосовое сообщение сохранено";
         changeState(update, AWAITING_FOR_COMMAND);
         repoController.addVoice(update);
-
         return messageMakerService.makeSendMessage(
                 update, text);
     }

@@ -5,7 +5,7 @@ import org.voetsky.dispatcherBot.repository.song.Song;
 import org.voetsky.dispatcherBot.repository.tgUser.TgUser;
 
 @Service
-public class ComparingEntityServiceImpl implements ComparingEntityService{
+public class ComparingEntityServiceImpl implements ComparingEntityService {
 
     public Song songUpdate(Song newSong, Song updatableSong) {
 
@@ -28,6 +28,9 @@ public class ComparingEntityServiceImpl implements ComparingEntityService{
     }
 
     public TgUser tgUserUpdate(TgUser newUser, TgUser updatableUser) {
+        if (newUser.getNameAsClient() != null){
+            updatableUser.setNameAsClient(newUser.getNameAsClient());
+        }
         if (newUser.getCurrentOrderId() != null) {
             updatableUser.setCurrentOrderId(newUser.getCurrentOrderId());
         }

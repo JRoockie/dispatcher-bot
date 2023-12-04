@@ -31,7 +31,6 @@ public class Mp3AddCommand implements CommandInterface {
     @Override
     public SendMessage callback(Update update) {
         String text = "Успешное добавление аудио в бд";
-
         changeState(update, AWAITING_FOR_COMMAND);
         repoController.addMp3(update);
        return messageMakerService.makeSendMessage(update, text);

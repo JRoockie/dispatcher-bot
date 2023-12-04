@@ -28,10 +28,7 @@ public class ReceiverController {
                 sendMessageToView(sendMessage);
             }
         } catch (LogicCoreException e) {
-            if (log.isDebugEnabled()) {
-                log.debug(e);
-            }
-            sendErrorMessageToView(update, e.getMessage());
+            processError(e, update);
         }
     }
 
@@ -41,10 +38,7 @@ public class ReceiverController {
                 sendMessageToView(updateReceived(update));
             }
         } catch (LogicCoreException e) {
-            if (log.isDebugEnabled()) {
-                log.debug(e);
-            }
-            sendErrorMessageToView(update, e.getMessage());
+            processError(e, update);
         }
     }
 
@@ -54,10 +48,7 @@ public class ReceiverController {
                 sendMessageToView(updateReceived(update));
             }
         } catch (LogicCoreException e) {
-            if (log.isDebugEnabled()) {
-                log.debug(e);
-            }
-            sendErrorMessageToView(update, e.getMessage());
+            processError(e, update);
         }
     }
 
@@ -67,11 +58,15 @@ public class ReceiverController {
                 sendMessageToView(updateReceived(update));
             }
         } catch (LogicCoreException e) {
-            if (log.isDebugEnabled()) {
-                log.debug(e);
-            }
-            sendErrorMessageToView(update, e.getMessage());
+            processError(e, update);
         }
+    }
+
+    public void processError(Exception e, Update update){
+        if (log.isDebugEnabled()) {
+            log.debug(e);
+        }
+        sendErrorMessageToView(update, e.getMessage());
     }
 
     public SendMessage updateReceived(Update update) {

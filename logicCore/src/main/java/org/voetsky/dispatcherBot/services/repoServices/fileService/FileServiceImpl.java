@@ -9,10 +9,11 @@ import org.springframework.web.client.RestTemplate;
 import org.telegram.telegrambots.meta.api.objects.Audio;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.Voice;
+import org.voetsky.dispatcherBot.exceptions.ServiceException;
 import org.voetsky.dispatcherBot.repository.binaryContent.BinaryContent;
+import org.voetsky.dispatcherBot.repository.binaryContent.BinaryContentRepository;
 import org.voetsky.dispatcherBot.repository.tgAudio.TgAudio;
 import org.voetsky.dispatcherBot.repository.tgVoice.TgVoice;
-import org.voetsky.dispatcherBot.repository.binaryContent.BinaryContentRepository;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -42,9 +43,9 @@ public class FileServiceImpl implements FileService {
             BinaryContent persistentBinaryContent = getPersistentBinaryContent(response);
             Audio tgAudio = telegramMessage.getMessage().getAudio();
             return buildTransientTgVoice(tgAudio, persistentBinaryContent);
-        } else {
-            throw new RuntimeException("Bad response from telegram service: " + response);
         }
+        throw new ServiceException(String.format(
+                "Bad response from telegram service: %s", response));
     }
 
     @Override
@@ -55,9 +56,9 @@ public class FileServiceImpl implements FileService {
             BinaryContent persistentBinaryContent = getPersistentBinaryContent(response);
             Voice voice = update.getMessage().getVoice();
             return buildTransientTgVoice(voice, persistentBinaryContent);
-        } else {
-            throw new RuntimeException("Bad response from telegram service: " + response);
         }
+        throw new ServiceException(String.format(
+                "Bad response from telegram service: %s", response));
     }
 
     private BinaryContent getPersistentBinaryContent(ResponseEntity<String> response) {
@@ -77,7 +78,6 @@ public class FileServiceImpl implements FileService {
                 .getString("file_path"));
         return filePath;
     }
-
 
 
     private TgAudio buildTransientTgVoice(Audio audio, BinaryContent persistentBinaryContent) {

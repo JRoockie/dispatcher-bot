@@ -22,13 +22,15 @@ public class TgUserRepositoryService implements TgUserRepo {
     public TgUser findOrSaveAppUser(User telegramUser) {
         //todo раскомментить после тестов
         TgUser persistentTgUser = tgUserRepository.findByTelegramUserId(telegramUser.getId());
-//        TgUser persistentTgUser = null;
         if (persistentTgUser == null) {
-            log.debug("NEW user in system, adding: " + telegramUser.getId());
-            //Объект еще не представлен в бд и его предстоит сохранить
+            if (log.isDebugEnabled()) {
+                log.debug("NEW user in system, adding: " + telegramUser.getId());
+            }
             return makeTgUser(telegramUser);
         }
-        log.debug("User ALREADY in system");
+        if (log.isDebugEnabled()) {
+            log.debug("User ALREADY in system");
+        }
         return persistentTgUser;
     }
 

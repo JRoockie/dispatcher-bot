@@ -13,6 +13,6 @@ public interface MessageValidationService {
 
     boolean throwValidationException(Update update);
 
-    boolean stateCheck(Update update);
+    boolean isActualState(Update update);
 
 }

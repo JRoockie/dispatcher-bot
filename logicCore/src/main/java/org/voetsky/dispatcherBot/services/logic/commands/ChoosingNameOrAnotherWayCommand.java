@@ -31,7 +31,6 @@ public class ChoosingNameOrAnotherWayCommand implements CommandInterface {
         String text = String.format("Чтобы мы могли максимально точно подобрать для вас"
                 + " фонограмму, вам необходимо ответить на следующие вопросы:"
                 + " \n\n🙋%s, Вы знаете исполнителя и название песни?", username);
-
         changeState(update, AWAITING_FOR_BUTTON);
         InlineKeyboardMarkup markupInline = getInlineKeyboardMarkup();
         return messageMakerService.makeSendMessage(update, text, markupInline);
@@ -56,12 +55,12 @@ public class ChoosingNameOrAnotherWayCommand implements CommandInterface {
 
     @Override
     public SendMessage callback(Update update) {
-        if (update.getMessage().getText().equals(SONG_ADD_AND_ADD_SONG_NAME_COMMAND.toString())) {
-            return messageMakerService.makeSendMessage(
-                    update, SONG_ADD_AND_ADD_SONG_NAME_COMMAND.toString());
-        } else if (update.getMessage().getText().equals(START_COMMAND.toString())) {
-            return messageMakerService.makeSendMessage(
-                    update, START_COMMAND.toString());
+        if (update.getMessage().getText().equals(
+                SONG_ADD_AND_ADD_SONG_NAME_COMMAND.toString())) {
+            return messageMakerService.makeSendMessage(update, SONG_ADD_AND_ADD_SONG_NAME_COMMAND.toString());
+        } else if (update.getMessage().getText().equals(
+                START_COMMAND.toString())) {
+            return messageMakerService.makeSendMessage(update, START_COMMAND.toString());
         }
         return messageMakerService.makeSendMessage(update, String.format("Ошибка в %s", ChoosingNameOrAnotherWayCommand.class));
     }
