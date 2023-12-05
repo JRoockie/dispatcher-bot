@@ -1,9 +1,8 @@
-package org.voetsky.dispatcherBot.LocalizationUnit;
+package org.voetsky.dispatcherBot.configuration.Localization;
 
 import lombok.extern.log4j.Log4j;
 import org.springframework.stereotype.Component;
-import org.voetsky.dispatcherBot.LocalizeApplication;
-
+import org.voetsky.dispatcherBot.LogicCoreApplication;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -12,12 +11,11 @@ import java.util.Properties;
 @Log4j
 @Component
 public class LocalizationUnit implements Localization {
-
     private final Map<String, Map<String, String>> dic = new HashMap<>();
 
     public void loadDic(String lang) throws IOException {
         var prop = new Properties();
-        try (var langPr = LocalizeApplication.class.getClassLoader()
+        try (var langPr = LogicCoreApplication.class.getClassLoader()
                 .getResourceAsStream(String.format("lang_%s.properties", lang))) {
             prop.load(langPr);
         }
@@ -30,8 +28,5 @@ public class LocalizationUnit implements Localization {
 
     public String get(String lang, String key) {
         return dic.get(lang).get(key);
-
     }
 }
-
-

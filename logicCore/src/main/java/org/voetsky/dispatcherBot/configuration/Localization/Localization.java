@@ -1,4 +1,4 @@
-package org.voetsky.dispatcherBot.LocalizationUnit;
+package org.voetsky.dispatcherBot.configuration.Localization;
 
 import java.io.IOException;
 

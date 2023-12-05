@@ -14,7 +14,6 @@
         <module>rabbitQueues</module>
         <module>logicCore</module>
         <module>jpaRepository</module>
-        <module>localizator</module>
     </modules>
 
     <properties>
