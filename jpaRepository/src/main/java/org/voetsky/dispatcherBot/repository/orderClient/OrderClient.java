@@ -11,7 +11,7 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.List;
 
-@Entity
+
 @Builder
 @Getter
 @Setter
@@ -19,6 +19,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "orders")
+@Entity
 public class OrderClient implements Serializable {
 
     @Id

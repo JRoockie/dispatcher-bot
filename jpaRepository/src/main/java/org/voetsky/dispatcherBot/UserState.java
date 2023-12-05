@@ -1,7 +1,6 @@
 package org.voetsky.dispatcherBot;
 
 public enum UserState {
-
     AWAITING_FOR_TEXT,
     AWAITING_FOR_COMMAND,
     AWAITING_FOR_AUDIO,

@@ -16,6 +16,10 @@ public interface TgUserRepo {
 
     User findUserIdFromUpdate(Update update);
 
+    String getLocalization(Update update);
+
+    void setLocalization(Update update, String language);
+
     void setState(Update update, UserState userState);
 
     String getClientName(Update update);

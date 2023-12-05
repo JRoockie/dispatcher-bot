@@ -9,12 +9,12 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Builder
-@NoArgsConstructor
-@AllArgsConstructor
-@Entity
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "tg_voice")
+@Entity
 public class TgVoice {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

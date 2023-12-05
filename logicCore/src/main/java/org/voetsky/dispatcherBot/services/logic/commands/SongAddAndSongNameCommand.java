@@ -6,7 +6,7 @@ import lombok.extern.log4j.Log4j;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.voetsky.dispatcherBot.UserState;
-import org.voetsky.dispatcherBot.services.logic.commands.command.CommandInterface;
+import org.voetsky.dispatcherBot.services.logic.commands.command.Command;
 import org.voetsky.dispatcherBot.services.logic.commands.command.Commands;
 import org.voetsky.dispatcherBot.services.repo.RepoController;
 import org.voetsky.dispatcherBot.repository.song.Song;
@@ -17,7 +17,7 @@ import static org.voetsky.dispatcherBot.UserState.*;
 
 @Log4j
 @AllArgsConstructor
-public class SongAddAndSongNameCommand implements CommandInterface {
+public class SongAddAndSongNameCommand implements Command {
 
     private final String action = Commands.SONG_ADD_AND_ADD_SONG_NAME_COMMAND.toString();
     private final RepoController repoController;

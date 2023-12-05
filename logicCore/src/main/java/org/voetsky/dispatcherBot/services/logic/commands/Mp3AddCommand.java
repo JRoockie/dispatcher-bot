@@ -5,7 +5,7 @@ import lombok.extern.log4j.Log4j;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.voetsky.dispatcherBot.UserState;
-import org.voetsky.dispatcherBot.services.logic.commands.command.CommandInterface;
+import org.voetsky.dispatcherBot.services.logic.commands.command.Command;
 import org.voetsky.dispatcherBot.services.logic.commands.command.Commands;
 import org.voetsky.dispatcherBot.services.repo.RepoController;
 import org.voetsky.dispatcherBot.services.output.messageMakerService.MessageMakerService;
@@ -14,7 +14,7 @@ import static org.voetsky.dispatcherBot.UserState.*;
 
 @Log4j
 @AllArgsConstructor
-public class Mp3AddCommand implements CommandInterface {
+public class Mp3AddCommand implements Command {
 
     private final String action = Commands.MP3_ADD_COMMAND.toString();
 

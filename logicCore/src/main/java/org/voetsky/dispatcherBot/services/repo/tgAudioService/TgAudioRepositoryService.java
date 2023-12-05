@@ -2,6 +2,7 @@ package org.voetsky.dispatcherBot.services.repo.tgAudioService;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.voetsky.dispatcherBot.repository.song.Song;
 import org.voetsky.dispatcherBot.repository.tgAudio.TgAudio;
@@ -12,7 +13,7 @@ import org.voetsky.dispatcherBot.services.repo.songService.SongRepositoryService
 import org.voetsky.dispatcherBot.services.repo.tgUserService.TgUserRepositoryService;
 
 @AllArgsConstructor
-@Component
+@Service
 public class TgAudioRepositoryService implements TgAudioRepo {
     private final TgAudioRepository tgAudioRepository;
     private final SongRepositoryService songRepositoryService;

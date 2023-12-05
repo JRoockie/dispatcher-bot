@@ -13,7 +13,7 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.List;
 
-@Entity
+
 @Builder
 @Getter
 @Setter
@@ -22,6 +22,7 @@ import java.util.List;
 @AllArgsConstructor
 @Table(name = "songs")
 @TypeDef(name = "jsonb", typeClass = JsonBinaryType.class)
+@Entity
 public class Song implements Serializable {
 
     @Id

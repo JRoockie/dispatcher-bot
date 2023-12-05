@@ -11,10 +11,10 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity
 @Getter
 @Setter
 @Table(name = "tg_audio")
+@Entity
 public class TgAudio {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

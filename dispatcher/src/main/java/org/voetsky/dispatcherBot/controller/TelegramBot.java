@@ -10,8 +10,9 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import javax.annotation.PostConstruct;
 
-@Component
+
 @Log4j
+@Component
 public class TelegramBot extends TelegramLongPollingBot {
     @Value("${bot.token}")
     private String botToken;

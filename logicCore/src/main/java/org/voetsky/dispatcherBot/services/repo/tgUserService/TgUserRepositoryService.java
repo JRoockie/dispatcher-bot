@@ -3,6 +3,7 @@ package org.voetsky.dispatcherBot.services.repo.tgUserService;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.User;
 import org.voetsky.dispatcherBot.UserState;
@@ -12,9 +13,11 @@ import org.voetsky.dispatcherBot.repository.tgUser.TgUserRepository;
 
 import static org.voetsky.dispatcherBot.UserState.AWAITING_FOR_COMMAND;
 
-@Component
-@AllArgsConstructor
+
+
 @Log4j
+@AllArgsConstructor
+@Service
 public class TgUserRepositoryService implements TgUserRepo {
 
     private final TgUserRepository tgUserRepository;
@@ -41,6 +44,7 @@ public class TgUserRepositoryService implements TgUserRepo {
                 .firstName(telegramUser.getFirstName())
                 .lastName(telegramUser.getLastName())
                 .userState(AWAITING_FOR_COMMAND)
+                .localization("ru")
                 .build();
 
         transientTgUser = tgUserRepository.save(transientTgUser);
@@ -84,6 +88,18 @@ public class TgUserRepositoryService implements TgUserRepo {
             user = update.getCallbackQuery().getFrom();
             return user;
         }
+    }
+
+    public String getLocalization(Update update){
+        TgUser tgUser = tgUserRepository
+                .findByTelegramUserId(findUserIdFromUpdate(update).getId());
+        return tgUser.getLocalization();
+    }
+
+    public void setLocalization(Update update, String language){
+        TgUser tgUser = tgUserRepository
+                .findByTelegramUserId(findUserIdFromUpdate(update).getId());
+        tgUser.setLocalization(language);
     }
 
     public void setState(Update update, UserState userState) {

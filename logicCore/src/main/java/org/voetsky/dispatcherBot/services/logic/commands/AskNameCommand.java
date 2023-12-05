@@ -5,7 +5,7 @@ import lombok.extern.log4j.Log4j;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.voetsky.dispatcherBot.UserState;
-import org.voetsky.dispatcherBot.services.logic.commands.command.CommandInterface;
+import org.voetsky.dispatcherBot.services.logic.commands.command.Command;
 import org.voetsky.dispatcherBot.services.repo.RepoController;
 import org.voetsky.dispatcherBot.services.output.messageMakerService.MessageMakerService;
 
@@ -15,7 +15,7 @@ import static org.voetsky.dispatcherBot.services.logic.commands.command.Commands
 
 @Log4j
 @AllArgsConstructor
-public class AskNameCommand implements CommandInterface {
+public class AskNameCommand implements Command {
 
     private final String action = ASK_NAME_COMMAND.toString();
     private final RepoController repoController;

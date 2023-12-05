@@ -11,8 +11,9 @@ import org.voetsky.dispatcherBot.services.repo.tgUserService.TgUserRepositorySer
 
 import static org.voetsky.dispatcherBot.UserState.*;
 
-@AllArgsConstructor
+
 @Log4j
+@AllArgsConstructor
 @Service
 public class MessageValidationServiceImpl implements MessageValidationService {
 
@@ -80,3 +81,4 @@ public class MessageValidationServiceImpl implements MessageValidationService {
     }
 
 }
+

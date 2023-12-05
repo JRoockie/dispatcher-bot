@@ -8,12 +8,13 @@
     <packaging>pom</packaging>
 
     <name>dispatcherBot</name>
-    <url>http://maven.apache.org</url>
+
     <modules>
         <module>dispatcher</module>
         <module>rabbitQueues</module>
         <module>logicCore</module>
         <module>jpaRepository</module>
+        <module>localizator</module>
     </modules>
 
     <properties>
@@ -36,6 +37,7 @@
             <version>3.8.1</version>
             <scope>test</scope>
         </dependency>
+
         <dependency>
             <groupId>log4j</groupId>
             <artifactId>log4j</artifactId>

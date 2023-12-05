@@ -9,7 +9,7 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
 
-@Entity
+
 @Builder
 @Getter
 @Setter
@@ -17,8 +17,8 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "tg_users")
+@Entity
 public class TgUser {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -35,10 +35,11 @@ public class TgUser {
     private String username;
     private String nameAsClient;
 
-    private java.lang.Long currentSongId;
-    private java.lang.Long currentOrderId;
+    private Long currentSongId;
+    private Long currentOrderId;
 
     @Enumerated(EnumType.STRING)
     private UserState userState;
+    private String localization;
 
 }

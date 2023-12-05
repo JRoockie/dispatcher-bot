@@ -1,9 +1,9 @@
-package org.voetsky.dispatcherBot.services.logic.logicUtil;
+package org.voetsky.dispatcherBot.services.logic.Init.Initialization;
 
 import lombok.AllArgsConstructor;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import org.voetsky.dispatcherBot.services.logic.commands.*;
-import org.voetsky.dispatcherBot.services.logic.commands.command.CommandInterface;
+import org.voetsky.dispatcherBot.services.logic.commands.command.Command;
 import org.voetsky.dispatcherBot.services.output.messageMakerService.MessageMakerService;
 import org.voetsky.dispatcherBot.services.repo.RepoController;
 
@@ -14,15 +14,15 @@ import static org.voetsky.dispatcherBot.services.logic.commands.command.Commands
 import static org.voetsky.dispatcherBot.services.logic.commands.command.Commands.VOICE_ADD_COMMAND;
 
 @AllArgsConstructor
-@Component
+@Service
 public class CommandInit implements Initialization {
     private final RepoController repoController;
     private final MessageMakerService messageMakerService;
 
     @PostConstruct
     @Override
-    public Map<String, CommandInterface> initCommands() {
-        Map<String, CommandInterface> actions;
+    public Map<String, Command> initCommands() {
+        Map<String, Command> actions;
         actions = Map.of(
                 START_COMMAND.toString(), new StartCommand(repoController, messageMakerService),
                 ASK_NAME_COMMAND.toString(), new AskNameCommand(repoController, messageMakerService),

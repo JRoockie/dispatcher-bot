@@ -8,7 +8,7 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 import org.voetsky.dispatcherBot.UserState;
-import org.voetsky.dispatcherBot.services.logic.commands.command.CommandInterface;
+import org.voetsky.dispatcherBot.services.logic.commands.command.Command;
 import org.voetsky.dispatcherBot.services.repo.RepoController;
 import org.voetsky.dispatcherBot.services.output.messageMakerService.MessageMakerService;
 
@@ -21,7 +21,7 @@ import static org.voetsky.dispatcherBot.services.logic.commands.command.Commands
 
 @Log4j
 @AllArgsConstructor
-public class StartCommand implements CommandInterface {
+public class StartCommand implements Command {
 
     private final String action = START_COMMAND.toString();
     private final RepoController repoController;
@@ -29,8 +29,10 @@ public class StartCommand implements CommandInterface {
 
     @Override
     public SendMessage handle(Update update) {
-        String text = "Здравствуйте, вас привествует чат бот VocalPlus."
-                + " Я помогу вам выбрать время для звукозаписи в нашей студии.\n" + "\n";
+        String text = "Здравствуйте, вас приветствует чат бот VocalPlus. " +
+                "Я помогу вам выбрать время для звукозаписи в нашей студии.\n" +
+                "\n" +
+                "Чтобы создать заявку нажмите \"Начать\"\n" + "\n";
         InlineKeyboardMarkup markupInline = getInlineKeyboardMarkup();
         changeState(update, AWAITING_FOR_BUTTON);
         return messageMakerService.makeSendMessage(update, text, markupInline);

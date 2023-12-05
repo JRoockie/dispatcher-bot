@@ -8,8 +8,9 @@ import org.voetsky.dispatcherBot.services.input.ReceiverController;
 
 import static org.voetsky.model.RabbitQueue.*;
 
-@Service
+
 @Log4j
+@Service
 public class ConsumerServiceImpl implements ConsumerService {
     private final ReceiverController receiverController;
 

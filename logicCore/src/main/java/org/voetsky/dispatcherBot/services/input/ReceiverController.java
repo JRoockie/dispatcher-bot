@@ -3,6 +3,7 @@ package org.voetsky.dispatcherBot.services.input;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.voetsky.dispatcherBot.exceptions.ParentException.LogicCoreException;
@@ -12,8 +13,8 @@ import org.voetsky.dispatcherBot.services.output.messageMakerService.MessageMake
 import org.voetsky.dispatcherBot.services.output.producerService.ProducerService;
 
 @Log4j
-@Component
 @AllArgsConstructor
+@Service
 public class ReceiverController {
 
     private final CommandHandler commandHandler;

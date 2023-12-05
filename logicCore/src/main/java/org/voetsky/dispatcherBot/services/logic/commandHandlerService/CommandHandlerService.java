@@ -6,11 +6,9 @@ import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.voetsky.dispatcherBot.exceptions.ParentException.LogicCoreException;
-import org.voetsky.dispatcherBot.services.logic.commands.command.CommandInterface;
-import org.voetsky.dispatcherBot.services.logic.logicUtil.CommandInit;
-import org.voetsky.dispatcherBot.services.logic.logicUtil.Initialization;
+import org.voetsky.dispatcherBot.services.logic.commands.command.Command;
+import org.voetsky.dispatcherBot.services.logic.Init.Initialization.Initialization;
 import org.voetsky.dispatcherBot.services.output.messageMakerService.MessageMakerService;
-import org.voetsky.dispatcherBot.services.repo.RepoController;
 
 import javax.annotation.PostConstruct;
 import java.util.Map;
@@ -23,10 +21,11 @@ public class CommandHandlerService implements CommandHandler {
 
     private final Map<String, String> bindingBy = new ConcurrentHashMap<>();
     private final MessageMakerService messageMakerService;
-    private Map<String, CommandInterface> actions;
+    private Map<String, Command> actions;
     private final Initialization initialization;
 
-    public CommandHandlerService(MessageMakerService messageMakerService, RepoController repoController, CommandInit commandInit) {
+
+    public CommandHandlerService(MessageMakerService messageMakerService, Initialization commandInit) {
         this.messageMakerService = messageMakerService;
         this.initialization = commandInit;
     }
@@ -53,6 +52,8 @@ public class CommandHandlerService implements CommandHandler {
     }
 
     public SendMessage processCommand(Update update, String text, String chatId) {
+        String s = update.getMessage().getFrom().getLanguageCode();
+
         if (actions.containsKey(text)) {
             return processHandle(update, text, chatId);
         } else if (bindingBy.containsKey(chatId)) {

@@ -3,6 +3,7 @@ package org.voetsky.dispatcherBot.services.repo;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.User;
 import org.voetsky.dispatcherBot.UserState;
@@ -17,8 +18,8 @@ import org.voetsky.dispatcherBot.services.repo.tgUserService.TgUserRepo;
 import org.voetsky.dispatcherBot.services.repo.tgVoiceService.TgVoiceRepo;
 
 @Log4j
-@Component
 @AllArgsConstructor
+@Service
 public class RepoController {
 
     private final OrderClientRepo orderClientRepo;

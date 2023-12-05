@@ -7,7 +7,7 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 import org.voetsky.dispatcherBot.UserState;
-import org.voetsky.dispatcherBot.services.logic.commands.command.CommandInterface;
+import org.voetsky.dispatcherBot.services.logic.commands.command.Command;
 import org.voetsky.dispatcherBot.services.repo.RepoController;
 import org.voetsky.dispatcherBot.services.output.messageMakerService.MessageMakerService;
 
@@ -19,7 +19,7 @@ import static org.voetsky.dispatcherBot.services.logic.commands.command.Commands
 
 @Log4j
 @AllArgsConstructor
-public class ChoosingNameOrAnotherWayCommand implements CommandInterface {
+public class ChoosingNameOrAnotherWayCommand implements Command {
 
     private final String action = CHOOSING_NAME_OR_ANOTHER_WAY.toString();
     private final RepoController repoController;

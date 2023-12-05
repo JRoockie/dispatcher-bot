@@ -4,10 +4,7 @@ import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.voetsky.dispatcherBot.UserState;
 
-import java.util.HashMap;
-import java.util.Map;
-
-public interface CommandInterface {
+public interface Command {
     SendMessage handle(Update update);
 
     SendMessage callback(Update update);

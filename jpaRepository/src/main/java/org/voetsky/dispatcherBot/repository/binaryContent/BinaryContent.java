@@ -9,8 +9,8 @@ import javax.persistence.*;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity
 @Table(name = "binary_content")
+@Entity
 public class BinaryContent {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

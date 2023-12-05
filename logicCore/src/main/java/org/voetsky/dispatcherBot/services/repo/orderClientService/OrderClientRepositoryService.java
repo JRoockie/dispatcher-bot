@@ -3,6 +3,7 @@ package org.voetsky.dispatcherBot.services.repo.orderClientService;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import org.voetsky.dispatcherBot.repository.orderClient.OrderClient;
 import org.voetsky.dispatcherBot.repository.tgUser.TgUser;
 import org.voetsky.dispatcherBot.repository.orderClient.OrderClientRepository;
@@ -12,21 +13,25 @@ import java.util.stream.Collectors;
 
 @Log4j
 @AllArgsConstructor
-@Component
+@Service
 public class OrderClientRepositoryService implements OrderClientRepo {
 
     private final OrderClientRepository orderClientRepository;
 
     @Override
     public TgUser addOrder(TgUser tgUser) {
-        log.debug("BDS: adding new order");
+        if (log.isDebugEnabled()){
+            log.debug("Adding new order");
+        }
         //todo учесть вариант если заказ не завершен, и его нужно продолжить обрабатывать
 
         List<OrderClient> orderList = orderClientRepository.findOrderClientsByTgUser(tgUser);
         orderList = hasUnacceptedOrders(orderList);
 
         if (!orderList.isEmpty()) {
-            log.debug("BDS: This user have already unsuccessful order");
+            if (log.isDebugEnabled()) {
+                log.debug("This user have already unsuccessful order");
+            }
         } else {
             //todo написать логику создания нового ордера
             OrderClient orderClient = defaultOrder(tgUser);
@@ -39,7 +44,9 @@ public class OrderClientRepositoryService implements OrderClientRepo {
 
     @Override
     public OrderClient defaultOrder(TgUser tgUser) {
-        log.debug("BDS: init order");
+        if (log.isDebugEnabled()) {
+            log.debug("Init order");
+        }
 
         OrderClient orderClient = OrderClient.builder()
                 .tgUser(tgUser)

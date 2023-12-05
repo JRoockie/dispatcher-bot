@@ -1,25 +1,28 @@
 package org.voetsky.dispatcherBot.controller;
 
-import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.voetsky.dispatcherBot.service.output.updateProducer.UpdateProducer;
-import org.voetsky.dispatcherBot.utils.MessageUtils;
+import org.voetsky.dispatcherBot.service.messageutils.MakeMessage;
 
 import static org.voetsky.model.RabbitQueue.*;
 
 
 @Log4j
 @Component
-@AllArgsConstructor
 public class UpdateController {
 
     private TelegramBot telegramBot;
     private final UpdateProducer updateProducer;
-    private final MessageUtils messageUtils;
-    
+    private final MakeMessage makeMessage;
+
+    public UpdateController(UpdateProducer updateProducer, MakeMessage makeMessage) {
+        this.updateProducer = updateProducer;
+        this.makeMessage = makeMessage;
+    }
+
     public void registerBot(TelegramBot telegramBot) {
         this.telegramBot = telegramBot;
     }
@@ -54,13 +57,13 @@ public class UpdateController {
     }
 
     private void setUnsupportedMessageTypeView(Update update) {
-        var sendMessage = messageUtils.generateSendMessageWithText(update,
+        var sendMessage = makeMessage.generateSendMessageWithText(update,
                 "Неподдерживаемый тип сообщения!");
         setView(sendMessage);
     }
 
     private void setFileIsReceivedView(Update update) {
-        var sendMessage = messageUtils.generateSendMessageWithText(update,
+        var sendMessage = makeMessage.generateSendMessageWithText(update,
                 "Обработка...");
         setView(sendMessage);
     }
