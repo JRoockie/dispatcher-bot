@@ -29,4 +29,5 @@ public class LocalizationUnit implements Localization {
     public String get(String lang, String key) {
         return dic.get(lang).get(key);
     }
+
 }
