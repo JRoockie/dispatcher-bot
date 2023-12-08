@@ -11,4 +11,10 @@ public interface MessageMakerService {
     SendMessage makeSendMessage(Update update, String string);
 
     SendMessage makeSendMessage(Update update, String text, InlineKeyboardMarkup markup);
+
+    SendMessage createSendMessage(Update update, String text, InlineKeyboardMarkup markup);
+
+    String getLanguageFromTg(Update update);
+
+    String getTextFromProperties(Update update, String text);
 }

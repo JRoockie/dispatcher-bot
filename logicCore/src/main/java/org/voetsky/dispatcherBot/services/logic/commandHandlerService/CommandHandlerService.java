@@ -5,9 +5,9 @@ import lombok.extern.log4j.Log4j;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
+import org.voetsky.dispatcherBot.configuration.Initialization.Initialization;
 import org.voetsky.dispatcherBot.exceptions.ParentException.LogicCoreException;
 import org.voetsky.dispatcherBot.services.logic.commands.command.Command;
-import org.voetsky.dispatcherBot.services.logic.Init.Initialization.Initialization;
 import org.voetsky.dispatcherBot.services.output.messageMakerService.MessageMakerService;
 
 import javax.annotation.PostConstruct;
@@ -31,7 +31,7 @@ public class CommandHandlerService implements CommandHandler {
     }
 
     @PostConstruct
-    public void initCommands(){
+    public void initCommands() {
         actions = initialization.initCommands();
     }
 
@@ -42,17 +42,43 @@ public class CommandHandlerService implements CommandHandler {
         if (update.hasMessage() && update.getMessage().getText() != null) {
             return processCommand(update, text, chatId);
         } else if (update.hasCallbackQuery()) {
+            if (hasForceCallback(text)) {
+                return forceCallback(update, text);
+            }
             return processButton(update, text, chatId);
         } else if (update.getMessage().hasAudio()) {
             return processCallBack(update, chatId);
         } else if (update.getMessage().hasVoice()) {
             return processCallBack(update, chatId);
         }
-        throw new LogicCoreException("Непредвиденная ошибка");
+        throw new LogicCoreException();
+    }
+
+    private boolean hasForceCallback(String text) {
+        if (text.startsWith("*")) {
+            if (log.isDebugEnabled()) {
+                log.debug("FORCE CALLBACK: true");
+            }
+            return true;
+        }
+        return false;
+    }
+
+    private SendMessage forceCallback(Update update, String text) {
+        text = text.replace("*", "");
+        if (log.isDebugEnabled()) {
+            log.debug(String.format("FORCE CALLBACK command part: %s",
+                    actions.get(text)));
+        }
+        try {
+            var msg = actions.get(text).callback(update);
+            return processChain(msg, update);
+        } catch (NullPointerException e) {
+            throw new LogicCoreException("Команды не существует");
+        }
     }
 
     public SendMessage processCommand(Update update, String text, String chatId) {
-        String s = update.getMessage().getFrom().getLanguageCode();
 
         if (actions.containsKey(text)) {
             return processHandle(update, text, chatId);
@@ -67,9 +93,13 @@ public class CommandHandlerService implements CommandHandler {
             log.debug(String.format("NON-CALLBACK command part: %s",
                     actions.get(text)));
         }
-        var msg = actions.get(text).handle(update);
-        bindingBy.put(chatId, text);
-        return processChain(msg, update);
+        try {
+            var msg = actions.get(text).handle(update);
+            bindingBy.put(chatId, text);
+            return processChain(msg, update);
+        } catch (NullPointerException e) {
+            throw new LogicCoreException("Команды не существует");
+        }
     }
 
     public SendMessage processCallBack(Update update, String chatId) {

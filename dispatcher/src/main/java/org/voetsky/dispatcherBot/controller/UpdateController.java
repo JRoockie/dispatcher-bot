@@ -4,8 +4,8 @@ import lombok.extern.log4j.Log4j;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
-import org.voetsky.dispatcherBot.service.output.updateProducer.UpdateProducer;
 import org.voetsky.dispatcherBot.service.messageutils.MakeMessage;
+import org.voetsky.dispatcherBot.service.output.updateProducer.UpdateProducer;
 
 import static org.voetsky.model.RabbitQueue.*;
 
@@ -30,41 +30,42 @@ public class UpdateController {
     public void processUpdate(Update update) {
         if (update.getMessage() != null) {
             distributeMessagesByType(update);
-        } else if (update.hasCallbackQuery()){
+        } else if (update.hasCallbackQuery()) {
             distributeMessagesByType(update);
-        }else {
-            if (log.isDebugEnabled()){
-                log.error("Unsupported message type is received: " + update);
+        } else {
+            if (log.isDebugEnabled()) {
+                log.error(String.format("Unsupported message type is received: %s", update));
             }
         }
 
     }
 
     private void distributeMessagesByType(Update update) {
-        var message =update.getMessage();
+        var message = update.getMessage();
 
-        if (update.hasCallbackQuery()) {
-            processButton(update);
-        } else if (message.hasAudio()) {
-            processAudioMessage(update);
-        } else if (message.hasVoice()) {
-            processVoiceMessage(update);
-        } else if (message.hasText()) {
-            processTextMessage(update);
-        } else {
-            setUnsupportedMessageTypeView(update);
-        }
+            if (update.hasCallbackQuery()) {
+                processButton(update);
+            } else if (message.hasAudio()) {
+                processAudioMessage(update);
+            } else if (message.hasVoice()) {
+                processVoiceMessage(update);
+            } else if (message.hasText()) {
+                processTextMessage(update);
+            } else {
+                setUnsupportedMessageTypeView(update);
+            }
+
     }
 
     private void setUnsupportedMessageTypeView(Update update) {
         var sendMessage = makeMessage.generateSendMessageWithText(update,
-                "Неподдерживаемый тип сообщения!");
+                "type.error");
         setView(sendMessage);
     }
 
     private void setFileIsReceivedView(Update update) {
         var sendMessage = makeMessage.generateSendMessageWithText(update,
-                "Обработка...");
+                "process");
         setView(sendMessage);
     }
 

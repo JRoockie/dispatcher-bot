@@ -5,6 +5,7 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import org.voetsky.dispatcherBot.UserState;
 
 public interface Command {
+
     SendMessage handle(Update update);
 
     SendMessage callback(Update update);

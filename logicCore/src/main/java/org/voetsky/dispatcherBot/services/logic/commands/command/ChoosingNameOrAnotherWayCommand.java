@@ -1,4 +1,4 @@
-package org.voetsky.dispatcherBot.services.logic.commands;
+package org.voetsky.dispatcherBot.services.logic.commands.command;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j;
@@ -7,10 +7,8 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 import org.voetsky.dispatcherBot.UserState;
-import org.voetsky.dispatcherBot.services.logic.commands.command.Command;
 import org.voetsky.dispatcherBot.services.repo.RepoController;
 import org.voetsky.dispatcherBot.services.output.messageMakerService.MessageMakerService;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,23 +26,26 @@ public class ChoosingNameOrAnotherWayCommand implements Command {
     @Override
     public SendMessage handle(Update update) {
         String username = repoController.getClientName(update);
-        String text = String.format("Чтобы мы могли максимально точно подобрать для вас"
-                + " фонограмму, вам необходимо ответить на следующие вопросы:"
-                + " \n\n🙋%s, Вы знаете исполнителя и название песни?", username);
+        String text = String.format(
+                messageMakerService.getTextFromProperties(
+                        update,"choosingNameOrAnotherWay.h.m") , username);
+        InlineKeyboardMarkup markupInline = getInlineKeyboardMarkup(update);
+        var msg = messageMakerService.makeSendMessage(update, text, markupInline);
         changeState(update, AWAITING_FOR_BUTTON);
-        InlineKeyboardMarkup markupInline = getInlineKeyboardMarkup();
-        return messageMakerService.makeSendMessage(update, text, markupInline);
+        return msg;
     }
 
-    private static InlineKeyboardMarkup getInlineKeyboardMarkup() {
+    private InlineKeyboardMarkup getInlineKeyboardMarkup(Update update) {
         InlineKeyboardMarkup markupInline = new InlineKeyboardMarkup();
         List<List<InlineKeyboardButton>> rowsInline = new ArrayList<>();
         List<InlineKeyboardButton> rowInline = new ArrayList<>();
         var inlineKeyboardButton1 = new InlineKeyboardButton();
         var inlineKeyboardButton2 = new InlineKeyboardButton();
-        inlineKeyboardButton1.setText("Да");
+        inlineKeyboardButton1.setText(
+                messageMakerService.getTextFromProperties(update, "yes.m"));
         inlineKeyboardButton1.setCallbackData(SONG_ADD_AND_ADD_SONG_NAME_COMMAND.toString());
-        inlineKeyboardButton2.setText("Нет");
+        inlineKeyboardButton2.setText(
+                messageMakerService.getTextFromProperties(update, "no.m"));
         inlineKeyboardButton2.setCallbackData(START_COMMAND.toString());
         rowInline.add(inlineKeyboardButton1);
         rowInline.add(inlineKeyboardButton2);

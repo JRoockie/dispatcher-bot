@@ -1,14 +1,21 @@
 package org.voetsky.dispatcherBot.services.output.messageMakerService;
 
+import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
+import org.voetsky.dispatcherBot.configuration.LogicCoreLocalization.LogicCoreLocalization;
 
 @Log4j
+@AllArgsConstructor
 @Service
 public class MessageMakerServiceImpl implements MessageMakerService {
+    //todo Дореализовать локализацию как в диспатчере сделал
+    // не торопиться, учитывать что клавиатуру и кнопки тоже переводить надо
+    // а так же итоговы чек тоже парсить придется
+    private final LogicCoreLocalization localization;
 
     @Override
     public Long getIdFromUpdate(Update update) {
@@ -29,15 +36,31 @@ public class MessageMakerServiceImpl implements MessageMakerService {
             return createSendMessage(update, text, markup);
     }
 
-    private SendMessage createSendMessage(Update update, String text, InlineKeyboardMarkup markup) {
+    public SendMessage createSendMessage(Update update, String text, InlineKeyboardMarkup markup) {
         SendMessage sendMessage = new SendMessage();
         sendMessage.enableMarkdown(true);
         sendMessage.setChatId(getIdFromUpdate(update));
-        sendMessage.setText(text);
+        sendMessage.setText(getTextFromProperties(update, text));
         if (markup != null) {
             sendMessage.setReplyMarkup(markup);
         }
         return sendMessage;
+    }
+
+    public String getLanguageFromTg(Update update){
+        if (update.hasCallbackQuery()) {
+            return update.getCallbackQuery().getFrom().getLanguageCode();
+        } else {
+            return update.getMessage().getFrom().getLanguageCode();
+        }
+    }
+
+    public String getTextFromProperties(Update update, String text) {
+        String lang = getLanguageFromTg(update);
+        if (localization.get(lang, text) != null){
+            return localization.get(lang, text);
+        }
+        return text;
     }
 
 }
