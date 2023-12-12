@@ -38,20 +38,24 @@ public class CommandHandlerService implements CommandHandler {
     public SendMessage updateReceived(Update update) {
         var text = getMessageText(update);
         var chatId = getChatId(update);
-
-        if (update.hasMessage() && update.getMessage().getText() != null) {
-            return processCommand(update, text, chatId);
-        } else if (update.hasCallbackQuery()) {
-            if (hasForceCallback(text)) {
-                return forceCallback(update, text);
+        try {
+            if (update.hasMessage() && update.getMessage().getText() != null) {
+                return processCommand(update, text, chatId);
+            } else if (update.hasCallbackQuery()) {
+                if (hasForceCallback(text)) {
+                    return forceCallback(update, text);
+                }
+                return processButton(update, text, chatId);
+            } else if (update.getMessage().hasAudio()) {
+                return processCallBack(update, chatId);
+            } else if (update.getMessage().hasVoice()) {
+                return processCallBack(update, chatId);
             }
-            return processButton(update, text, chatId);
-        } else if (update.getMessage().hasAudio()) {
-            return processCallBack(update, chatId);
-        } else if (update.getMessage().hasVoice()) {
-            return processCallBack(update, chatId);
+        } catch (NullPointerException e) {
+            messageMakerService.makeSendMessage(update, "fatal.err");
         }
-        throw new LogicCoreException();
+        throw new LogicCoreException(
+                messageMakerService.getTextFromProperties(update, "fatal.err"));
     }
 
     private boolean hasForceCallback(String text) {

@@ -2,7 +2,6 @@ package org.voetsky.dispatcherBot.services.repo.tgUserService;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.User;
@@ -10,10 +9,9 @@ import org.voetsky.dispatcherBot.UserState;
 import org.voetsky.dispatcherBot.repository.orderClient.OrderClient;
 import org.voetsky.dispatcherBot.repository.tgUser.TgUser;
 import org.voetsky.dispatcherBot.repository.tgUser.TgUserRepository;
+import org.voetsky.dispatcherBot.services.repoServices.comparingEntityService.ComparingEntityServiceImpl;
 
 import static org.voetsky.dispatcherBot.UserState.AWAITING_FOR_COMMAND;
-
-
 
 @Log4j
 @AllArgsConstructor
@@ -21,6 +19,7 @@ import static org.voetsky.dispatcherBot.UserState.AWAITING_FOR_COMMAND;
 public class TgUserRepositoryService implements TgUserRepo {
 
     private final TgUserRepository tgUserRepository;
+    private final ComparingEntityServiceImpl comparingEntityService;
 
     public TgUser findOrSaveAppUser(User telegramUser) {
         //todo раскомментить после тестов

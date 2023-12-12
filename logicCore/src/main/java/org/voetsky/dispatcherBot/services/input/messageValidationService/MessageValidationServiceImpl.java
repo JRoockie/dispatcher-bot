@@ -63,7 +63,9 @@ public class MessageValidationServiceImpl implements MessageValidationService {
             if (update.getMessage().getText() != null) {
                 var text = update.getMessage().getText();
                 var chatId = update.getMessage().getChatId().toString();
-
+                if (text.equals("/start")){
+                    return true;
+                }
                 if (commandHandlerService.getActions().containsKey(text)) {
                     return AWAITING_FOR_COMMAND == state;
                 } else if (commandHandlerService.getBindingBy().containsKey(chatId)) {

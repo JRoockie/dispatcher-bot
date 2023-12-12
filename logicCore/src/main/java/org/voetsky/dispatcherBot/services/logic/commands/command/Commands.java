@@ -22,9 +22,7 @@ public enum Commands {
     SHOW_PRICE("/showPrice"),
     ADD_NUMBER("/addNumber"),
     ADD_COMMENT("/addComment"),
-    FINISH("/finish")
-
-
+    FINISH("/finish"),
 
     ;
 

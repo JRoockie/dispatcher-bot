@@ -42,19 +42,36 @@ public class UpdateController {
 
     private void distributeMessagesByType(Update update) {
         var message = update.getMessage();
+        loggingUpdate(update);
+        if (update.hasCallbackQuery()) {
+            processButton(update);
+        } else if (message.hasAudio()) {
+            processAudioMessage(update);
+        } else if (message.hasVoice()) {
+            processVoiceMessage(update);
+        } else if (message.hasText()) {
+            processTextMessage(update);
+        } else {
+            setUnsupportedMessageTypeView(update);
+        }
 
+    }
+
+    private void loggingUpdate(Update update) {
+        if (log.isDebugEnabled()) {
+        var message = update.getMessage();
             if (update.hasCallbackQuery()) {
-                processButton(update);
+                log.debug(String.format("Button input %s", update.getCallbackQuery().getData()));
             } else if (message.hasAudio()) {
-                processAudioMessage(update);
+                log.debug(String.format("Mp3 input %s", update.getMessage().getAudio().getFileId()));
             } else if (message.hasVoice()) {
-                processVoiceMessage(update);
+                log.debug(String.format("Voice input %s", update.getMessage().getVoice().getFileId()));
             } else if (message.hasText()) {
-                processTextMessage(update);
+                log.debug(String.format("Text input %s", update.getMessage().getText()));
             } else {
-                setUnsupportedMessageTypeView(update);
+                log.debug(String.format("Text input %s", update.getUpdateId()));
             }
-
+        }
     }
 
     private void setUnsupportedMessageTypeView(Update update) {

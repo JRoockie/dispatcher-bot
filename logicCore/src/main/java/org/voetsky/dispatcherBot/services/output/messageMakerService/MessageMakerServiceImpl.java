@@ -12,9 +12,7 @@ import org.voetsky.dispatcherBot.configuration.LogicCoreLocalization.LogicCoreLo
 @AllArgsConstructor
 @Service
 public class MessageMakerServiceImpl implements MessageMakerService {
-    //todo Дореализовать локализацию как в диспатчере сделал
-    // не торопиться, учитывать что клавиатуру и кнопки тоже переводить надо
-    // а так же итоговы чек тоже парсить придется
+    //todo итоговы чек тоже парсить придется
     private final LogicCoreLocalization localization;
 
     @Override
