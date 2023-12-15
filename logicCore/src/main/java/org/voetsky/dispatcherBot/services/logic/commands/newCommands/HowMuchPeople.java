@@ -5,13 +5,16 @@ import lombok.extern.log4j.Log4j;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.voetsky.dispatcherBot.UserState;
+import org.voetsky.dispatcherBot.exceptions.IncorrectInputException;
+import org.voetsky.dispatcherBot.repository.song.Song;
 import org.voetsky.dispatcherBot.services.logic.commands.command.Command;
 import org.voetsky.dispatcherBot.services.output.messageMakerService.MessageMakerService;
 import org.voetsky.dispatcherBot.services.repo.RepoController;
 
 import static org.voetsky.dispatcherBot.UserState.AWAITING_FOR_BUTTON;
 import static org.voetsky.dispatcherBot.UserState.AWAITING_FOR_TEXT;
-import static org.voetsky.dispatcherBot.services.logic.commands.command.Commands.*;
+import static org.voetsky.dispatcherBot.services.logic.commands.command.Commands.HOW_MUCH_PEOPLE;
+import static org.voetsky.dispatcherBot.services.logic.commands.command.Commands.WHO_WILL_SING;
 
 @Log4j
 @AllArgsConstructor
@@ -24,6 +27,7 @@ public class HowMuchPeople implements Command {
     public SendMessage handle(Update update) {
         String text = messageMakerService.getTextFromProperties(
                 update, "howMuchPeople.h.m");
+
         var msg = messageMakerService.makeSendMessage(update, text);
         changeState(update, AWAITING_FOR_TEXT);
         return msg;
@@ -32,6 +36,15 @@ public class HowMuchPeople implements Command {
     @Override
     public SendMessage callback(Update update) {
         var msg = messageMakerService.makeSendMessage(update, WHO_WILL_SING.toString());
+        try {
+            Integer count = Integer.parseInt(update.getMessage().getText());
+            Song newSong = Song.builder()
+                    .singerCount(count)
+                    .build();
+            repoController.updateSong(update, newSong);
+        } catch (NumberFormatException e) {
+            throw new IncorrectInputException("Некорректный ввод");
+        }
         changeState(update, AWAITING_FOR_BUTTON);
         return msg;
     }

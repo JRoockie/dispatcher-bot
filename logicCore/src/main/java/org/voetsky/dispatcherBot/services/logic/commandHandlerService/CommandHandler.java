@@ -23,6 +23,4 @@ public interface CommandHandler {
 
     String getMessageText(Update update);
 
-    SendMessage forceEvokePreviousCommand(Update update);
-
 }

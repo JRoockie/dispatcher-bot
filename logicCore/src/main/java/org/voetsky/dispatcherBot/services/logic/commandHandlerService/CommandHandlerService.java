@@ -4,6 +4,8 @@ import lombok.Getter;
 import lombok.extern.log4j.Log4j;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
+import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.voetsky.dispatcherBot.configuration.Initialization.Initialization;
 import org.voetsky.dispatcherBot.exceptions.ParentException.LogicCoreException;
@@ -42,7 +44,7 @@ public class CommandHandlerService implements CommandHandler {
             if (update.hasMessage() && update.getMessage().getText() != null) {
                 return processCommand(update, text, chatId);
             } else if (update.hasCallbackQuery()) {
-                if (hasForceCallback(text)) {
+                if (hasForceCallback(text, update)) {
                     return forceCallback(update, text);
                 }
                 return processButton(update, text, chatId);
@@ -58,12 +60,20 @@ public class CommandHandlerService implements CommandHandler {
                 messageMakerService.getTextFromProperties(update, "fatal.err"));
     }
 
-    private boolean hasForceCallback(String text) {
+    private boolean hasForceCallback(String text, Update update) {
         if (text.startsWith("*")) {
             if (log.isDebugEnabled()) {
                 log.debug("FORCE CALLBACK: true");
             }
             return true;
+        } else if (update.hasCallbackQuery()) {
+            String s = update.getCallbackQuery().getData();
+            if (s.startsWith("*")) {
+                if (log.isDebugEnabled()) {
+                    log.debug("FORCE CALLBACK: true");
+                }
+                return true;
+            }
         }
         return false;
     }
@@ -93,6 +103,7 @@ public class CommandHandlerService implements CommandHandler {
     }
 
     public SendMessage processHandle(Update update, String text, String chatId) {
+
         if (log.isDebugEnabled()) {
             log.debug(String.format("NON-CALLBACK command part: %s",
                     actions.get(text)));
@@ -111,7 +122,9 @@ public class CommandHandlerService implements CommandHandler {
             log.debug(String.format("Executing CALLBACK command part: %s",
                     bindingBy.get(chatId)));
         }
-        var msg = actions.get(bindingBy.get(chatId)).callback(update);
+        var command = bindingBy.get(chatId);
+        var msg = actions.get(command).callback(update);
+//        var msg = actions.get(bindingBy.get(chatId)).callback(update);
         return processChain(msg, update);
     }
 
@@ -121,6 +134,9 @@ public class CommandHandlerService implements CommandHandler {
             log.debug(String.format("Button has pressed by: %s with attribute: %s",
                     chatId, text));
         }
+        if (actions.get(text) == null) {
+            return processCallBack(update, chatId);
+        }
         return processHandle(update, text, chatId);
     }
 
@@ -129,8 +145,25 @@ public class CommandHandlerService implements CommandHandler {
     }
 
     public SendMessage processChain(SendMessage s, Update update) {
+        String text = s.getText();
         if (hasChain(s)) {
-            update.getMessage().setText(s.getText());
+            //todo не работает здесь в 2 команде
+            if (update.hasMessage()){
+                update.getMessage().setText(text);
+                update.setCallbackQuery(null);
+            } else if (update.hasCallbackQuery()) {
+                Message message = new Message();
+                message.setText(text);
+                message.setChat(update.getCallbackQuery().getMessage().getChat());
+                message.setFrom(update.getCallbackQuery().getFrom());
+//                CallbackQuery callbackQuery = new CallbackQuery();
+//                callbackQuery.setData(text);
+//                callbackQuery.setFrom(update.getCallbackQuery().getFrom());
+//                callbackQuery.setMessage(message);
+                update.setMessage(message);
+//                update.setCallbackQuery(callbackQuery);
+                update.setCallbackQuery(null);
+            }
             return updateReceived(update);
         }
         return s;
@@ -150,12 +183,4 @@ public class CommandHandlerService implements CommandHandler {
         return update.getMessage().getText();
     }
 
-    //todo после того как вылетело исключение
-    // в течение работы с бд, вызвать этот
-    // метод чтобы предыдущую команду запустить заново
-
-    public SendMessage forceEvokePreviousCommand(Update update) {
-        String chatId = getChatId(update);
-        return actions.get(bindingBy.get(chatId)).handle(update);
-    }
 }

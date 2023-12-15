@@ -2,10 +2,14 @@ package org.voetsky.dispatcherBot.services.repo.songService;
 
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
+import org.telegram.telegrambots.meta.api.objects.Update;
+import org.voetsky.dispatcherBot.WhoWillSing;
 import org.voetsky.dispatcherBot.repository.orderClient.OrderClient;
 import org.voetsky.dispatcherBot.repository.song.Song;
 import org.voetsky.dispatcherBot.repository.song.SongRepository;
 import org.voetsky.dispatcherBot.repository.tgUser.TgUserRepository;
+
+import java.util.List;
 
 @Service
 public class SongRepositoryService implements SongRepo {
@@ -29,6 +33,11 @@ public class SongRepositoryService implements SongRepo {
                 .orderClient(orderClient)
                 .isFilled(false)
                 .build();
+    }
+
+    @Override
+    public List<Song> findSongsByOrderClient(OrderClient orderClient) {
+        return songRepository.findSongsByOrderClient(orderClient);
     }
 
 }

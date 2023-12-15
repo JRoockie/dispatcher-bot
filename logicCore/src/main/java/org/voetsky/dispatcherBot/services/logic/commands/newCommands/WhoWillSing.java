@@ -7,6 +7,7 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 import org.voetsky.dispatcherBot.UserState;
+import org.voetsky.dispatcherBot.repository.song.Song;
 import org.voetsky.dispatcherBot.services.logic.commands.command.Command;
 import org.voetsky.dispatcherBot.services.output.messageMakerService.MessageMakerService;
 import org.voetsky.dispatcherBot.services.repo.RepoController;
@@ -14,9 +15,10 @@ import org.voetsky.dispatcherBot.services.repo.RepoController;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.voetsky.dispatcherBot.UserState.AWAITING_FOR_BUTTON;
-import static org.voetsky.dispatcherBot.UserState.AWAITING_FOR_VOICE;
-import static org.voetsky.dispatcherBot.services.logic.commands.command.Commands.*;
+import static org.voetsky.dispatcherBot.UserState.*;
+import static org.voetsky.dispatcherBot.WhoWillSing.*;
+import static org.voetsky.dispatcherBot.services.logic.commands.command.Commands.VOICE_ADD_COMMAND;
+import static org.voetsky.dispatcherBot.services.logic.commands.command.Commands.WHO_WILL_SING;
 
 @Log4j
 @AllArgsConstructor
@@ -37,9 +39,28 @@ public class WhoWillSing implements Command {
 
     @Override
     public SendMessage callback(Update update) {
-        String callbackMessage = update.getCallbackQuery().getMessage().getText();
-//       todo repoController.addWhoWillSong();
-        //if it will be child - ask everytime, if adult - only one
+        /// TODO: 14.12.2023 код не выполняется вообще, вынести эту часть в отдельную команду
+        String callbackMessage = update.getCallbackQuery().getData();
+        Song song = new Song();
+
+        if (callbackMessage.equals(messageMakerService
+                .getTextFromProperties(update, "whoWillSing.b1.m"))) {
+
+            song.setWhoWillSing(ADULT);
+            repoController.updateSong(update, song);
+
+        } else if (callbackMessage.equals(messageMakerService
+                .getTextFromProperties(update, "whoWillSing.b2.m"))) {
+
+            song.setWhoWillSing(ADULT_AND_CHILD);
+            repoController.updateSong(update, song);
+
+        } else if (callbackMessage.equals(messageMakerService
+                .getTextFromProperties(update, "whoWillSing.b3.m"))) {
+            song.setWhoWillSing(CHILD);
+            repoController.updateSong(update, song);
+        }
+
         var msg = messageMakerService.makeSendMessage(
                 update, VOICE_ADD_COMMAND.toString());
         changeState(update, AWAITING_FOR_VOICE);
@@ -55,17 +76,19 @@ public class WhoWillSing implements Command {
         var inlineKeyboardButton2 = new InlineKeyboardButton();
         var inlineKeyboardButton3 = new InlineKeyboardButton();
 
-        inlineKeyboardButton1.setText(messageMakerService.getTextFromProperties(
-                update, "whoWillSing.b1.m"));
-        inlineKeyboardButton1.setCallbackData(VOICE_ADD_COMMAND.toString());
+        String b1 = messageMakerService.getTextFromProperties(
+                update, "whoWillSing.b1.m");
+        String b2 = messageMakerService.getTextFromProperties(
+                update, "whoWillSing.b2.m");
+        String b3 = messageMakerService.getTextFromProperties(
+                update, "whoWillSing.b3.m");
 
-        inlineKeyboardButton2.setText(messageMakerService.getTextFromProperties(
-                update, "whoWillSing.b2.m"));
-        inlineKeyboardButton2.setCallbackData(VOICE_ADD_COMMAND.toString());
-
-        inlineKeyboardButton3.setText(messageMakerService.getTextFromProperties(
-                update, "whoWillSing.b3.m"));
-        inlineKeyboardButton3.setCallbackData(VOICE_ADD_COMMAND.toString());
+        inlineKeyboardButton1.setText(b1);
+        inlineKeyboardButton1.setCallbackData(b1);
+        inlineKeyboardButton2.setText(b2);
+        inlineKeyboardButton2.setCallbackData(b2);
+        inlineKeyboardButton3.setText(b3);
+        inlineKeyboardButton3.setCallbackData(b3);
 
         rowInline.add(inlineKeyboardButton1);
         rowInline.add(inlineKeyboardButton2);

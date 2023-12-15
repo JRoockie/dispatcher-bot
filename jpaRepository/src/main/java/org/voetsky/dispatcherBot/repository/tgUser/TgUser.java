@@ -19,6 +19,7 @@ import java.util.List;
 @Table(name = "tg_users")
 @Entity
 public class TgUser {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

@@ -1,46 +1,75 @@
 package org.voetsky.dispatcherBot.services.repoServices.comparingEntityService;
 
 import org.springframework.stereotype.Service;
+import org.voetsky.dispatcherBot.repository.orderClient.OrderClient;
 import org.voetsky.dispatcherBot.repository.song.Song;
 import org.voetsky.dispatcherBot.repository.tgUser.TgUser;
 
 @Service
 public class ComparingEntityServiceImpl implements ComparingEntityService {
 
-    public Song songUpdate(Song newSong, Song updatableSong) {
+    public OrderClient orderClientUpdate(
+            OrderClient newOrder, OrderClient updatable) {
 
-        if (newSong.getSongName() != null) {
-            updatableSong.setSongName(newSong.getSongName());
+        if (newOrder.getComment() != null) {
+            updatable.setComment(newOrder.getComment());
         }
-        if (newSong.getLink() != null) {
-            updatableSong.setLink(newSong.getLink());
+        if (newOrder.getPrice() != null) {
+            updatable.setPrice(newOrder.getPrice());
         }
-        if (newSong.getSingerCount() != null) {
-            updatableSong.setSingerCount(newSong.getSingerCount());
+        if (newOrder.isAccepted()) {
+            updatable.setAccepted(true);
         }
-        if (newSong.getTgVoices() != null) {
-            updatableSong.setTgVoices(newSong.getTgVoices());
+        if (newOrder.getPhoneNumber() != null) {
+            updatable.setPhoneNumber(newOrder.getPhoneNumber());
         }
-        if (newSong.getTgAudios() != null) {
-            updatableSong.setTgAudios(newSong.getTgAudios());
-        }
-        return updatableSong;
+        return updatable;
     }
 
-    public TgUser tgUserUpdate(TgUser newUser, TgUser updatableUser) {
-        if (newUser.getNameAsClient() != null){
-            updatableUser.setNameAsClient(newUser.getNameAsClient());
+
+    public Song songUpdate(Song newSong, Song updatable) {
+
+        if (newSong.getTgAudios() != null) {
+            updatable.setTgAudios(newSong.getTgAudios());
+        }
+        if (newSong.getTgVoices() != null) {
+            updatable.setTgVoices(newSong.getTgVoices());
+        }
+        if (newSong.getSongName() != null) {
+            updatable.setSongName(newSong.getSongName());
+        }
+        if (newSong.getLink() != null) {
+            updatable.setLink(newSong.getLink());
+        }
+        if (newSong.getSingerCount() != null) {
+            updatable.setSingerCount(newSong.getSingerCount());
+        }
+        if (newSong.isFilled()) {
+            updatable.setFilled(true);
+        }
+        if (newSong.getWhoWillSing()!= null){
+            updatable.setWhoWillSing(newSong.getWhoWillSing());
+        }
+        return updatable;
+    }
+
+    public TgUser tgUserUpdate(TgUser newUser, TgUser updatable) {
+        if (newUser.getOrderList() != null) {
+            updatable.setOrderList(newUser.getOrderList());
+        }
+        if (newUser.getNameAsClient() != null) {
+            updatable.setNameAsClient(newUser.getNameAsClient());
         }
         if (newUser.getCurrentOrderId() != null) {
-            updatableUser.setCurrentOrderId(newUser.getCurrentOrderId());
+            updatable.setCurrentOrderId(newUser.getCurrentOrderId());
         }
         if (newUser.getCurrentSongId() != null) {
-            updatableUser.setCurrentSongId(newUser.getCurrentSongId());
+            updatable.setCurrentSongId(newUser.getCurrentSongId());
         }
         if (newUser.getUserState() != null) {
-            updatableUser.setUserState(newUser.getUserState());
+            updatable.setUserState(newUser.getUserState());
         }
-        return updatableUser;
+        return updatable;
     }
 
 

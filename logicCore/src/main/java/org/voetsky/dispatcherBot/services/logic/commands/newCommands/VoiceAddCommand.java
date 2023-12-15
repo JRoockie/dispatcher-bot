@@ -27,9 +27,11 @@ public class VoiceAddCommand implements Command {
 
     @Override
     public SendMessage handle(Update update) {
+        //if it will be child - ask everytime, if adult - only one
+        String s = update.getMessage().getText();
         String text = messageMakerService.getTextFromProperties(
                 update, "voiceAddCommand.h.m");
-        changeState(update, AWAITING_FOR_VOICE);
+//        changeState(update, AWAITING_FOR_VOICE);
         return messageMakerService.makeSendMessage(update, text);
     }
 

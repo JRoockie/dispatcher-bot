@@ -5,6 +5,7 @@ import lombok.extern.log4j.Log4j;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.voetsky.dispatcherBot.UserState;
+import org.voetsky.dispatcherBot.repository.song.Song;
 import org.voetsky.dispatcherBot.services.logic.commands.command.Command;
 import org.voetsky.dispatcherBot.services.output.messageMakerService.MessageMakerService;
 import org.voetsky.dispatcherBot.services.repo.RepoController;
@@ -32,7 +33,13 @@ public class AddLink implements Command {
 
     @Override
     public SendMessage callback(Update update) {
-        //todo добавить здесь добавление ссылки в бд
+
+        String link= update.getMessage().getText();
+        Song newSong = Song.builder()
+                .link(link)
+                .build();
+        repoController.updateSong(update, newSong);
+
         var msg = messageMakerService.makeSendMessage(update, HOW_MUCH_PEOPLE.toString());
         changeState(update, AWAITING_FOR_BUTTON);
         return msg;

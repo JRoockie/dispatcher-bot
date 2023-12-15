@@ -5,6 +5,7 @@ import lombok.extern.log4j.Log4j;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.voetsky.dispatcherBot.UserState;
+import org.voetsky.dispatcherBot.repository.orderClient.OrderClient;
 import org.voetsky.dispatcherBot.services.logic.commands.command.Command;
 import org.voetsky.dispatcherBot.services.output.messageMakerService.MessageMakerService;
 import org.voetsky.dispatcherBot.services.repo.RepoController;
@@ -30,7 +31,13 @@ public class AddComment implements Command {
 
     @Override
     public SendMessage callback(Update update) {
+        String comment = update.getMessage().getText();
         //addingComment
+        OrderClient orderClient = OrderClient.builder()
+                .comment(comment)
+                .build();
+        repoController.updateOrder(update, orderClient);
+
         var msg = messageMakerService.makeSendMessage(update, FINISH.toString());
         changeState(update, AWAITING_FOR_TEXT);
         return msg;
