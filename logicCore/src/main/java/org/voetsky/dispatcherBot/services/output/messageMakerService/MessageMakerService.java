@@ -1,20 +1,63 @@
 package org.voetsky.dispatcherBot.services.output.messageMakerService;
 
+import lombok.AllArgsConstructor;
+import lombok.extern.log4j.Log4j;
+import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
+import org.voetsky.dispatcherBot.configuration.LogicCoreLocalization.LogicCoreLocalization;
 
-public interface MessageMakerService {
+@Log4j
+@AllArgsConstructor
+@Service
+public class MessageMakerService implements MessageMaker {
+    private final LogicCoreLocalization localization;
 
-    Long getIdFromUpdate(Update update);
+    @Override
+    public Long getIdFromUpdate(Update update) {
+        if (update.hasCallbackQuery()) {
+            return update.getCallbackQuery().getFrom().getId();
+        } else {
+            return update.getMessage().getChatId();
+        }
+    }
 
-    SendMessage makeSendMessage(Update update, String string);
+    @Override
+    public SendMessage makeSendMessage(Update update, String text) {
+            return createSendMessage(update, text, null);
+    }
 
-    SendMessage makeSendMessage(Update update, String text, InlineKeyboardMarkup markup);
+    @Override
+    public SendMessage makeSendMessage(Update update, String text, InlineKeyboardMarkup markup) {
+            return createSendMessage(update, text, markup);
+    }
 
-    SendMessage createSendMessage(Update update, String text, InlineKeyboardMarkup markup);
+    public SendMessage createSendMessage(Update update, String text, InlineKeyboardMarkup markup) {
+        SendMessage sendMessage = new SendMessage();
+        sendMessage.enableMarkdown(true);
+        sendMessage.setChatId(getIdFromUpdate(update));
+        sendMessage.setText(getTextFromProperties(update, text));
+        if (markup != null) {
+            sendMessage.setReplyMarkup(markup);
+        }
+        return sendMessage;
+    }
 
-    String getLanguageFromTg(Update update);
+    public String getLanguageFromTg(Update update){
+        if (update.hasCallbackQuery()) {
+            return update.getCallbackQuery().getFrom().getLanguageCode();
+        } else {
+            return update.getMessage().getFrom().getLanguageCode();
+        }
+    }
 
-    String getTextFromProperties(Update update, String text);
+    public String getTextFromProperties(Update update, String text) {
+        String lang = getLanguageFromTg(update);
+        if (localization.get(lang, text) != null){
+            return localization.get(lang, text);
+        }
+        return text;
+    }
+
 }

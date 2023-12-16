@@ -12,7 +12,7 @@ import org.voetsky.dispatcherBot.services.logic.commands.command.Command;
 import org.voetsky.dispatcherBot.services.logic.commands.commandFunctions.Chain;
 import org.voetsky.dispatcherBot.services.logic.commands.commandFunctions.EditSong;
 import org.voetsky.dispatcherBot.services.logic.commands.commandFunctions.InlineKeyboard;
-import org.voetsky.dispatcherBot.services.output.messageMakerService.MessageMakerService;
+import org.voetsky.dispatcherBot.services.output.messageMakerService.MessageMaker;
 import org.voetsky.dispatcherBot.services.repoServices.mainRepoService.MainService;
 
 import java.util.ArrayList;
@@ -27,14 +27,14 @@ import static org.voetsky.dispatcherBot.services.logic.commands.command.Commands
 @AllArgsConstructor
 public class WhoWillSing implements Command, Chain, EditSong, InlineKeyboard {
     private final MainService mainRepoService;
-    private final MessageMakerService messageMakerService;
+    private final MessageMaker messageMaker;
 
     @Override
     public SendMessage handle(Update update) {
-        String text = messageMakerService.getTextFromProperties(
+        String text = messageMaker.getTextFromProperties(
                 update, "whoWillSing.h.m");
         InlineKeyboardMarkup markupInline = getInlineKeyboardMarkup(update);
-        var msg = messageMakerService.makeSendMessage(update, text, markupInline);
+        var msg = messageMaker.makeSendMessage(update, text, markupInline);
         changeState(update, AWAITING_FOR_BUTTON);
         return msg;
     }
@@ -56,11 +56,11 @@ public class WhoWillSing implements Command, Chain, EditSong, InlineKeyboard {
         var inlineKeyboardButton2 = new InlineKeyboardButton();
         var inlineKeyboardButton3 = new InlineKeyboardButton();
 
-        String b1 = messageMakerService.getTextFromProperties(
+        String b1 = messageMaker.getTextFromProperties(
                 update, "whoWillSing.b1.m");
-        String b2 = messageMakerService.getTextFromProperties(
+        String b2 = messageMaker.getTextFromProperties(
                 update, "whoWillSing.b2.m");
-        String b3 = messageMakerService.getTextFromProperties(
+        String b3 = messageMaker.getTextFromProperties(
                 update, "whoWillSing.b3.m");
 
         inlineKeyboardButton1.setText(b1);
@@ -88,7 +88,7 @@ public class WhoWillSing implements Command, Chain, EditSong, InlineKeyboard {
 
     @Override
     public SendMessage putNextCommand(Update update, String command) {
-        return messageMakerService.makeSendMessage(update, command);
+        return messageMaker.makeSendMessage(update, command);
     }
 
     @Override
@@ -96,11 +96,11 @@ public class WhoWillSing implements Command, Chain, EditSong, InlineKeyboard {
         String callbackMessage = update.getCallbackQuery().getData();
         Song song = createDefaultSong();
 
-        if (callbackMessage.equals(messageMakerService
+        if (callbackMessage.equals(messageMaker
                 .getTextFromProperties(update, "whoWillSing.b2.m"))) {
             song.setWhoWillSing(ADULT_AND_CHILD);
 
-        } else if (callbackMessage.equals(messageMakerService
+        } else if (callbackMessage.equals(messageMaker
                 .getTextFromProperties(update, "whoWillSing.b3.m"))) {
             song.setWhoWillSing(CHILD);
         }

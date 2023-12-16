@@ -9,7 +9,7 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKe
 import org.voetsky.dispatcherBot.UserState;
 import org.voetsky.dispatcherBot.services.logic.commands.command.Command;
 import org.voetsky.dispatcherBot.services.logic.commands.commandFunctions.InlineKeyboard;
-import org.voetsky.dispatcherBot.services.output.messageMakerService.MessageMakerService;
+import org.voetsky.dispatcherBot.services.output.messageMakerService.MessageMaker;
 import org.voetsky.dispatcherBot.services.repoServices.mainRepoService.MainService;
 
 import java.util.ArrayList;
@@ -22,14 +22,14 @@ import static org.voetsky.dispatcherBot.services.logic.commands.command.Commands
 @AllArgsConstructor
 public class Start implements Command, InlineKeyboard {
     private final MainService mainRepoService;
-    private final MessageMakerService messageMakerService;
+    private final MessageMaker messageMaker;
 
     @Override
     public SendMessage handle(Update update) {
-        String text = messageMakerService.getTextFromProperties(
+        String text = messageMaker.getTextFromProperties(
                 update, "startCommand.h.m");
         InlineKeyboardMarkup markupInline = getInlineKeyboardMarkup(update);
-        var msg = messageMakerService.makeSendMessage(update, text, markupInline);
+        var msg = messageMaker.makeSendMessage(update, text, markupInline);
         changeState(update, AWAITING_FOR_BUTTON);
         return msg;
     }
@@ -46,7 +46,7 @@ public class Start implements Command, InlineKeyboard {
         List<InlineKeyboardButton> rowInline = new ArrayList<>();
         var inlineKeyboardButton = new InlineKeyboardButton();
         inlineKeyboardButton.setCallbackData(CLIENT_NAME.toString());
-        inlineKeyboardButton.setText(messageMakerService.getTextFromProperties(
+        inlineKeyboardButton.setText(messageMaker.getTextFromProperties(
                 update, "startCommand.b1.m"));
         rowInline.add(inlineKeyboardButton);
         rowsInline.add(rowInline);

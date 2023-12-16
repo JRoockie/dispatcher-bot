@@ -10,7 +10,7 @@ import org.voetsky.dispatcherBot.repository.orderClient.OrderClient;
 import org.voetsky.dispatcherBot.services.logic.commands.command.Command;
 import org.voetsky.dispatcherBot.services.logic.commands.commandFunctions.Chain;
 import org.voetsky.dispatcherBot.services.logic.commands.commandFunctions.EditOrder;
-import org.voetsky.dispatcherBot.services.output.messageMakerService.MessageMakerService;
+import org.voetsky.dispatcherBot.services.output.messageMakerService.MessageMaker;
 import org.voetsky.dispatcherBot.services.repoServices.mainRepoService.MainService;
 
 import static org.voetsky.dispatcherBot.UserState.AWAITING_FOR_TEXT;
@@ -20,13 +20,13 @@ import static org.voetsky.dispatcherBot.services.logic.commands.command.Commands
 @AllArgsConstructor
 public class AddNumber implements Command, Chain, EditOrder {
     private final MainService mainRepoService;
-    private final MessageMakerService messageMakerService;
+    private final MessageMaker messageMaker;
 
     @Override
     public SendMessage handle(Update update) {
-        String text = messageMakerService.getTextFromProperties(
+        String text = messageMaker.getTextFromProperties(
                 update, "addNumber.h.m");
-        var msg = messageMakerService.makeSendMessage(update, text);
+        var msg = messageMaker.makeSendMessage(update, text);
         changeState(update, AWAITING_FOR_TEXT);
         return msg;
     }
@@ -49,7 +49,7 @@ public class AddNumber implements Command, Chain, EditOrder {
 
     @Override
     public SendMessage putNextCommand(Update update, String command) {
-        return messageMakerService.makeSendMessage(update, command);
+        return messageMaker.makeSendMessage(update, command);
     }
 
     @Override
@@ -62,7 +62,7 @@ public class AddNumber implements Command, Chain, EditOrder {
             mainRepoService.updateOrder(update, orderClient);
             return;
         }
-        throw new IncorrectInputException("Некорректный ввод, введите ваш номер");
+        throw new IncorrectInputException("command.err.phoneNumber.input");
     }
 
     private boolean isNumber(String data) {

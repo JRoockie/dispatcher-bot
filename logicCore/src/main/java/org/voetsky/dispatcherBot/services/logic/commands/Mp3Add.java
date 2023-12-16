@@ -7,7 +7,7 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import org.voetsky.dispatcherBot.UserState;
 import org.voetsky.dispatcherBot.services.logic.commands.command.Command;
 import org.voetsky.dispatcherBot.services.logic.commands.commandFunctions.Chain;
-import org.voetsky.dispatcherBot.services.output.messageMakerService.MessageMakerService;
+import org.voetsky.dispatcherBot.services.output.messageMakerService.MessageMaker;
 import org.voetsky.dispatcherBot.services.repoServices.mainRepoService.MainService;
 
 import static org.voetsky.dispatcherBot.UserState.AWAITING_FOR_AUDIO;
@@ -18,13 +18,13 @@ import static org.voetsky.dispatcherBot.services.logic.commands.command.Commands
 @AllArgsConstructor
 public class Mp3Add implements Command, Chain {
     private final MainService mainRepoService;
-    private final MessageMakerService messageMakerService;
+    private final MessageMaker messageMaker;
 
     @Override
     public SendMessage handle(Update update) {
-        String text = messageMakerService.getTextFromProperties(
+        String text = messageMaker.getTextFromProperties(
                 update, "mp3AddCommand.h.m");
-        var msg = messageMakerService.makeSendMessage(update, text);
+        var msg = messageMaker.makeSendMessage(update, text);
         changeState(update, AWAITING_FOR_AUDIO);
         return msg;
     }
@@ -47,6 +47,6 @@ public class Mp3Add implements Command, Chain {
 
     @Override
     public SendMessage putNextCommand(Update update, String command) {
-        return messageMakerService.makeSendMessage(update, command);
+        return messageMaker.makeSendMessage(update, command);
     }
 }

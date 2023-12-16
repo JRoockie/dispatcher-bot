@@ -10,7 +10,7 @@ import org.voetsky.dispatcherBot.repository.song.Song;
 import org.voetsky.dispatcherBot.services.logic.commands.command.Command;
 import org.voetsky.dispatcherBot.services.logic.commands.commandFunctions.Chain;
 import org.voetsky.dispatcherBot.services.logic.commands.commandFunctions.EditSong;
-import org.voetsky.dispatcherBot.services.output.messageMakerService.MessageMakerService;
+import org.voetsky.dispatcherBot.services.output.messageMakerService.MessageMaker;
 import org.voetsky.dispatcherBot.services.repoServices.mainRepoService.MainService;
 
 import static org.voetsky.dispatcherBot.UserState.AWAITING_FOR_BUTTON;
@@ -21,14 +21,14 @@ import static org.voetsky.dispatcherBot.services.logic.commands.command.Commands
 @AllArgsConstructor
 public class HowMuchPeople implements Command, Chain, EditSong {
     private final MainService mainRepoService;
-    private final MessageMakerService messageMakerService;
+    private final MessageMaker messageMaker;
 
     @Override
     public SendMessage handle(Update update) {
-        String text = messageMakerService.getTextFromProperties(
+        String text = messageMaker.getTextFromProperties(
                 update, "howMuchPeople.h.m");
 
-        var msg = messageMakerService.makeSendMessage(update, text);
+        var msg = messageMaker.makeSendMessage(update, text);
         changeState(update, AWAITING_FOR_TEXT);
         return msg;
     }
@@ -38,7 +38,7 @@ public class HowMuchPeople implements Command, Chain, EditSong {
         try {
             editSong(update);
         } catch (NumberFormatException e) {
-            throw new IncorrectInputException("Некорректный ввод, ожидается цифра");
+            throw new IncorrectInputException("command.err.number.input");
         }
         var msg = putNextCommand(update, WHO_WILL_SING.toString());
         changeState(update, AWAITING_FOR_BUTTON);
@@ -55,7 +55,7 @@ public class HowMuchPeople implements Command, Chain, EditSong {
 
     @Override
     public SendMessage putNextCommand(Update update, String command) {
-        return messageMakerService.makeSendMessage(update, command);
+        return messageMaker.makeSendMessage(update, command);
     }
 
     @Override

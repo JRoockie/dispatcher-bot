@@ -9,7 +9,7 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKe
 import org.voetsky.dispatcherBot.UserState;
 import org.voetsky.dispatcherBot.services.logic.commands.command.Command;
 import org.voetsky.dispatcherBot.services.logic.commands.commandFunctions.InlineKeyboard;
-import org.voetsky.dispatcherBot.services.output.messageMakerService.MessageMakerService;
+import org.voetsky.dispatcherBot.services.output.messageMakerService.MessageMaker;
 import org.voetsky.dispatcherBot.services.repoServices.mainRepoService.MainService;
 
 import java.util.ArrayList;
@@ -22,14 +22,14 @@ import static org.voetsky.dispatcherBot.services.logic.commands.command.Commands
 @AllArgsConstructor
 public class SongNameOrMp3 implements Command, InlineKeyboard {
     private final MainService mainRepoService;
-    private final MessageMakerService messageMakerService;
+    private final MessageMaker messageMaker;
 
     @Override
     public SendMessage handle(Update update) {
-        String text = messageMakerService.getTextFromProperties(
+        String text = messageMaker.getTextFromProperties(
                 update, "songNameOrMp3.h.m");
         InlineKeyboardMarkup markupInline = getInlineKeyboardMarkup(update);
-        var msg = messageMakerService.makeSendMessage(update, text, markupInline);
+        var msg = messageMaker.makeSendMessage(update, text, markupInline);
         changeState(update, AWAITING_FOR_BUTTON);
         return msg;
     }
@@ -47,10 +47,10 @@ public class SongNameOrMp3 implements Command, InlineKeyboard {
         var inlineKeyboardButton1 = new InlineKeyboardButton();
         var inlineKeyboardButton2 = new InlineKeyboardButton();
         inlineKeyboardButton1.setText(
-                messageMakerService.getTextFromProperties(update, "knowSongName.m"));
+                messageMaker.getTextFromProperties(update, "knowSongName.m"));
         inlineKeyboardButton1.setCallbackData(SONG_NAME.toString());
         inlineKeyboardButton2.setText(
-                messageMakerService.getTextFromProperties(update, "dontKnowSongName.m"));
+                messageMaker.getTextFromProperties(update, "dontKnowSongName.m"));
         inlineKeyboardButton2.setCallbackData("*" + SONG_NAME);
         rowInline.add(inlineKeyboardButton1);
         rowInline.add(inlineKeyboardButton2);

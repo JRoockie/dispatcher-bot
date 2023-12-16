@@ -8,7 +8,7 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import org.voetsky.dispatcherBot.exceptions.ParentException.LogicCoreException;
 import org.voetsky.dispatcherBot.services.input.messageValidationService.MessageValidationService;
 import org.voetsky.dispatcherBot.services.logic.commandHandlerService.CommandHandler;
-import org.voetsky.dispatcherBot.services.output.messageMakerService.MessageMakerServiceImpl;
+import org.voetsky.dispatcherBot.services.output.messageMakerService.MessageMakerService;
 import org.voetsky.dispatcherBot.services.output.producerService.ProducerService;
 
 @Log4j
@@ -17,7 +17,7 @@ import org.voetsky.dispatcherBot.services.output.producerService.ProducerService
 public class ReceiverController {
 
     private final CommandHandler commandHandler;
-    private final MessageMakerServiceImpl messageMakerServiceImpl;
+    private final MessageMakerService messageMakerService;
     private final MessageValidationService messageValidationService;
     private final ProducerService producerService;
 
@@ -66,7 +66,8 @@ public class ReceiverController {
         if (log.isDebugEnabled()) {
             log.debug(e);
         }
-        sendErrorMessageToView(update, e.getMessage());
+        String t = messageMakerService.getTextFromProperties(update, e.getMessage());
+        sendErrorMessageToView(update, t);
     }
 
     public SendMessage updateReceived(Update update) {
@@ -74,7 +75,8 @@ public class ReceiverController {
     }
 
     public SendMessage makeSendMessage(Update update, String text) {
-        return messageMakerServiceImpl.makeSendMessage(update, text);
+        String t = messageMakerService.getTextFromProperties(update, text);
+        return messageMakerService.makeSendMessage(update, t);
     }
 
     public void sendMessageToView(SendMessage s) {

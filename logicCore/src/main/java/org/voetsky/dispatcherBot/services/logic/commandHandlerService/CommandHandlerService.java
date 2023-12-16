@@ -9,7 +9,7 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import org.voetsky.dispatcherBot.configuration.Initialization.Initialization;
 import org.voetsky.dispatcherBot.exceptions.ParentException.LogicCoreException;
 import org.voetsky.dispatcherBot.services.logic.commands.command.Command;
-import org.voetsky.dispatcherBot.services.output.messageMakerService.MessageMakerService;
+import org.voetsky.dispatcherBot.services.output.messageMakerService.MessageMaker;
 
 import javax.annotation.PostConstruct;
 import java.util.Map;
@@ -21,13 +21,13 @@ import java.util.concurrent.ConcurrentHashMap;
 public class CommandHandlerService implements CommandHandler {
 
     private final Map<String, String> bindingBy = new ConcurrentHashMap<>();
-    private final MessageMakerService messageMakerService;
+    private final MessageMaker messageMaker;
     private Map<String, Command> actions;
     private final Initialization initialization;
 
 
-    public CommandHandlerService(MessageMakerService messageMakerService, Initialization commandInit) {
-        this.messageMakerService = messageMakerService;
+    public CommandHandlerService(MessageMaker messageMaker, Initialization commandInit) {
+        this.messageMaker = messageMaker;
         this.initialization = commandInit;
     }
 
@@ -54,10 +54,10 @@ public class CommandHandlerService implements CommandHandler {
             if (log.isDebugEnabled()){
                 log.error("FATAL ERROR:", e);
             }
-            messageMakerService.makeSendMessage(update, "fatal.err");
+            messageMaker.makeSendMessage(update, "fatal.err");
         }
         throw new LogicCoreException(
-                messageMakerService.getTextFromProperties(update, "fatal.err"));
+                messageMaker.getTextFromProperties(update, "fatal.err"));
     }
 
     private boolean hasForceCallback(String text, Update update) {
@@ -102,7 +102,7 @@ public class CommandHandlerService implements CommandHandler {
         } else if (bindingBy.containsKey(chatId)) {
             return processCallBack(update, chatId);
         }
-        throw new LogicCoreException("Ошибка команды");
+        throw new LogicCoreException("tech.err.command");
     }
 
     public SendMessage processHandle(Update update, String text, String chatId) {
@@ -118,7 +118,7 @@ public class CommandHandlerService implements CommandHandler {
             if (log.isDebugEnabled()){
                 log.error("FATAL ERROR:", e);
             }
-            throw new LogicCoreException("Команды не существует");
+            throw new LogicCoreException("tech.err.commandDoesNotExist");
         }
     }
 

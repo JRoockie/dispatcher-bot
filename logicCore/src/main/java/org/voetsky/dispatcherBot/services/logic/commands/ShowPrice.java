@@ -9,7 +9,7 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKe
 import org.voetsky.dispatcherBot.UserState;
 import org.voetsky.dispatcherBot.services.logic.commands.command.Command;
 import org.voetsky.dispatcherBot.services.logic.commands.commandFunctions.Chain;
-import org.voetsky.dispatcherBot.services.output.messageMakerService.MessageMakerService;
+import org.voetsky.dispatcherBot.services.output.messageMakerService.MessageMaker;
 import org.voetsky.dispatcherBot.services.repoServices.mainRepoService.MainService;
 
 import java.util.ArrayList;
@@ -23,18 +23,18 @@ import static org.voetsky.dispatcherBot.services.logic.commands.command.Commands
 @AllArgsConstructor
 public class ShowPrice implements Command, Chain {
     private final MainService mainRepoService;
-    private final MessageMakerService messageMakerService;
+    private final MessageMaker messageMaker;
 
     @Override
     public SendMessage handle(Update update) {
 
-        Long priceSinger = Long.parseLong(messageMakerService
+        Long priceSinger = Long.parseLong(messageMaker
                 .getTextFromProperties(update, "price.singer"));
-        Long priceMusic = Long.parseLong(messageMakerService
+        Long priceMusic = Long.parseLong(messageMaker
                 .getTextFromProperties(update, "price.music"));
-        String bill = messageMakerService
+        String bill = messageMaker
                 .getTextFromProperties(update, "price.bill");
-        Long discountLimit = Long.parseLong(messageMakerService
+        Long discountLimit = Long.parseLong(messageMaker
                 .getTextFromProperties(update, "price.discount"));
 
         bill = mainRepoService.getPrice(update,
@@ -44,12 +44,12 @@ public class ShowPrice implements Command, Chain {
                 discountLimit
         );
 
-        String startText = messageMakerService.getTextFromProperties(
+        String startText = messageMaker.getTextFromProperties(
                 update, "showPrice.h.m");
         String invoice = String.format(startText, bill);
 
         InlineKeyboardMarkup markupInline = getInlineKeyboardMarkup(update);
-        var msg = messageMakerService.makeSendMessage(update, invoice, markupInline);
+        var msg = messageMaker.makeSendMessage(update, invoice, markupInline);
         changeState(update, AWAITING_FOR_BUTTON);
         return msg;
     }
@@ -75,7 +75,7 @@ public class ShowPrice implements Command, Chain {
         List<InlineKeyboardButton> rowInline = new ArrayList<>();
         var inlineKeyboardButton = new InlineKeyboardButton();
         inlineKeyboardButton.setCallbackData(ADD_NUMBER.toString());
-        inlineKeyboardButton.setText(messageMakerService.getTextFromProperties(
+        inlineKeyboardButton.setText(messageMaker.getTextFromProperties(
                 update, "showPrice.b1.m"));
         rowInline.add(inlineKeyboardButton);
         rowsInline.add(rowInline);
@@ -85,7 +85,7 @@ public class ShowPrice implements Command, Chain {
 
     @Override
     public SendMessage putNextCommand(Update update, String command) {
-        return messageMakerService.makeSendMessage(update, command);
+        return messageMaker.makeSendMessage(update, command);
     }
 }
 

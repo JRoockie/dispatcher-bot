@@ -25,17 +25,17 @@ public class MessageValidationServiceImpl implements MessageValidationService {
 
         switch (state) {
             case AWAITING_FOR_COMMAND:
-                return "ввод команды";
+                return "mvs.err.command.input";
             case AWAITING_FOR_TEXT:
-                return "ввод текста";
+                return "mvs.err.text.input";
             case AWAITING_FOR_BUTTON:
-                return "нажатие кнопки";
+                return "mvs.err.button.input";
             case AWAITING_FOR_AUDIO:
-                return "mp3 файл";
+                return "mvs.err.mp3.input";
             case AWAITING_FOR_VOICE:
-                return "голосовое сообщение";
+                return "mvs.err.voice.input";
             default:
-                return "неизвестная ошибка";
+                return "mvs.err.unknown.input";
         }
     }
 
@@ -47,8 +47,7 @@ public class MessageValidationServiceImpl implements MessageValidationService {
     }
 
     public boolean throwValidationException(Update update) {
-        String errorMessage = String.format(
-                "Ошибка ввода, ожидается %s", whichStateError(update));
+        String errorMessage = whichStateError(update);
         throw new IncorrectInputException(errorMessage);
     }
 

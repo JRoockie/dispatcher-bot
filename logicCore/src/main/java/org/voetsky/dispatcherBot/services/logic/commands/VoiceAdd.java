@@ -10,7 +10,7 @@ import org.voetsky.dispatcherBot.UserState;
 import org.voetsky.dispatcherBot.services.logic.commands.command.Command;
 import org.voetsky.dispatcherBot.services.logic.commands.commandFunctions.EditSong;
 import org.voetsky.dispatcherBot.services.logic.commands.commandFunctions.InlineKeyboard;
-import org.voetsky.dispatcherBot.services.output.messageMakerService.MessageMakerService;
+import org.voetsky.dispatcherBot.services.output.messageMakerService.MessageMaker;
 import org.voetsky.dispatcherBot.services.repoServices.mainRepoService.MainService;
 
 import java.util.ArrayList;
@@ -24,21 +24,21 @@ import static org.voetsky.dispatcherBot.services.logic.commands.command.Commands
 @AllArgsConstructor
 public class VoiceAdd implements Command, EditSong, InlineKeyboard {
     private final MainService mainRepoService;
-    private final MessageMakerService messageMakerService;
+    private final MessageMaker messageMaker;
 
     @Override
     public SendMessage handle(Update update) {
-        String text = messageMakerService.getTextFromProperties(
+        String text = messageMaker.getTextFromProperties(
                 update, "voiceAddCommand.h.m");
-        return messageMakerService.makeSendMessage(update, text);
+        return messageMaker.makeSendMessage(update, text);
     }
 
     @Override
     public SendMessage callback(Update update) {
-        String text = messageMakerService.getTextFromProperties(
+        String text = messageMaker.getTextFromProperties(
                 update, "voiceAddCommand.c.m");
         InlineKeyboardMarkup markupInline = getInlineKeyboardMarkup(update);
-        var msg = messageMakerService.makeSendMessage(update, text, markupInline);
+        var msg = messageMaker.makeSendMessage(update, text, markupInline);
         editSong(update);
         changeState(update, AWAITING_FOR_BUTTON);
         return msg;
@@ -60,10 +60,10 @@ public class VoiceAdd implements Command, EditSong, InlineKeyboard {
         var inlineKeyboardButton1 = new InlineKeyboardButton();
         var inlineKeyboardButton2 = new InlineKeyboardButton();
         inlineKeyboardButton1.setText(
-                messageMakerService.getTextFromProperties(update, "yes.m"));
+                messageMaker.getTextFromProperties(update, "yes.m"));
         inlineKeyboardButton1.setCallbackData(SONG_NAME_OR_MP3.toString());
         inlineKeyboardButton2.setText(
-                messageMakerService.getTextFromProperties(update, "no.m"));
+                messageMaker.getTextFromProperties(update, "no.m"));
         inlineKeyboardButton2.setCallbackData(SHOW_PRICE.toString());
         rowInline.add(inlineKeyboardButton1);
         rowInline.add(inlineKeyboardButton2);
