@@ -1,4 +1,4 @@
-package org.voetsky.dispatcherBot.services.logic.commands.newCommands;
+package org.voetsky.dispatcherBot.services.logic.commands;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j;
@@ -7,17 +7,18 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import org.voetsky.dispatcherBot.UserState;
 import org.voetsky.dispatcherBot.repository.orderClient.OrderClient;
 import org.voetsky.dispatcherBot.services.logic.commands.command.Command;
+import org.voetsky.dispatcherBot.services.logic.commands.commandFunctions.Chain;
+import org.voetsky.dispatcherBot.services.logic.commands.commandFunctions.EditOrder;
 import org.voetsky.dispatcherBot.services.output.messageMakerService.MessageMakerService;
-import org.voetsky.dispatcherBot.services.repo.RepoController;
+import org.voetsky.dispatcherBot.services.repoServices.mainRepoService.MainService;
 
 import static org.voetsky.dispatcherBot.UserState.AWAITING_FOR_TEXT;
-import static org.voetsky.dispatcherBot.services.logic.commands.command.Commands.*;
+import static org.voetsky.dispatcherBot.services.logic.commands.command.Commands.FINISH;
 
 @Log4j
 @AllArgsConstructor
-public class AddComment implements Command {
-    private final String action = ADD_COMMENT.toString();
-    private final RepoController repoController;
+public class AddComment implements Command, Chain, EditOrder {
+    private final MainService mainRepoService;
     private final MessageMakerService messageMakerService;
 
     @Override
@@ -31,14 +32,8 @@ public class AddComment implements Command {
 
     @Override
     public SendMessage callback(Update update) {
-        String comment = update.getMessage().getText();
-        //addingComment
-        OrderClient orderClient = OrderClient.builder()
-                .comment(comment)
-                .build();
-        repoController.updateOrder(update, orderClient);
-
-        var msg = messageMakerService.makeSendMessage(update, FINISH.toString());
+        editOrder(update);
+        var msg = putNextCommand(update, FINISH.toString());
         changeState(update, AWAITING_FOR_TEXT);
         return msg;
     }
@@ -48,7 +43,21 @@ public class AddComment implements Command {
         if (log.isDebugEnabled()) {
             log.debug(String.format("State changed to %s", userState));
         }
-        repoController.setUserState(update, userState);
+        mainRepoService.setUserState(update, userState);
     }
 
+    @Override
+    public SendMessage putNextCommand(Update update, String command) {
+        return messageMakerService.makeSendMessage(update, command);
+    }
+
+    @Override
+    public void editOrder(Update update) {
+        String comment = update.getMessage().getText();
+        OrderClient orderClient = OrderClient.builder()
+                .comment(comment)
+                .isAccepted(true)
+                .build();
+        mainRepoService.updateOrder(update, orderClient);
+    }
 }

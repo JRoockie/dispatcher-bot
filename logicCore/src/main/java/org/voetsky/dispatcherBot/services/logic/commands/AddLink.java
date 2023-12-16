@@ -1,33 +1,31 @@
-package org.voetsky.dispatcherBot.services.logic.commands.newCommands;
+package org.voetsky.dispatcherBot.services.logic.commands;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.voetsky.dispatcherBot.UserState;
-import org.voetsky.dispatcherBot.exceptions.IncorrectInputException;
 import org.voetsky.dispatcherBot.repository.song.Song;
 import org.voetsky.dispatcherBot.services.logic.commands.command.Command;
+import org.voetsky.dispatcherBot.services.logic.commands.commandFunctions.Chain;
+import org.voetsky.dispatcherBot.services.logic.commands.commandFunctions.EditSong;
 import org.voetsky.dispatcherBot.services.output.messageMakerService.MessageMakerService;
-import org.voetsky.dispatcherBot.services.repo.RepoController;
+import org.voetsky.dispatcherBot.services.repoServices.mainRepoService.MainService;
 
 import static org.voetsky.dispatcherBot.UserState.AWAITING_FOR_BUTTON;
 import static org.voetsky.dispatcherBot.UserState.AWAITING_FOR_TEXT;
 import static org.voetsky.dispatcherBot.services.logic.commands.command.Commands.HOW_MUCH_PEOPLE;
-import static org.voetsky.dispatcherBot.services.logic.commands.command.Commands.WHO_WILL_SING;
 
 @Log4j
 @AllArgsConstructor
-public class HowMuchPeople implements Command {
-    private final String action = HOW_MUCH_PEOPLE.toString();
-    private final RepoController repoController;
+public class AddLink implements Command, Chain, EditSong {
+    private final MainService mainRepoService;
     private final MessageMakerService messageMakerService;
 
     @Override
     public SendMessage handle(Update update) {
         String text = messageMakerService.getTextFromProperties(
-                update, "howMuchPeople.h.m");
-
+                update, "addLink.h.m");
         var msg = messageMakerService.makeSendMessage(update, text);
         changeState(update, AWAITING_FOR_TEXT);
         return msg;
@@ -35,16 +33,8 @@ public class HowMuchPeople implements Command {
 
     @Override
     public SendMessage callback(Update update) {
-        var msg = messageMakerService.makeSendMessage(update, WHO_WILL_SING.toString());
-        try {
-            Integer count = Integer.parseInt(update.getMessage().getText());
-            Song newSong = Song.builder()
-                    .singerCount(count)
-                    .build();
-            repoController.updateSong(update, newSong);
-        } catch (NumberFormatException e) {
-            throw new IncorrectInputException("Некорректный ввод");
-        }
+        editSong(update);
+        var msg = putNextCommand(update, HOW_MUCH_PEOPLE.toString());
         changeState(update, AWAITING_FOR_BUTTON);
         return msg;
     }
@@ -54,7 +44,21 @@ public class HowMuchPeople implements Command {
         if (log.isDebugEnabled()) {
             log.debug(String.format("State changed to %s", userState));
         }
-        repoController.setUserState(update, userState);
+        mainRepoService.setUserState(update, userState);
+    }
+
+    @Override
+    public SendMessage putNextCommand(Update update, String command) {
+        return messageMakerService.makeSendMessage(update, command);
+    }
+
+    @Override
+    public void editSong(Update update) {
+        String link = update.getMessage().getText();
+        Song newSong = Song.builder()
+                .link(link)
+                .build();
+        mainRepoService.updateSong(update, newSong);
     }
 
 }

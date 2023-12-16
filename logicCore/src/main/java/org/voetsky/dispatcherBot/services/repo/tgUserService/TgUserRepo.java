@@ -12,27 +12,15 @@ public interface TgUserRepo {
 
     TgUser findAppUsersByTelegramUserId(Long id);
 
-    TgUser findByTelegramUserId(Long id);
-
     User findUserIdFromUpdate(Update update);
 
-    String getLocalization(Update update);
-
-    void setLocalization(Update update, String language);
-
     void setState(Update update, UserState userState);
-
-    String getClientName(Update update);
-
-    void setClientName(Update update, String clientName);
 
     TgUser save(TgUser tgUser);
 
     UserState getState(Update update);
 
     Long getIdFromUpdate(Update update);
-
-    TgUser findTgUserIdFromUpdate(Update update);
 
     void setCurrentSong(Update update, Long songId);
 

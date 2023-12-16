@@ -4,7 +4,6 @@ import lombok.Getter;
 import lombok.extern.log4j.Log4j;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
-import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.voetsky.dispatcherBot.configuration.Initialization.Initialization;
@@ -48,12 +47,13 @@ public class CommandHandlerService implements CommandHandler {
                     return forceCallback(update, text);
                 }
                 return processButton(update, text, chatId);
-            } else if (update.getMessage().hasAudio()) {
-                return processCallBack(update, chatId);
-            } else if (update.getMessage().hasVoice()) {
+            } else if (update.getMessage().hasAudio() || update.getMessage().hasVoice()) {
                 return processCallBack(update, chatId);
             }
         } catch (NullPointerException e) {
+            if (log.isDebugEnabled()){
+                log.error("FATAL ERROR:", e);
+            }
             messageMakerService.makeSendMessage(update, "fatal.err");
         }
         throw new LogicCoreException(
@@ -61,6 +61,7 @@ public class CommandHandlerService implements CommandHandler {
     }
 
     private boolean hasForceCallback(String text, Update update) {
+
         if (text.startsWith("*")) {
             if (log.isDebugEnabled()) {
                 log.debug("FORCE CALLBACK: true");
@@ -74,6 +75,9 @@ public class CommandHandlerService implements CommandHandler {
                 }
                 return true;
             }
+        }
+        if (log.isDebugEnabled()) {
+            log.debug("FORCE CALLBACK: false");
         }
         return false;
     }
@@ -93,7 +97,6 @@ public class CommandHandlerService implements CommandHandler {
     }
 
     public SendMessage processCommand(Update update, String text, String chatId) {
-
         if (actions.containsKey(text)) {
             return processHandle(update, text, chatId);
         } else if (bindingBy.containsKey(chatId)) {
@@ -103,7 +106,6 @@ public class CommandHandlerService implements CommandHandler {
     }
 
     public SendMessage processHandle(Update update, String text, String chatId) {
-
         if (log.isDebugEnabled()) {
             log.debug(String.format("NON-CALLBACK command part: %s",
                     actions.get(text)));
@@ -113,6 +115,9 @@ public class CommandHandlerService implements CommandHandler {
             bindingBy.put(chatId, text);
             return processChain(msg, update);
         } catch (NullPointerException e) {
+            if (log.isDebugEnabled()){
+                log.error("FATAL ERROR:", e);
+            }
             throw new LogicCoreException("Команды не существует");
         }
     }
@@ -122,9 +127,7 @@ public class CommandHandlerService implements CommandHandler {
             log.debug(String.format("Executing CALLBACK command part: %s",
                     bindingBy.get(chatId)));
         }
-        var command = bindingBy.get(chatId);
-        var msg = actions.get(command).callback(update);
-//        var msg = actions.get(bindingBy.get(chatId)).callback(update);
+        var msg = actions.get(bindingBy.get(chatId)).callback(update);
         return processChain(msg, update);
     }
 
@@ -147,8 +150,7 @@ public class CommandHandlerService implements CommandHandler {
     public SendMessage processChain(SendMessage s, Update update) {
         String text = s.getText();
         if (hasChain(s)) {
-            //todo не работает здесь в 2 команде
-            if (update.hasMessage()){
+            if (update.hasMessage()) {
                 update.getMessage().setText(text);
                 update.setCallbackQuery(null);
             } else if (update.hasCallbackQuery()) {
@@ -156,12 +158,7 @@ public class CommandHandlerService implements CommandHandler {
                 message.setText(text);
                 message.setChat(update.getCallbackQuery().getMessage().getChat());
                 message.setFrom(update.getCallbackQuery().getFrom());
-//                CallbackQuery callbackQuery = new CallbackQuery();
-//                callbackQuery.setData(text);
-//                callbackQuery.setFrom(update.getCallbackQuery().getFrom());
-//                callbackQuery.setMessage(message);
                 update.setMessage(message);
-//                update.setCallbackQuery(callbackQuery);
                 update.setCallbackQuery(null);
             }
             return updateReceived(update);
@@ -170,17 +167,13 @@ public class CommandHandlerService implements CommandHandler {
     }
 
     public String getChatId(Update update) {
-        if (update.hasCallbackQuery()) {
-            return update.getCallbackQuery().getMessage().getChatId().toString();
-        }
-        return update.getMessage().getChatId().toString();
+        return update.hasCallbackQuery() ?
+                update.getCallbackQuery().getMessage().getChatId().toString() :
+                update.getMessage().getChatId().toString();
     }
 
     public String getMessageText(Update update) {
-        if (update.hasCallbackQuery()) {
-            return update.getCallbackQuery().getData();
-        }
-        return update.getMessage().getText();
+        return update.hasCallbackQuery() ? update.getCallbackQuery().getData() : update.getMessage().getText();
     }
 
 }

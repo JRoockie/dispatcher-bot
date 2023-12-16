@@ -5,9 +5,9 @@ import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.TypeDef;
 import org.voetsky.dispatcherBot.WhoWillSing;
+import org.voetsky.dispatcherBot.repository.orderClient.OrderClient;
 import org.voetsky.dispatcherBot.repository.tgAudio.TgAudio;
 import org.voetsky.dispatcherBot.repository.tgVoice.TgVoice;
-import org.voetsky.dispatcherBot.repository.orderClient.OrderClient;
 
 import javax.persistence.*;
 import java.io.Serializable;

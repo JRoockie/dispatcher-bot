@@ -15,6 +15,7 @@ import org.voetsky.dispatcherBot.repository.binaryContent.BinaryContentRepositor
 import org.voetsky.dispatcherBot.repository.tgAudio.TgAudio;
 import org.voetsky.dispatcherBot.repository.tgVoice.TgVoice;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
@@ -67,16 +68,14 @@ public class FileServiceImpl implements FileService {
         BinaryContent transientBinaryContent = BinaryContent.builder()
                 .fileAsArrayOfBytes(fileInByte)
                 .build();
-        BinaryContent persistentBinaryContent = binaryContentRepository.save(transientBinaryContent);
-        return persistentBinaryContent;
+        return binaryContentRepository.save(transientBinaryContent);
     }
 
     private static String getFilePath(ResponseEntity<String> response) {
         JSONObject jsonObject = new JSONObject(response.getBody());
-        String filePath = String.valueOf(jsonObject
+        return String.valueOf(jsonObject
                 .getJSONObject("result")
                 .getString("file_path"));
-        return filePath;
     }
 
 
@@ -117,18 +116,31 @@ public class FileServiceImpl implements FileService {
     private byte[] downloadFile(String filePath) {
         String fullUri = fileStorageUri.replace("{token}", token)
                 .replace("{filePath}", filePath);
-        URL urlObj = null;
+        URL urlObj;
         try {
             urlObj = new URL(fullUri);
         } catch (MalformedURLException e) {
             throw new RuntimeException(e);
         }
 
-        //TODO подумать над оптимизацией
-        try (InputStream is = urlObj.openStream()) {
-            return is.readAllBytes();
+        return getChunkyBytes(urlObj);
+    }
+
+    private static byte[] getChunkyBytes(URL urlObj) {
+        int bufferSize = 8192;
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        byte[] buffer = new byte[bufferSize];
+
+        try (InputStream inputStream = urlObj.openStream()) {
+            int bytesRead;
+            while ((bytesRead = inputStream.read(buffer, 0, bufferSize)) != -1) {
+                outputStream.write(buffer, 0, bytesRead);
+            }
         } catch (IOException e) {
             throw new RuntimeException(urlObj.toExternalForm(), e);
         }
+
+        return outputStream.toByteArray();
     }
+
 }

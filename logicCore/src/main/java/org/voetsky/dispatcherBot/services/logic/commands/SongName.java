@@ -1,4 +1,4 @@
-package org.voetsky.dispatcherBot.services.logic.commands.newCommands;
+package org.voetsky.dispatcherBot.services.logic.commands;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j;
@@ -9,22 +9,23 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKe
 import org.voetsky.dispatcherBot.UserState;
 import org.voetsky.dispatcherBot.repository.song.Song;
 import org.voetsky.dispatcherBot.services.logic.commands.command.Command;
+import org.voetsky.dispatcherBot.services.logic.commands.commandFunctions.EditSong;
+import org.voetsky.dispatcherBot.services.logic.commands.commandFunctions.InlineKeyboard;
 import org.voetsky.dispatcherBot.services.output.messageMakerService.MessageMakerService;
-import org.voetsky.dispatcherBot.services.repo.RepoController;
+import org.voetsky.dispatcherBot.services.repoServices.mainRepoService.MainService;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static org.voetsky.dispatcherBot.UserState.AWAITING_FOR_BUTTON;
 import static org.voetsky.dispatcherBot.UserState.AWAITING_FOR_TEXT;
-import static org.voetsky.dispatcherBot.services.logic.commands.command.Commands.*;
+import static org.voetsky.dispatcherBot.services.logic.commands.command.Commands.ADD_LINK;
+import static org.voetsky.dispatcherBot.services.logic.commands.command.Commands.MP3_ADD;
 
 @Log4j
 @AllArgsConstructor
-public class SongName implements Command {
-
-    private final String action = SONG_NAME.toString();
-    private final RepoController repoController;
+public class SongName implements Command, EditSong, InlineKeyboard {
+    private final MainService mainRepoService;
     private final MessageMakerService messageMakerService;
 
     @Override
@@ -42,15 +43,10 @@ public class SongName implements Command {
         }
         String text = String.format(
                 messageMakerService.getTextFromProperties(
-                        update, "songName.c.m"),
-                update.getMessage().getText());
+                        update, "songName.c.m"), update.getMessage().getText());
 
-        String songName = update.getMessage().getText();
-        Song newSong = Song.builder()
-                .songName(songName)
-                .build();
+        editSong(update);
 
-        repoController.addSong(update, newSong);
         InlineKeyboardMarkup markupInline = getInlineKeyboardMarkup(update);
         var msg = messageMakerService.makeSendMessage(update, text, markupInline);
         changeState(update, AWAITING_FOR_BUTTON);
@@ -66,7 +62,8 @@ public class SongName implements Command {
         return msg;
     }
 
-    private InlineKeyboardMarkup getInlineKeyboardMarkup(Update update) {
+    @Override
+    public InlineKeyboardMarkup getInlineKeyboardMarkup(Update update) {
         InlineKeyboardMarkup markupInline = new InlineKeyboardMarkup();
         List<List<InlineKeyboardButton>> rowsInline = new ArrayList<>();
         List<InlineKeyboardButton> rowInline = new ArrayList<>();
@@ -77,7 +74,7 @@ public class SongName implements Command {
         inlineKeyboardButton1.setCallbackData(ADD_LINK.toString());
         inlineKeyboardButton2.setText(
                 messageMakerService.getTextFromProperties(update, "songName.b2.m"));
-        inlineKeyboardButton2.setCallbackData(MP3_ADD_COMMAND.toString());
+        inlineKeyboardButton2.setCallbackData(MP3_ADD.toString());
         rowInline.add(inlineKeyboardButton1);
         rowInline.add(inlineKeyboardButton2);
         rowsInline.add(rowInline);
@@ -91,7 +88,15 @@ public class SongName implements Command {
         if (log.isDebugEnabled()) {
             log.debug(String.format("State changed to %s", userState));
         }
-        repoController.setUserState(update, userState);
+        mainRepoService.setUserState(update, userState);
     }
 
+    @Override
+    public void editSong(Update update) {
+        String songName = update.getMessage().getText();
+        Song newSong = Song.builder()
+                .songName(songName)
+                .build();
+        mainRepoService.addSong(update, newSong);
+    }
 }

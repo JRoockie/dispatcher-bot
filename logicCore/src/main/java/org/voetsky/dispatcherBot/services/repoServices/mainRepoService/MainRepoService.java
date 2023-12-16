@@ -1,10 +1,9 @@
-package org.voetsky.dispatcherBot.services.repo;
+package org.voetsky.dispatcherBot.services.repoServices.mainRepoService;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.objects.Update;
-import org.telegram.telegrambots.meta.api.objects.User;
 import org.voetsky.dispatcherBot.UserState;
 import org.voetsky.dispatcherBot.repository.orderClient.OrderClient;
 import org.voetsky.dispatcherBot.repository.song.Song;
@@ -19,7 +18,7 @@ import org.voetsky.dispatcherBot.services.repoServices.comparingEntityService.Co
 @Log4j
 @AllArgsConstructor
 @Service
-public class RepoController {
+public class MainRepoService implements MainService {
 
     private final OrderClientRepo orderClientRepo;
     private final SongRepo songRepo;
@@ -28,36 +27,29 @@ public class RepoController {
     private final TgVoiceRepo tgVoiceRepo;
     private final ComparingEntityService comparingEntityService;
 
-    public User findTelegramUserIdFromUpdate(Update update) {
-        return tgUserRepo.findUserIdFromUpdate(update);
-    }
-
+    @Override
     public void setUserState(Update update, UserState userState) {
         tgUserRepo.setState(update, userState);
     }
 
+    @Override
     public void updateUser(Update update, TgUser newTgUser) {
         TgUser updatable = getTgUserFromUpdate(update);
         updatable = comparingEntityService.tgUserUpdate(newTgUser, updatable);
         tgUserRepo.save(updatable);
     }
 
-    public void setClientName(Update update, String text) {
-        tgUserRepo.setClientName(update, text);
-    }
-
+    @Override
     public void addMp3(Update update) {
         tgAudioRepo.addMp3(update);
     }
 
-    public String getClientName(Update update) {
-        return tgUserRepo.getClientName(update);
-    }
-
+    @Override
     public void addVoice(Update update) {
         tgVoiceRepo.addVoice(update);
     }
 
+    @Override
     public void addSong(Update update, Song song) {
         TgUser tgUser = getTgUserFromUpdate(update);
 
@@ -65,12 +57,12 @@ public class RepoController {
                 tgUser.getCurrentOrderId());
 
         song.setOrderClient(orderClient);
-        song.setSongName("-");
         Song song1 = songRepo.save(song);
 
         tgUserRepo.setCurrentSong(update, song1.getId());
     }
 
+    @Override
     public void updateSong(Update update, Song song) {
         TgUser tgUser = getTgUserFromUpdate(update);
         if (tgUser.getCurrentSongId() == null) {
@@ -78,48 +70,86 @@ public class RepoController {
             return;
         } else if (songRepo.findSongById(tgUser.getCurrentSongId()).isFilled()) {
             addSong(update, song);
+            return;
         }
         Song original = songRepo.findSongById(tgUser.getCurrentSongId());
         original = comparingEntityService.songUpdate(song, original);
         songRepo.save(original);
     }
 
+    @Override
     public void addOrder(Update update) {
         TgUser tgUser = getTgUserFromUpdate(update);
         OrderClient orderClient = orderClientRepo.defaultOrder(tgUser);
         tgUserRepo.addOrderToTgUser(tgUser, orderClient);
     }
 
+    @Override
     public void updateOrder(Update update, OrderClient newOrderClient) {
         TgUser tgUser = getTgUserFromUpdate(update);
-        OrderClient updatable = orderClientRepo.findOrderClientById(tgUser.getCurrentOrderId());
-        OrderClient original = comparingEntityService.orderClientUpdate(updatable, newOrderClient);
+        OrderClient original = orderClientRepo.findOrderClientById(tgUser.getCurrentOrderId());
+        original = comparingEntityService.orderClientUpdate(newOrderClient, original);
         orderClientRepo.save(original);
     }
 
-    public String getPrice(Update update, Long oneSingerPrice,
-                           Long oneSongPrice, String bill, Long discountLimit) {
-
+    @Override
+    public String getPrice(Update update, Long oneSingerPrice, Long oneSongPrice, String bill, Long discountLimit) {
         TgUser tgUser = getTgUserFromUpdate(update);
         OrderClient order = orderClientRepo.findOrderClientById(tgUser.getCurrentOrderId());
         var songs = songRepo.findSongsByOrderClient(order);
 
         int singerCount = songs.stream().mapToInt(Song::getSingerCount).sum();
         int songCount = songs.size();
-        double hoursCount = 1 + (singerCount - 1) * 0.5;
-        long discount = (singerCount > discountLimit) ? singerCount * 1000L : 0;
+        double hoursCount = calculateHoursCount(singerCount);
+        long discount = calculateDiscount(singerCount, discountLimit);
         Long songPrice = oneSongPrice * songCount;
         Long singerPrice = oneSingerPrice * singerCount;
-        Long score = songPrice + singerPrice - discount;
-        bill = String.format(bill, singerCount, oneSingerPrice, singerPrice, hoursCount, songCount, songPrice, discount, score);
+        Long score = calculateScore(songPrice, singerPrice, discount);
+        bill = formatBill(bill, singerCount, oneSingerPrice, singerPrice, hoursCount, songCount, songPrice, discount, score);
+
+        OrderClient orderClient = new OrderClient();
+        orderClient.setPrice(String.valueOf(score));
+        updateOrder(update, orderClient);
+
         return bill;
     }
 
-    private TgUser getTgUserFromUpdate(Update update) {
+    private double calculateHoursCount(int singerCount) {
+        return 1 + (singerCount - 1) * 0.5;
+    }
+
+    private long calculateDiscount(int singerCount, Long discountLimit) {
+        return (singerCount > discountLimit) ? singerCount * 1000L : 0;
+    }
+
+    private Long calculateScore(Long songPrice, Long singerPrice, long discount) {
+        return songPrice + singerPrice - discount;
+    }
+
+    private String formatBill(String bill, int singerCount, Long oneSingerPrice, Long singerPrice, double hoursCount,
+                              int songCount, Long songPrice, long discount, Long score) {
+        return String.format(bill, singerCount, oneSingerPrice, singerPrice, hoursCount, songCount, songPrice, discount, score);
+    }
+
+
+    @Override
+    public TgUser getTgUserFromUpdate(Update update) {
         return tgUserRepo
                 .findAppUsersByTelegramUserId(
                         tgUserRepo.getIdFromUpdate(update));
     }
 
+    @Override
+    public void fillSongNullFields(Update update) {
+        TgUser tgUser = getTgUserFromUpdate(update);
+        Song song = songRepo.findSongById(tgUser.getCurrentSongId());
+        if (song.getLink() == null) {
+            song.setLink("-");
+        }
+        if (song.getSongName() == null) {
+            song.setSongName("-");
+        }
+        songRepo.save(song);
+    }
 
 }

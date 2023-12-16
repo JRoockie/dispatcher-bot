@@ -12,7 +12,6 @@ import org.voetsky.dispatcherBot.configuration.LogicCoreLocalization.LogicCoreLo
 @AllArgsConstructor
 @Service
 public class MessageMakerServiceImpl implements MessageMakerService {
-    //todo итоговы чек тоже парсить придется
     private final LogicCoreLocalization localization;
 
     @Override

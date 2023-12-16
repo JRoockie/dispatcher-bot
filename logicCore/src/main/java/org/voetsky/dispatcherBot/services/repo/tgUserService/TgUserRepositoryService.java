@@ -9,7 +9,6 @@ import org.voetsky.dispatcherBot.UserState;
 import org.voetsky.dispatcherBot.repository.orderClient.OrderClient;
 import org.voetsky.dispatcherBot.repository.tgUser.TgUser;
 import org.voetsky.dispatcherBot.repository.tgUser.TgUserRepository;
-import org.voetsky.dispatcherBot.services.repoServices.comparingEntityService.ComparingEntityServiceImpl;
 
 import static org.voetsky.dispatcherBot.UserState.AWAITING_FOR_COMMAND;
 
@@ -19,10 +18,8 @@ import static org.voetsky.dispatcherBot.UserState.AWAITING_FOR_COMMAND;
 public class TgUserRepositoryService implements TgUserRepo {
 
     private final TgUserRepository tgUserRepository;
-    private final ComparingEntityServiceImpl comparingEntityService;
 
     public TgUser findOrSaveAppUser(User telegramUser) {
-        //todo раскомментить после тестов
         TgUser persistentTgUser = tgUserRepository.findByTelegramUserId(telegramUser.getId());
         if (persistentTgUser == null) {
             if (log.isDebugEnabled()) {
@@ -47,7 +44,6 @@ public class TgUserRepositoryService implements TgUserRepo {
                 .build();
 
         transientTgUser = tgUserRepository.save(transientTgUser);
-        //orderClientRepositoryService.addOrder(transientTgUser);
         return transientTgUser;
     }
 
@@ -61,15 +57,6 @@ public class TgUserRepositoryService implements TgUserRepo {
 
     public TgUser findAppUsersByTelegramUserId(Long id) {
         return tgUserRepository.findByTelegramUserId(id);
-    }
-
-    public TgUser findByTelegramUserId(Long id) {
-        return tgUserRepository.findByTelegramUserId(id);
-    }
-
-    public TgUser findTgUserIdFromUpdate(Update update) {
-        return tgUserRepository.findByTelegramUserId(getIdFromUpdate(update));
-
     }
 
     @Override
@@ -89,32 +76,9 @@ public class TgUserRepositoryService implements TgUserRepo {
         }
     }
 
-    public String getLocalization(Update update){
-        TgUser tgUser = tgUserRepository
-                .findByTelegramUserId(findUserIdFromUpdate(update).getId());
-        return tgUser.getLocalization();
-    }
-
-    public void setLocalization(Update update, String language){
-        TgUser tgUser = tgUserRepository
-                .findByTelegramUserId(findUserIdFromUpdate(update).getId());
-        tgUser.setLocalization(language);
-    }
-
     public void setState(Update update, UserState userState) {
         TgUser tgUser = tgUserRepository.findByTelegramUserId(findUserIdFromUpdate(update).getId());
         tgUser.setUserState(userState);
-        tgUserRepository.save(tgUser);
-    }
-
-    public String getClientName(Update update) {
-        TgUser tgUser = tgUserRepository.findByTelegramUserId(findUserIdFromUpdate(update).getId());
-        return tgUser.getNameAsClient();
-    }
-
-    public void setClientName(Update update, String clientName) {
-        TgUser tgUser = tgUserRepository.findByTelegramUserId(findUserIdFromUpdate(update).getId());
-        tgUser.setNameAsClient(clientName);
         tgUserRepository.save(tgUser);
     }
 

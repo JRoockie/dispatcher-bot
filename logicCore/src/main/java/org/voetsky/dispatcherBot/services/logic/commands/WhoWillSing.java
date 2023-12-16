@@ -1,4 +1,4 @@
-package org.voetsky.dispatcherBot.services.logic.commands.newCommands;
+package org.voetsky.dispatcherBot.services.logic.commands;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j;
@@ -9,22 +9,24 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKe
 import org.voetsky.dispatcherBot.UserState;
 import org.voetsky.dispatcherBot.repository.song.Song;
 import org.voetsky.dispatcherBot.services.logic.commands.command.Command;
+import org.voetsky.dispatcherBot.services.logic.commands.commandFunctions.Chain;
+import org.voetsky.dispatcherBot.services.logic.commands.commandFunctions.EditSong;
+import org.voetsky.dispatcherBot.services.logic.commands.commandFunctions.InlineKeyboard;
 import org.voetsky.dispatcherBot.services.output.messageMakerService.MessageMakerService;
-import org.voetsky.dispatcherBot.services.repo.RepoController;
+import org.voetsky.dispatcherBot.services.repoServices.mainRepoService.MainService;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.voetsky.dispatcherBot.UserState.*;
+import static org.voetsky.dispatcherBot.UserState.AWAITING_FOR_BUTTON;
+import static org.voetsky.dispatcherBot.UserState.AWAITING_FOR_VOICE;
 import static org.voetsky.dispatcherBot.WhoWillSing.*;
-import static org.voetsky.dispatcherBot.services.logic.commands.command.Commands.VOICE_ADD_COMMAND;
-import static org.voetsky.dispatcherBot.services.logic.commands.command.Commands.WHO_WILL_SING;
+import static org.voetsky.dispatcherBot.services.logic.commands.command.Commands.VOICE_ADD;
 
 @Log4j
 @AllArgsConstructor
-public class WhoWillSing implements Command {
-    private final String action = WHO_WILL_SING.toString();
-    private final RepoController repoController;
+public class WhoWillSing implements Command, Chain, EditSong, InlineKeyboard {
+    private final MainService mainRepoService;
     private final MessageMakerService messageMakerService;
 
     @Override
@@ -39,36 +41,14 @@ public class WhoWillSing implements Command {
 
     @Override
     public SendMessage callback(Update update) {
-        /// TODO: 14.12.2023 код не выполняется вообще, вынести эту часть в отдельную команду
-        String callbackMessage = update.getCallbackQuery().getData();
-        Song song = new Song();
-
-        if (callbackMessage.equals(messageMakerService
-                .getTextFromProperties(update, "whoWillSing.b1.m"))) {
-
-            song.setWhoWillSing(ADULT);
-            repoController.updateSong(update, song);
-
-        } else if (callbackMessage.equals(messageMakerService
-                .getTextFromProperties(update, "whoWillSing.b2.m"))) {
-
-            song.setWhoWillSing(ADULT_AND_CHILD);
-            repoController.updateSong(update, song);
-
-        } else if (callbackMessage.equals(messageMakerService
-                .getTextFromProperties(update, "whoWillSing.b3.m"))) {
-            song.setWhoWillSing(CHILD);
-            repoController.updateSong(update, song);
-        }
-
-        var msg = messageMakerService.makeSendMessage(
-                update, VOICE_ADD_COMMAND.toString());
+        editSong(update);
+        var msg = putNextCommand(update, VOICE_ADD.toString());
         changeState(update, AWAITING_FOR_VOICE);
         return msg;
-
     }
 
-    private InlineKeyboardMarkup getInlineKeyboardMarkup(Update update) {
+    @Override
+    public InlineKeyboardMarkup getInlineKeyboardMarkup(Update update) {
         InlineKeyboardMarkup markupInline = new InlineKeyboardMarkup();
         List<List<InlineKeyboardButton>> rowsInline = new ArrayList<>();
         List<InlineKeyboardButton> rowInline = new ArrayList<>();
@@ -103,6 +83,35 @@ public class WhoWillSing implements Command {
         if (log.isDebugEnabled()) {
             log.debug(String.format("State changed to %s", userState));
         }
-        repoController.setUserState(update, userState);
+        mainRepoService.setUserState(update, userState);
+    }
+
+    @Override
+    public SendMessage putNextCommand(Update update, String command) {
+        return messageMakerService.makeSendMessage(update, command);
+    }
+
+    @Override
+    public void editSong(Update update) {
+        String callbackMessage = update.getCallbackQuery().getData();
+        Song song = createDefaultSong();
+
+        if (callbackMessage.equals(messageMakerService
+                .getTextFromProperties(update, "whoWillSing.b2.m"))) {
+            song.setWhoWillSing(ADULT_AND_CHILD);
+
+        } else if (callbackMessage.equals(messageMakerService
+                .getTextFromProperties(update, "whoWillSing.b3.m"))) {
+            song.setWhoWillSing(CHILD);
+        }
+        mainRepoService.updateSong(update, song);
+        mainRepoService.fillSongNullFields(update);
+    }
+
+    private Song createDefaultSong() {
+        Song song = new Song();
+        song.setWhoWillSing(ADULT);
+        song.setFilled(true);
+        return song;
     }
 }

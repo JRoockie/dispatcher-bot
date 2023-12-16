@@ -1,48 +1,40 @@
-package org.voetsky.dispatcherBot.services.logic.commands.newCommands;
+package org.voetsky.dispatcherBot.services.logic.commands;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.voetsky.dispatcherBot.UserState;
-import org.voetsky.dispatcherBot.repository.tgUser.TgUser;
 import org.voetsky.dispatcherBot.services.logic.commands.command.Command;
+import org.voetsky.dispatcherBot.services.logic.commands.commandFunctions.Chain;
 import org.voetsky.dispatcherBot.services.output.messageMakerService.MessageMakerService;
-import org.voetsky.dispatcherBot.services.repo.RepoController;
+import org.voetsky.dispatcherBot.services.repoServices.mainRepoService.MainService;
 
-import static org.voetsky.dispatcherBot.UserState.AWAITING_FOR_BUTTON;
+import static org.voetsky.dispatcherBot.UserState.AWAITING_FOR_AUDIO;
 import static org.voetsky.dispatcherBot.UserState.AWAITING_FOR_TEXT;
-import static org.voetsky.dispatcherBot.services.logic.commands.command.Commands.*;
+import static org.voetsky.dispatcherBot.services.logic.commands.command.Commands.HOW_MUCH_PEOPLE;
 
 @Log4j
 @AllArgsConstructor
-public class ClientNameCommand implements Command {
-
-    private final String action = CLIENT_NAME_COMMAND.toString();
-    private final RepoController repoController;
+public class Mp3Add implements Command, Chain {
+    private final MainService mainRepoService;
     private final MessageMakerService messageMakerService;
 
     @Override
     public SendMessage handle(Update update) {
         String text = messageMakerService.getTextFromProperties(
-                update, "clientNameCommand.c.m");
-        repoController.addOrder(update);
+                update, "mp3AddCommand.h.m");
         var msg = messageMakerService.makeSendMessage(update, text);
-        changeState(update, AWAITING_FOR_TEXT);
+        changeState(update, AWAITING_FOR_AUDIO);
         return msg;
     }
 
     @Override
     public SendMessage callback(Update update) {
-        String name = update.getMessage().getText();
-        TgUser tgUser = TgUser.builder()
-                .nameAsClient(name)
-                .build();
-        repoController.updateUser(update, tgUser);
-        var msg = messageMakerService.makeSendMessage(update, SONG_NAME_OR_MP3.toString());
-        changeState(update, AWAITING_FOR_BUTTON);
+        var msg = putNextCommand(update, HOW_MUCH_PEOPLE.toString());
+        changeState(update, AWAITING_FOR_TEXT);
+        mainRepoService.addMp3(update);
         return msg;
-
     }
 
     @Override
@@ -50,7 +42,11 @@ public class ClientNameCommand implements Command {
         if (log.isDebugEnabled()) {
             log.debug(String.format("State changed to %s", userState));
         }
-        repoController.setUserState(update, userState);
+        mainRepoService.setUserState(update, userState);
     }
 
+    @Override
+    public SendMessage putNextCommand(Update update, String command) {
+        return messageMakerService.makeSendMessage(update, command);
+    }
 }

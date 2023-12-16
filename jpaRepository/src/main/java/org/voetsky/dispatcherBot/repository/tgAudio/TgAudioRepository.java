@@ -2,7 +2,6 @@ package org.voetsky.dispatcherBot.repository.tgAudio;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.voetsky.dispatcherBot.repository.song.Song;
-import org.voetsky.dispatcherBot.repository.tgAudio.TgAudio;
 
 import java.util.List;
 

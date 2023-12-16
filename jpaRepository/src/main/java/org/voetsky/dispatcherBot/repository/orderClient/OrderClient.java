@@ -39,6 +39,6 @@ public class OrderClient implements Serializable {
 
     @CreationTimestamp
     private LocalDateTime date;
-    private Long phoneNumber;
+    private String phoneNumber;
 
 }
