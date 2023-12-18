@@ -4,11 +4,9 @@ import lombok.extern.log4j.Log4j;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
+import org.voetsky.dispatcherBot.configuration.RabbitConfiguration;
 import org.voetsky.dispatcherBot.service.messageutils.MakeMessage;
 import org.voetsky.dispatcherBot.service.output.updateProducer.UpdateProducer;
-
-import static org.voetsky.model.RabbitQueue.*;
-
 
 @Log4j
 @Component
@@ -17,10 +15,12 @@ public class UpdateController {
     private TelegramBot telegramBot;
     private final UpdateProducer updateProducer;
     private final MakeMessage makeMessage;
+    private final RabbitConfiguration rabbitConfiguration;
 
-    public UpdateController(UpdateProducer updateProducer, MakeMessage makeMessage) {
+    public UpdateController(UpdateProducer updateProducer, MakeMessage makeMessage, RabbitConfiguration rabbitConfiguration) {
         this.updateProducer = updateProducer;
         this.makeMessage = makeMessage;
+        this.rabbitConfiguration = rabbitConfiguration;
     }
 
     public void registerBot(TelegramBot telegramBot) {
@@ -90,19 +90,19 @@ public class UpdateController {
 
     private void processVoiceMessage(Update update) {
         setFileIsReceivedView(update);
-        updateProducer.produce(VOICE_MESSAGE_UPDATE, update);
+        updateProducer.produce(rabbitConfiguration.getVoiceMessageUpdateQueue(), update);
     }
 
     private void processAudioMessage(Update update) {
         setFileIsReceivedView(update);
-        updateProducer.produce(AUDIO_MESSAGE_UPDATE, update);
+        updateProducer.produce(rabbitConfiguration.getAudioMessageUpdateQueue(), update);
     }
 
     private void processTextMessage(Update update) {
-        updateProducer.produce(TEXT_MESSAGE_UPDATE, update);
+        updateProducer.produce(rabbitConfiguration.getTextMessageUpdateQueue(), update);
     }
 
     private void processButton(Update update) {
-        updateProducer.produce(BUTTON_UPDATE, update);
+        updateProducer.produce(rabbitConfiguration.getButtonMessageQueue(), update);
     }
 }

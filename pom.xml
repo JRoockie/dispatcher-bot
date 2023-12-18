@@ -11,7 +11,6 @@
 
     <modules>
         <module>dispatcher</module>
-        <module>rabbitQueues</module>
         <module>logicCore</module>
         <module>jpaRepository</module>
     </modules>

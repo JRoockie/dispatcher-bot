@@ -5,8 +5,6 @@ import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.voetsky.dispatcherBot.controller.UpdateController;
 
-import static org.voetsky.model.RabbitQueue.ANSWER_MESSAGE;
-
 @Service
 public class AnswerConsumerImpl implements AnswerConsumer {
     private final UpdateController updateController;
@@ -16,7 +14,7 @@ public class AnswerConsumerImpl implements AnswerConsumer {
     }
 
     @Override
-    @RabbitListener(queues = ANSWER_MESSAGE)
+    @RabbitListener(queues = "${spring.rabbitmq.queues.answer}")
     public void consume(SendMessage sendMessage) {
         updateController.setView(sendMessage);
     }
