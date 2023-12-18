@@ -8,10 +8,7 @@ import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Properties;
+import java.util.*;
 
 @Log4j
 @Service
@@ -20,6 +17,7 @@ public class LogicCoreLocalizationUnit implements LogicCoreLocalization {
     private final String DEFAULT_LANG = "ru";
 
     @PostConstruct
+    @Override
     public void initLocalizations() throws IOException {
         this.loadDic("ru");
         this.loadDic("kk");
@@ -28,6 +26,7 @@ public class LogicCoreLocalizationUnit implements LogicCoreLocalization {
         }
     }
 
+    @Override
     public void loadDic(String lang) throws IOException {
         if (log.isDebugEnabled()){
             log.debug(String.format("LogicCore: Loading language %S", lang));
@@ -48,6 +47,7 @@ public class LogicCoreLocalizationUnit implements LogicCoreLocalization {
         }
     }
 
+    @Override
     public String get(String lang, String key) {
         try {
             return dic.get(lang).get(key);

@@ -13,6 +13,7 @@
         <module>dispatcher</module>
         <module>logicCore</module>
         <module>jpaRepository</module>
+        <module>browserAdminView</module>
     </modules>
 
     <properties>

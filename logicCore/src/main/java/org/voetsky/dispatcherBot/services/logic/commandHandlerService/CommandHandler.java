@@ -3,9 +3,18 @@ package org.voetsky.dispatcherBot.services.logic.commandHandlerService;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
+import javax.annotation.PostConstruct;
+
 public interface CommandHandler {
 
+    @PostConstruct
+    void initCommands();
+
     SendMessage updateReceived(Update update);
+
+    boolean hasForceCallback(String text, Update update);
+
+    SendMessage forceCallback(Update update, String text);
 
     SendMessage processCommand(Update update, String text, String chatId);
 

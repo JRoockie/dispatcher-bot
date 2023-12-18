@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.voetsky.dispatcherBot.exceptions.ParentException.LogicCoreException;
-import org.voetsky.dispatcherBot.services.input.messageValidationService.MessageValidationService;
+import org.voetsky.dispatcherBot.services.input.messageValidationService.MessageValidation;
 import org.voetsky.dispatcherBot.services.logic.commandHandlerService.CommandHandler;
 import org.voetsky.dispatcherBot.services.output.messageMakerService.MessageMakerService;
 import org.voetsky.dispatcherBot.services.output.producerService.ProducerService;
@@ -18,12 +18,12 @@ public class ReceiverController {
 
     private final CommandHandler commandHandler;
     private final MessageMakerService messageMakerService;
-    private final MessageValidationService messageValidationService;
+    private final MessageValidation messageValidation;
     private final ProducerService producerService;
 
     public void processTextMessage(Update update) {
         try {
-            if (messageValidationService.isValid(update)) {
+            if (messageValidation.isValid(update)) {
                 SendMessage sendMessage = updateReceived(update);
                 sendMessageToView(sendMessage);
             }
@@ -34,7 +34,7 @@ public class ReceiverController {
 
     public void consumeAudioMessageUpdates(Update update) {
         try {
-            if (messageValidationService.isValid(update)) {
+            if (messageValidation.isValid(update)) {
                 sendMessageToView(updateReceived(update));
             }
         } catch (LogicCoreException e) {
@@ -44,7 +44,7 @@ public class ReceiverController {
 
     public void consumeVoiceMessageUpdates(Update update) {
         try {
-            if (messageValidationService.isValid(update)) {
+            if (messageValidation.isValid(update)) {
                 sendMessageToView(updateReceived(update));
             }
         } catch (LogicCoreException e) {
@@ -54,7 +54,7 @@ public class ReceiverController {
 
     public void consumeButtonUpdates(Update update) {
         try {
-            if (messageValidationService.isValid(update)) {
+            if (messageValidation.isValid(update)) {
                 sendMessageToView(updateReceived(update));
             }
         } catch (LogicCoreException e) {

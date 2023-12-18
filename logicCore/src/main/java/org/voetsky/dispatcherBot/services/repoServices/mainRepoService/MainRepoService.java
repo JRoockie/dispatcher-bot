@@ -13,7 +13,7 @@ import org.voetsky.dispatcherBot.services.repo.songService.SongRepo;
 import org.voetsky.dispatcherBot.services.repo.tgAudioService.TgAudioRepo;
 import org.voetsky.dispatcherBot.services.repo.tgUserService.TgUserRepo;
 import org.voetsky.dispatcherBot.services.repo.tgVoiceService.TgVoiceRepo;
-import org.voetsky.dispatcherBot.services.repoServices.comparingEntityService.ComparingEntityService;
+import org.voetsky.dispatcherBot.services.repoServices.comparingEntityService.ComparingEntity;
 
 @Log4j
 @AllArgsConstructor
@@ -25,7 +25,7 @@ public class MainRepoService implements MainService {
     private final TgUserRepo tgUserRepo;
     private final TgAudioRepo tgAudioRepo;
     private final TgVoiceRepo tgVoiceRepo;
-    private final ComparingEntityService comparingEntityService;
+    private final ComparingEntity comparingEntity;
 
     @Override
     public void setUserState(Update update, UserState userState) {
@@ -35,7 +35,7 @@ public class MainRepoService implements MainService {
     @Override
     public void updateUser(Update update, TgUser newTgUser) {
         TgUser updatable = getTgUserFromUpdate(update);
-        updatable = comparingEntityService.tgUserUpdate(newTgUser, updatable);
+        updatable = comparingEntity.tgUserUpdate(newTgUser, updatable);
         tgUserRepo.save(updatable);
     }
 
@@ -73,7 +73,7 @@ public class MainRepoService implements MainService {
             return;
         }
         Song original = songRepo.findSongById(tgUser.getCurrentSongId());
-        original = comparingEntityService.songUpdate(song, original);
+        original = comparingEntity.songUpdate(song, original);
         songRepo.save(original);
     }
 
@@ -88,7 +88,7 @@ public class MainRepoService implements MainService {
     public void updateOrder(Update update, OrderClient newOrderClient) {
         TgUser tgUser = getTgUserFromUpdate(update);
         OrderClient original = orderClientRepo.findOrderClientById(tgUser.getCurrentOrderId());
-        original = comparingEntityService.orderClientUpdate(newOrderClient, original);
+        original = comparingEntity.orderClientUpdate(newOrderClient, original);
         orderClientRepo.save(original);
     }
 
@@ -105,7 +105,17 @@ public class MainRepoService implements MainService {
         Long songPrice = oneSongPrice * songCount;
         Long singerPrice = oneSingerPrice * singerCount;
         Long score = calculateScore(songPrice, singerPrice, discount);
-        bill = formatBill(bill, singerCount, oneSingerPrice, singerPrice, hoursCount, songCount, songPrice, discount, score);
+
+        bill = formatBill(
+                bill,
+                singerCount,
+                oneSingerPrice,
+                singerPrice,
+                hoursCount,
+                songCount,
+                songPrice,
+                discount,
+                score);
 
         OrderClient orderClient = new OrderClient();
         orderClient.setPrice(String.valueOf(score));
@@ -128,7 +138,10 @@ public class MainRepoService implements MainService {
 
     private String formatBill(String bill, int singerCount, Long oneSingerPrice, Long singerPrice, double hoursCount,
                               int songCount, Long songPrice, long discount, Long score) {
-        return String.format(bill, singerCount, oneSingerPrice, singerPrice, hoursCount, songCount, songPrice, discount, score);
+        return String.format(bill, singerCount,
+                oneSingerPrice, singerPrice,
+                hoursCount, songCount,
+                songPrice, discount, score);
     }
 
 

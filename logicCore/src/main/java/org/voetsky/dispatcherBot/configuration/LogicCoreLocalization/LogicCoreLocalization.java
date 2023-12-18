@@ -12,4 +12,6 @@ public interface LogicCoreLocalization {
 
     String getDefault(String key);
 
+    void initLocalizations() throws IOException;
+
 }

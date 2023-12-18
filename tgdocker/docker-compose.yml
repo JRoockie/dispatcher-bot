@@ -3,22 +3,23 @@ version: '3'
 services:
   postgres:
     image: postgres:14.5
-    container_name: postgres
-    hostname: postgres
+    container_name: tg-bot-postgres
+    hostname: tg-bot-postgres
     ports:
       - "5434:5432"
     environment:
       POSTGRES_USER: roockie
       POSTGRES_PASSWORD: 1
-      POSTGRES_DB: postgres
+      POSTGRES_DB: tg-bot-postgres
     volumes:
       - ./pgdata:/var/lib/postgresql/data
     restart: unless-stopped
 
+
   rabbitmq:
     image: rabbitmq:3.11.0-management
-    container_name: rabbitmq
-    hostname: rabbitmq
+    container_name: tg-bot-rabbitmq
+    hostname: tg-bot-rabbitmq
     ports:
       - "5672:5672"
       - "15672:15672"
@@ -30,5 +31,23 @@ services:
     command: bash -c "rabbitmq-server && rabbitmqctl add_user roockie password && rabbitmqctl set_user_tags roockie administrator && rabbitmqctl set_permissions -p / roockie '.*' '.*' '.*'"
     restart: unless-stopped
 
+
+  jenkins:
+    image: jenkins/jenkins:lts
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./jenkins_home:/var/jenkins_home
+  ssh-agent:
+    image: jenkins/ssh-agent
+
+
+
+
 volumes:
   rabbitmq_data:
+  jenkins_home:
+
+
+
+

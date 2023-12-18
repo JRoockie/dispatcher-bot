@@ -25,17 +25,18 @@ public class CommandHandlerService implements CommandHandler {
     private Map<String, Command> actions;
     private final Initialization initialization;
 
-
     public CommandHandlerService(MessageMaker messageMaker, Initialization commandInit) {
         this.messageMaker = messageMaker;
         this.initialization = commandInit;
     }
 
     @PostConstruct
+    @Override
     public void initCommands() {
         actions = initialization.initCommands();
     }
 
+    @Override
     public SendMessage updateReceived(Update update) {
         var text = getMessageText(update);
         var chatId = getChatId(update);
@@ -60,7 +61,8 @@ public class CommandHandlerService implements CommandHandler {
                 messageMaker.getTextFromProperties(update, "fatal.err"));
     }
 
-    private boolean hasForceCallback(String text, Update update) {
+    @Override
+    public boolean hasForceCallback(String text, Update update) {
 
         if (text.startsWith("*")) {
             if (log.isDebugEnabled()) {
@@ -82,7 +84,8 @@ public class CommandHandlerService implements CommandHandler {
         return false;
     }
 
-    private SendMessage forceCallback(Update update, String text) {
+    @Override
+    public SendMessage forceCallback(Update update, String text) {
         text = text.replace("*", "");
         if (log.isDebugEnabled()) {
             log.debug(String.format("FORCE CALLBACK command part: %s",
@@ -95,7 +98,7 @@ public class CommandHandlerService implements CommandHandler {
             throw new LogicCoreException("Команды не существует");
         }
     }
-
+    @Override
     public SendMessage processCommand(Update update, String text, String chatId) {
         if (actions.containsKey(text)) {
             return processHandle(update, text, chatId);
@@ -105,6 +108,7 @@ public class CommandHandlerService implements CommandHandler {
         throw new LogicCoreException("tech.err.command");
     }
 
+    @Override
     public SendMessage processHandle(Update update, String text, String chatId) {
         if (log.isDebugEnabled()) {
             log.debug(String.format("NON-CALLBACK command part: %s",
@@ -122,6 +126,7 @@ public class CommandHandlerService implements CommandHandler {
         }
     }
 
+    @Override
     public SendMessage processCallBack(Update update, String chatId) {
         if (log.isDebugEnabled()) {
             log.debug(String.format("Executing CALLBACK command part: %s",
@@ -143,10 +148,12 @@ public class CommandHandlerService implements CommandHandler {
         return processHandle(update, text, chatId);
     }
 
+    @Override
     public Boolean hasChain(SendMessage s) {
         return actions.containsKey(s.getText());
     }
 
+    @Override
     public SendMessage processChain(SendMessage s, Update update) {
         String text = s.getText();
         if (hasChain(s)) {
@@ -166,12 +173,14 @@ public class CommandHandlerService implements CommandHandler {
         return s;
     }
 
+    @Override
     public String getChatId(Update update) {
         return update.hasCallbackQuery() ?
                 update.getCallbackQuery().getMessage().getChatId().toString() :
                 update.getMessage().getChatId().toString();
     }
 
+    @Override
     public String getMessageText(Update update) {
         return update.hasCallbackQuery() ? update.getCallbackQuery().getData() : update.getMessage().getText();
     }
