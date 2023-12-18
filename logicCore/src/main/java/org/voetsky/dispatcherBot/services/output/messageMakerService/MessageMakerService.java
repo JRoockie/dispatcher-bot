@@ -60,4 +60,12 @@ public class MessageMakerService implements MessageMaker {
         return text;
     }
 
+    public SendMessage processError(Exception e, Update update) {
+        if (log.isDebugEnabled()) {
+            log.error("ERROR", e);
+        }
+        String t = getTextFromProperties(update, e.getMessage());
+        return makeSendMessage(update, t);
+    }
+
 }

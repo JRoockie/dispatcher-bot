@@ -63,29 +63,16 @@ public class ReceiverController {
     }
 
     public void processError(Exception e, Update update) {
-        if (log.isDebugEnabled()) {
-            log.debug(e);
-        }
-        String t = messageMakerService.getTextFromProperties(update, e.getMessage());
-        sendErrorMessageToView(update, t);
+        SendMessage s = messageMakerService.processError(e, update);
+        sendMessageToView(s);
     }
 
     public SendMessage updateReceived(Update update) {
         return commandHandler.updateReceived(update);
     }
 
-    public SendMessage makeSendMessage(Update update, String text) {
-        String t = messageMakerService.getTextFromProperties(update, text);
-        return messageMakerService.makeSendMessage(update, t);
-    }
-
     public void sendMessageToView(SendMessage s) {
         producerService.producerAnswer(s);
-    }
-
-    public void sendErrorMessageToView(Update update, String err) {
-        SendMessage sendMessage = makeSendMessage(update, err);
-        sendMessageToView(sendMessage);
     }
 
 }

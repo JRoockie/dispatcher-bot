@@ -37,7 +37,6 @@ public class UpdateController {
                 log.error(String.format("Unsupported message type is received: %s", update));
             }
         }
-
     }
 
     private void distributeMessagesByType(Update update) {
@@ -54,7 +53,6 @@ public class UpdateController {
         } else {
             setUnsupportedMessageTypeView(update);
         }
-
     }
 
     private void loggingUpdate(Update update) {

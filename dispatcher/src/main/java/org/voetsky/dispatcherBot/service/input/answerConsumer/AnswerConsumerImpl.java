@@ -20,5 +20,4 @@ public class AnswerConsumerImpl implements AnswerConsumer {
     public void consume(SendMessage sendMessage) {
         updateController.setView(sendMessage);
     }
-
 }

@@ -56,9 +56,20 @@ public class ClientName implements Command, Chain, EditUser {
     @Override
     public void editTgUser(Update update) {
         String name = update.getMessage().getText();
-        TgUser tgUser = TgUser.builder()
-                .nameAsClient(name)
-                .build();
-        mainRepoService.updateUser(update, tgUser);
+        if (!isNumber(name)) {
+            TgUser tgUser = TgUser.builder()
+                    .nameAsClient(name)
+                    .build();
+            mainRepoService.updateUser(update, tgUser);
+        }
+    }
+
+    private boolean isNumber(String data) {
+        try {
+            Long checkNumber = Long.valueOf(data);
+        } catch (NumberFormatException e) {
+            return false;
+        }
+        return true;
     }
 }
