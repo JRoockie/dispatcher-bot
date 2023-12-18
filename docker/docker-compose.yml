@@ -1,0 +1,34 @@
+version: '3'
+
+services:
+  postgres:
+    image: postgres:14.5
+    container_name: postgres
+    hostname: postgres
+    ports:
+      - "5434:5432"
+    environment:
+      POSTGRES_USER: roockie
+      POSTGRES_PASSWORD: 1
+      POSTGRES_DB: postgres
+    volumes:
+      - ./pgdata:/var/lib/postgresql/data
+    restart: unless-stopped
+
+  rabbitmq:
+    image: rabbitmq:3.11.0-management
+    container_name: rabbitmq
+    hostname: rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    volumes:
+      - ./rabbitmq_data:/var/lib/rabbitmq
+    environment:
+      RABBITMQ_DEFAULT_USER: roockie
+      RABBITMQ_DEFAULT_PASS: password
+    command: bash -c "rabbitmq-server && rabbitmqctl add_user roockie password && rabbitmqctl set_user_tags roockie administrator && rabbitmqctl set_permissions -p / roockie '.*' '.*' '.*'"
+    restart: unless-stopped
+
+volumes:
+  rabbitmq_data:
