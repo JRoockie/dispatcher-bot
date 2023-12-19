@@ -11,6 +11,9 @@ public class ComparingEntityService implements ComparingEntity {
     public OrderClient orderClientUpdate(
             OrderClient newOrder, OrderClient updatable) {
 
+        if (newOrder.isSuccessful()) {
+            updatable.setSuccessful(true);
+        }
         if (newOrder.getNameAsClient() != null) {
             updatable.setNameAsClient(newOrder.getNameAsClient());
         }

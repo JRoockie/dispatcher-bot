@@ -6,12 +6,16 @@
 </head>
 <body>
 
-<p th:text="${'Заявки на запись: '}">VALUE</p>
-<div th:each="order : ${orders}">
-    <a th:href="@{/order/{id}(id=${order.getId})}"
-       th:text="${order.getPhoneNumber + ', ' + order.getNameAsClient}">order</a>
-</div>
+<p th:text="${'Заявки '}">VALUE</p>
+
+<a th:href="@{/orders/new}"
+   th:text="${'Новые заявки'}"></a>
 <br/>
+<br/>
+<a th:href="@{/orders/fin}"
+   th:text="${'Обработанные заявки'}"></a>
+
+
 <hr/>
 </body>
 </html>

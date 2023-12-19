@@ -37,10 +37,10 @@ public class Song implements Serializable {
     private OrderClient orderClient;
 
 
-    @OneToOne(cascade = CascadeType.MERGE)
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     private TgAudio tgAudio;
 
-    @OneToOne(cascade = CascadeType.MERGE)
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     private TgVoice tgVoice;
 
     private String songName;

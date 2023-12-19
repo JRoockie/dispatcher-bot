@@ -11,15 +11,44 @@
 <p th:text="${'Имя: ' + order.getNameAsClient()}">VALUE</p>
 <p th:text="${'Цена: ' + order.getPrice()}">VALUE</p>
 <p th:text="${'Комменатрий: ' + order.getComment()}">VALUE</p>
-<br/>
 <hr/>
 <p th:text="${'Песни : '}">VALUE</p>
 <div th:each="song : ${songs}">
     <a th:href="@{/songs/{id}(id=${song.getId})}"
-       th:text="${'ID: ' + song.getId() +', Название: ' + song.getSongName()}"
-
-    >song
+       th:text="${'ID: ' + song.getId() +', Название: ' + song.getSongName()}">song
     </a>
 </div>
+<br>
+<hr>
+<form th:if="${!order.isSuccessful()}" th:action="@{/updateOrderClientTrue}" method="post">
+    <input type="hidden" th:name="orderId" th:value="${order.getId()}"/>
+    <button type="submit">Человек записан в календарь</button>
+</form>
+<form th:if="${order.isSuccessful()}" th:action="@{/updateOrderClientFalse}" method="post">
+    <input type="hidden" th:name="orderId" th:value="${order.getId()}"/>
+    <button type="submit">В процессе записи</button>
+</form>
+<hr>
+<br>
+<a th:href="@{/orders/new}"
+   th:text="${'Новые заявки'}"></a>
+<br/>
+<br/>
+<a th:href="@{/orders/fin}"
+   th:text="${'Обработанные заявки'}"></a>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+
+<form th:action="@{/deleteOrder}" method="post">
+    <input type="hidden" th:name="orderId" th:value="${order.getId()}"/>
+    <button type="submit">Удалить заказ</button>
+</form>
 </body>
 </html>

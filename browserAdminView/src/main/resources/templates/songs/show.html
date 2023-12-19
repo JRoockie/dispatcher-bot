@@ -13,9 +13,13 @@
 <p th:text="${'Кто будет петь: ' + song.getWhoWillSing()}">VALUE</p>
 
 <th:block th:if="${song.getHasAudio}">
-  <a th:href="@{/data/getAudio(id=${song.getId})}" th:text="${'Ссылка на MP3'}">Audio Link</a>
+  <a th:href="@{/data/getAudio(id=${song.getId})}" th:text="${'Скачать MP3'}">Audio Link</a>
 </th:block>
-<a th:href="@{/data/getVoice(id=${song.getId})}" th:text="${'Ссылка на голос'}">Voice Link</a>
+<a th:href="@{/data/getVoice(id=${song.getId})}" th:text="${'Скачать голосовое сообщение'}">Voice Link</a>
 <hr/>
+<br>
+<form th:action="@{/orders/{id}(id=${song.getOrderClient().getId()})}" method="get">
+  <button type="submit">Назад</button>
+</form>
 </body>
 </html>

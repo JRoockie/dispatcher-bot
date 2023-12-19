@@ -22,6 +22,7 @@ public class OrderClientRepositoryService implements OrderClientRepo {
         OrderClient orderClient = OrderClient.builder()
                 .tgUser(tgUser)
                 .isAccepted(false)
+                .successful(false)
                 .build();
         return orderClientRepository.save(orderClient);
     }
