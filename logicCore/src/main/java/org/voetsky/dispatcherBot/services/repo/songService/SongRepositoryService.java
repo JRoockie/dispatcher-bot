@@ -24,13 +24,6 @@ public class SongRepositoryService implements SongRepo {
         return songRepository.save(song);
     }
 
-//    public Song defaultSong(OrderClient orderClient) {
-//        return Song.builder()
-//                .orderClient(orderClient)
-//                .isFilled(false)
-//                .build();
-//    }
-
     @Override
     public List<Song> findSongsByOrderClient(OrderClient orderClient) {
         return songRepository.findSongsByOrderClient(orderClient);

@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Show</title>
+</head>
+
+<body>
+<p th:text="${'Дата и время: ' + order.getDate()}">VALUE</p>
+<p th:text="${'Номер телефона: ' + order.getPhoneNumber()}">VALUE</p>
+<p th:text="${'Имя: ' + order.getNameAsClient()}">VALUE</p>
+<p th:text="${'Цена: ' + order.getPrice()}">VALUE</p>
+<p th:text="${'Комменатрий: ' + order.getComment()}">VALUE</p>
+<br/>
+<hr/>
+<p th:text="${'Песни : '}">VALUE</p>
+<div th:each="song : ${songs}">
+    <a th:href="@{/songs/{id}(id=${song.getId})}"
+       th:text="${'ID: ' + song.getId() +', Название: ' + song.getSongName()}"
+
+    >song
+    </a>
+</div>
+</body>
+</html>

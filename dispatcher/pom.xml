@@ -9,7 +9,6 @@
 
     <artifactId>dispatcher</artifactId>
     <packaging>jar</packaging>
-
     <name>dispatcher</name>
 
     <dependencies>

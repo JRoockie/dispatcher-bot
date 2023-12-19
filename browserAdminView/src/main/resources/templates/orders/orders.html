@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Index</title>
+</head>
+<body>
+
+<p th:text="${'Заявки на запись: '}">VALUE</p>
+<div th:each="order : ${orders}">
+    <a th:href="@{/order/{id}(id=${order.getId})}"
+       th:text="${order.getPhoneNumber + ', ' + order.getNameAsClient}">order</a>
+</div>
+<br/>
+<hr/>
+</body>
+</html>

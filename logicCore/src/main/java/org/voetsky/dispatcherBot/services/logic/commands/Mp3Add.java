@@ -47,6 +47,9 @@ public class Mp3Add implements Command, Chain {
 
     @Override
     public SendMessage putNextCommand(Update update, String command) {
+        if (log.isDebugEnabled()) {
+            log.debug(String.format("Put command for chain evoke %S", command));
+        }
         return messageMaker.makeSendMessage(update, command);
     }
 }

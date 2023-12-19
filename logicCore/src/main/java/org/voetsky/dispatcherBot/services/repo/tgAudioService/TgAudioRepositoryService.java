@@ -28,7 +28,10 @@ public class TgAudioRepositoryService implements TgAudioRepo {
 
         Song song = songRepositoryService.findSongById(tgUser.getCurrentSongId());
         tgAudio.setSong(song);
-        tgAudioRepository.save(tgAudio);
+        tgAudio = tgAudioRepository.save(tgAudio);
+
+        song.setTgAudio(tgAudio);
+        song.setHasAudio(true);
         songRepositoryService.save(song);
     }
 

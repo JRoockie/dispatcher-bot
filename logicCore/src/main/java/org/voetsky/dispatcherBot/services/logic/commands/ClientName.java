@@ -5,7 +5,7 @@ import lombok.extern.log4j.Log4j;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.voetsky.dispatcherBot.UserState;
-import org.voetsky.dispatcherBot.repository.tgUser.TgUser;
+import org.voetsky.dispatcherBot.repository.orderClient.OrderClient;
 import org.voetsky.dispatcherBot.services.logic.commands.command.Command;
 import org.voetsky.dispatcherBot.services.logic.commands.commandFunctions.Chain;
 import org.voetsky.dispatcherBot.services.logic.commands.commandFunctions.EditUser;
@@ -50,6 +50,9 @@ public class ClientName implements Command, Chain, EditUser {
 
     @Override
     public SendMessage putNextCommand(Update update, String command) {
+        if (log.isDebugEnabled()) {
+            log.debug(String.format("Put command for chain evoke %S", command));
+        }
         return messageMaker.makeSendMessage(update, command);
     }
 
@@ -57,10 +60,10 @@ public class ClientName implements Command, Chain, EditUser {
     public void editTgUser(Update update) {
         String name = update.getMessage().getText();
         if (!isNumber(name)) {
-            TgUser tgUser = TgUser.builder()
+            OrderClient orderClient = OrderClient.builder()
                     .nameAsClient(name)
                     .build();
-            mainRepoService.updateUser(update, tgUser);
+            mainRepoService.updateOrder(update, orderClient);
         }
     }
 

@@ -25,7 +25,7 @@ public class TgVoice {
 
     private String telegramFileId;
 
-    @ManyToOne
+    @OneToOne
     @JoinColumn(name = "song_id", referencedColumnName = "id")
     private Song song;
 

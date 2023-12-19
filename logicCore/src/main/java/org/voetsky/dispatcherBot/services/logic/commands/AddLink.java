@@ -49,6 +49,9 @@ public class AddLink implements Command, Chain, EditSong {
 
     @Override
     public SendMessage putNextCommand(Update update, String command) {
+        if (log.isDebugEnabled()) {
+            log.debug(String.format("Put command for chain evoke %S", command));
+        }
         return messageMaker.makeSendMessage(update, command);
     }
 

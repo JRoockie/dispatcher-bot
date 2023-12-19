@@ -9,4 +9,6 @@ public interface OrderClientRepository extends JpaRepository<OrderClient, Long> 
     List<OrderClient> findOrderClientsByTgUser(TgUser tgUser);
 
     OrderClient findOrderClientById(Long id);
+
+    List<OrderClient> findOrderClientsByIsAcceptedTrue();
 }

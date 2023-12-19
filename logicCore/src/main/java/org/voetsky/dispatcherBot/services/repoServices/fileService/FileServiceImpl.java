@@ -122,7 +122,6 @@ public class FileServiceImpl implements FileService {
         } catch (MalformedURLException e) {
             throw new RuntimeException(e);
         }
-
         return getChunkyBytes(urlObj);
     }
 

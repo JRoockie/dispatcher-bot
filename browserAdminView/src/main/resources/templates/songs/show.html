@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Show</title>
+</head>
+
+<body>
+<p th:text="${'Дата и время: ' + song.getDate()}">VALUE</p>
+<p th:text="${'Название песни: ' + song.getSongName()}">VALUE</p>
+<p th:text="${'Ссылка на Youtube: ' + song.getLink()}">VALUE</p>
+<p th:text="${'Кол-во голосов: ' + song.getSingerCount()}">VALUE</p>
+<p th:text="${'Кто будет петь: ' + song.getWhoWillSing()}">VALUE</p>
+
+<th:block th:if="${song.getHasAudio}">
+  <a th:href="@{/data/getAudio(id=${song.getId})}" th:text="${'Ссылка на MP3'}">Audio Link</a>
+</th:block>
+<a th:href="@{/data/getVoice(id=${song.getId})}" th:text="${'Ссылка на голос'}">Voice Link</a>
+<hr/>
+</body>
+</html>

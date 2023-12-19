@@ -48,6 +48,9 @@ public class AddComment implements Command, Chain, EditOrder {
 
     @Override
     public SendMessage putNextCommand(Update update, String command) {
+        if (log.isDebugEnabled()) {
+            log.debug(String.format("Put command for chain evoke %S", command));
+        }
         return messageMaker.makeSendMessage(update, command);
     }
 

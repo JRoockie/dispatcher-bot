@@ -34,7 +34,6 @@ public class TgUser {
     private String firstName;
     private String lastName;
     private String username;
-    private String nameAsClient;
 
     private Long currentSongId;
     private Long currentOrderId;

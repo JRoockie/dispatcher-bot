@@ -12,7 +12,6 @@ import org.voetsky.dispatcherBot.repository.tgVoice.TgVoice;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.util.List;
 
 
 @Builder
@@ -37,15 +36,17 @@ public class Song implements Serializable {
     @JoinColumn(name = "order_client_id", referencedColumnName = "id")
     private OrderClient orderClient;
 
-    @OneToMany(mappedBy = "song", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<TgAudio> tgAudios;
 
-    @OneToMany(mappedBy = "song", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<TgVoice> tgVoices;
+    @OneToOne(cascade = CascadeType.MERGE)
+    private TgAudio tgAudio;
+
+    @OneToOne(cascade = CascadeType.MERGE)
+    private TgVoice tgVoice;
 
     private String songName;
     private String link;
     private Integer singerCount;
+    private Boolean hasAudio = false;
 
     @Enumerated(EnumType.STRING)
     private WhoWillSing whoWillSing;

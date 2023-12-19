@@ -31,7 +31,10 @@ public class TgVoiceRepositoryService implements TgVoiceRepo {
         Song song = songRepositoryService.findSongById(tgUser.getCurrentSongId());
 
         tgVoice.setSong(song);
-        tgVoiceRepository.save(tgVoice);
+        tgVoice = tgVoiceRepository.save(tgVoice);
+
+        song.setTgVoice(tgVoice);
+        songRepositoryService.save(song);
     }
 
 }

@@ -26,7 +26,7 @@ public class TgAudio {
     private String telegramFileId;
     private String audioName;
 
-    @ManyToOne
+    @OneToOne
     @JoinColumn(name = "song_id", referencedColumnName = "id")
     private Song song;
 
@@ -34,6 +34,7 @@ public class TgAudio {
     private BinaryContent binaryContent;
     private String mimeType;
     private Long fileSize;
+
 
 
 }

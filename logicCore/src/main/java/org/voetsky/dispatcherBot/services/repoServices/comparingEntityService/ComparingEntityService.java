@@ -11,6 +11,9 @@ public class ComparingEntityService implements ComparingEntity {
     public OrderClient orderClientUpdate(
             OrderClient newOrder, OrderClient updatable) {
 
+        if (newOrder.getNameAsClient() != null) {
+            updatable.setNameAsClient(newOrder.getNameAsClient());
+        }
         if (newOrder.getComment() != null) {
             updatable.setComment(newOrder.getComment());
         }
@@ -28,12 +31,14 @@ public class ComparingEntityService implements ComparingEntity {
 
 
     public Song songUpdate(Song newSong, Song updatable) {
-
-        if (newSong.getTgAudios() != null) {
-            updatable.setTgAudios(newSong.getTgAudios());
+        if (newSong.getHasAudio() != null){
+            updatable.setHasAudio(newSong.getHasAudio());
         }
-        if (newSong.getTgVoices() != null) {
-            updatable.setTgVoices(newSong.getTgVoices());
+        if (newSong.getTgAudio() != null) {
+            updatable.setTgAudio(newSong.getTgAudio());
+        }
+        if (newSong.getTgVoice() != null) {
+            updatable.setTgVoice(newSong.getTgVoice());
         }
         if (newSong.getSongName() != null) {
             updatable.setSongName(newSong.getSongName());
@@ -56,9 +61,6 @@ public class ComparingEntityService implements ComparingEntity {
     public TgUser tgUserUpdate(TgUser newUser, TgUser updatable) {
         if (newUser.getOrderList() != null) {
             updatable.setOrderList(newUser.getOrderList());
-        }
-        if (newUser.getNameAsClient() != null) {
-            updatable.setNameAsClient(newUser.getNameAsClient());
         }
         if (newUser.getCurrentOrderId() != null) {
             updatable.setCurrentOrderId(newUser.getCurrentOrderId());
