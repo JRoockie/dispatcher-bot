@@ -6,7 +6,7 @@
 </head>
 <body>
 
-<p th:text="${'Заявки на запись: '}">VALUE</p>
+<p th:text="${'Обработанные заявки на запись: '}">VALUE</p>
 <div th:each="order : ${orders}">
     <a th:href="@{/orders/{id}(id=${order.getId})}"
        th:text="${order.getPhoneNumber + ', ' + order.getNameAsClient}">order</a>
@@ -14,6 +14,7 @@
 <br/>
 <form th:method="get" th:action="@{/}">
     <input type="submit" value="Назад"/>
-    <hr/>
+</form>
+<hr/>
 </body>
 </html>
