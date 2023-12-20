@@ -11,8 +11,10 @@ public class ComparingEntityService implements ComparingEntity {
     public OrderClient orderClientUpdate(
             OrderClient newOrder, OrderClient updatable) {
 
-        if (newOrder.isSuccessful()) {
-            updatable.setSuccessful(true);
+        if (newOrder.getSuccessful() != null) {
+            if (newOrder.getSuccessful()) {
+                updatable.setSuccessful(true);
+            }
         }
         if (newOrder.getNameAsClient() != null) {
             updatable.setNameAsClient(newOrder.getNameAsClient());
@@ -23,8 +25,10 @@ public class ComparingEntityService implements ComparingEntity {
         if (newOrder.getPrice() != null) {
             updatable.setPrice(newOrder.getPrice());
         }
-        if (newOrder.isAccepted()) {
-            updatable.setAccepted(true);
+        if (newOrder.getIsAccepted() != null) {
+            updatable.setIsAccepted(newOrder.getIsAccepted());
+        } else {
+            updatable.setSuccessful(false);
         }
         if (newOrder.getPhoneNumber() != null) {
             updatable.setPhoneNumber(newOrder.getPhoneNumber());
@@ -32,10 +36,11 @@ public class ComparingEntityService implements ComparingEntity {
         return updatable;
     }
 
-
     public Song songUpdate(Song newSong, Song updatable) {
-        if (newSong.getHasAudio() != null){
-            updatable.setHasAudio(newSong.getHasAudio());
+        if (newSong.getHasAudio() != null) {
+            if (newSong.getHasAudio()) {
+                updatable.setHasAudio(true);
+            }
         }
         if (newSong.getTgAudio() != null) {
             updatable.setTgAudio(newSong.getTgAudio());
@@ -55,7 +60,7 @@ public class ComparingEntityService implements ComparingEntity {
         if (newSong.isFilled()) {
             updatable.setFilled(true);
         }
-        if (newSong.getWhoWillSing()!= null){
+        if (newSong.getWhoWillSing() != null) {
             updatable.setWhoWillSing(newSong.getWhoWillSing());
         }
         return updatable;

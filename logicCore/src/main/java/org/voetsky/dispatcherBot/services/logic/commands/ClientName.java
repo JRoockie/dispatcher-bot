@@ -26,7 +26,6 @@ public class ClientName implements Command, Chain, EditUser {
     public SendMessage handle(Update update) {
         String text = messageMaker.getTextFromProperties(
                 update, "clientNameCommand.c.m");
-        mainRepoService.addOrder(update);
         var msg = messageMaker.makeSendMessage(update, text);
         changeState(update, AWAITING_FOR_TEXT);
         return msg;

@@ -129,6 +129,9 @@ public class MainRepoService implements MainService {
     }
 
     private long calculateDiscount(int singerCount, Long discountLimit) {
+        if (singerCount>= 5){
+            return singerCount * 2000L;
+        }
         return (singerCount > discountLimit) ? singerCount * 1000L : 0;
     }
 
@@ -144,7 +147,6 @@ public class MainRepoService implements MainService {
                 songPrice, discount, score);
     }
 
-
     @Override
     public TgUser getTgUserFromUpdate(Update update) {
         return tgUserRepo
@@ -157,10 +159,10 @@ public class MainRepoService implements MainService {
         TgUser tgUser = getTgUserFromUpdate(update);
         Song song = songRepo.findSongById(tgUser.getCurrentSongId());
         if (song.getLink() == null) {
-            song.setLink("---");
+            song.setLink("");
         }
         if (song.getSongName() == null) {
-            song.setSongName("---");
+            song.setSongName("");
         }
         songRepo.save(song);
     }

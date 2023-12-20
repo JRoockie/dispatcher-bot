@@ -15,7 +15,7 @@
 <p th:text="${'Кол-во голосов: ' + song.getSingerCount()}">VALUE</p>
 <p th:text="${'Кто будет петь: ' + song.getWhoWillSing()}">VALUE</p>
 
-<th:block th:if="${song.getHasAudio}">
+<th:block th:if="${song.getHasAudio()}">
   <a th:href="@{/data/getAudio(id=${song.getId})}" th:text="${'Скачать MP3'}">Audio Link</a>
 </th:block>
 <a th:href="@{/data/getVoice(id=${song.getId})}" th:text="${'Скачать голосовое сообщение'}">Voice Link</a>

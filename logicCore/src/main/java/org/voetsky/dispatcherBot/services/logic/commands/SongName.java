@@ -96,6 +96,6 @@ public class SongName implements Command, EditSong, InlineKeyboard {
         Song newSong = Song.builder()
                 .songName(songName)
                 .build();
-        mainRepoService.addSong(update, newSong);
+        mainRepoService.updateSong(update, newSong);
     }
 }

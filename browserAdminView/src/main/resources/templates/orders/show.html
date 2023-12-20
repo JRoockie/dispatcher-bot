@@ -12,11 +12,11 @@
 <p th:text="${'Цена: ' + order.getPrice()}">VALUE</p>
 <p th:text="${'Комменатрий: ' + order.getComment()}">VALUE</p>
 
-<form th:if="${!order.isSuccessful()}" th:action="@{/updateOrderClientTrue}" method="post">
+<form th:if="${!order.getSuccessful()}" th:action="@{/updateOrderClientTrue}" method="post">
     <input type="hidden" th:name="orderId" th:value="${order.getId()}"/>
     <button type="submit">Человек записан в календарь</button>
 </form>
-<form th:if="${order.isSuccessful()}" th:action="@{/updateOrderClientFalse}" method="post">
+<form th:if="${order.getSuccessful()}" th:action="@{/updateOrderClientFalse}" method="post">
     <input type="hidden" th:name="orderId" th:value="${order.getId()}"/>
     <button type="submit">В процессе записи</button>
 </form>

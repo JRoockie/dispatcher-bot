@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <title>Index</title>
 </head>
+
 <body>
 
 <p th:text="${'Заявки '}">VALUE</p>
@@ -14,8 +15,11 @@
 <br/>
 <a th:href="@{/orders/fin}"
    th:text="${'Обработанные заявки'}"></a>
-
-
 <hr/>
+<br/>
+<form th:action="@{/login}" method="post">
+    <input type="submit" value="Выйти из учетной записи"/>
+</form>
+
 </body>
 </html>

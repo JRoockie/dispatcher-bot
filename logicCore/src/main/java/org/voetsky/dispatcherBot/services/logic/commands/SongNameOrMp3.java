@@ -7,6 +7,7 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 import org.voetsky.dispatcherBot.UserState;
+import org.voetsky.dispatcherBot.repository.song.Song;
 import org.voetsky.dispatcherBot.services.logic.commands.command.Command;
 import org.voetsky.dispatcherBot.services.logic.commands.commandFunctions.InlineKeyboard;
 import org.voetsky.dispatcherBot.services.output.messageMakerService.MessageMaker;
@@ -30,6 +31,7 @@ public class SongNameOrMp3 implements Command, InlineKeyboard {
                 update, "songNameOrMp3.h.m");
         InlineKeyboardMarkup markupInline = getInlineKeyboardMarkup(update);
         var msg = messageMaker.makeSendMessage(update, text, markupInline);
+        mainRepoService.addSong(update, new Song());
         changeState(update, AWAITING_FOR_BUTTON);
         return msg;
     }

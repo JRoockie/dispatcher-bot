@@ -12,7 +12,7 @@
        th:text="${order.getPhoneNumber + ', ' + order.getNameAsClient}">order</a>
 </div>
 <br/>
-<form th:method="get" th:action="@{/}">
+<form th:method="get" th:action="@{/orders}">
     <input type="submit" value="Назад"/>
 </form>
 <hr/>

@@ -4,31 +4,40 @@ import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.voetsky.dispatcherBot.repository.orderClient.OrderClient;
 import org.voetsky.dispatcherBot.repository.orderClient.OrderClientRepository;
 import org.voetsky.dispatcherBot.repository.song.Song;
 import org.voetsky.dispatcherBot.repository.song.SongRepository;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Log4j
 @AllArgsConstructor
 @Controller
-@RequestMapping("/")
+
 public class ViewController {
 
     private final OrderClientRepository orderClientRepository;
     private final SongRepository songRepository;
 
-    @GetMapping()
+
+    @GetMapping("/orders")
     public String allOrders(Model model) {
         List<OrderClient> orders = orderClientRepository.findOrderClientsByIsAcceptedTrue();
         model.addAttribute("orders", orders);
         return "orders/orders";
     }
 
-    //    @RequestMapping("/order")
+    @GetMapping("/")
+    public String home(Model model) {
+        return "orders/orders";
+    }
+
     @GetMapping("orders/{orderId}")
     public String showOrder(@PathVariable("orderId") Long orderId, Model model) {
         OrderClient order = orderClientRepository.findOrderClientById(orderId);
@@ -47,15 +56,28 @@ public class ViewController {
 
     @GetMapping("/orders/new")
     public String newOrders(Model model) {
-        List<OrderClient> orders = orderClientRepository.findOrderClientsBySuccessfulIsFalse();
-        model.addAttribute("orders", orders);
+        List<OrderClient> orders = orderClientRepository.findOrderClientsByIsAcceptedTrue();
+        List<OrderClient> newOrders = orders.stream()
+                .filter(order -> !order.getSuccessful())
+                .collect(Collectors.toList());
+
+        model.addAttribute("orders", newOrders);
         return "orders/incomingOrders";
+    }
+
+    @GetMapping("/login")
+    public String login(Model model) {
+        return "login";
     }
 
     @GetMapping("/orders/fin")
     public String finOrders(Model model) {
-        List<OrderClient> orders = orderClientRepository.findOrderClientsBySuccessfulIsTrue();
-        model.addAttribute("orders", orders);
+        List<OrderClient> orders = orderClientRepository.findOrderClientsByIsAcceptedTrue();
+        List<OrderClient> newOrders = orders.stream()
+                .filter(OrderClient::getSuccessful)
+                .collect(Collectors.toList());
+
+        model.addAttribute("orders", newOrders);
         return "orders/finalizedOrders";
     }
 

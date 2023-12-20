@@ -35,8 +35,8 @@ public class OrderClient implements Serializable {
 
     private String comment;
     private String price;
-    private boolean isAccepted;
-    private boolean successful;
+    private Boolean isAccepted;
+    private Boolean successful;
 
     @CreationTimestamp
     private LocalDateTime date;

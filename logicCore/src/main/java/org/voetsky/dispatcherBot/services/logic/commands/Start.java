@@ -8,6 +8,7 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMa
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 import org.voetsky.dispatcherBot.UserState;
 import org.voetsky.dispatcherBot.services.logic.commands.command.Command;
+import org.voetsky.dispatcherBot.services.logic.commands.commandFunctions.EditOrder;
 import org.voetsky.dispatcherBot.services.logic.commands.commandFunctions.InlineKeyboard;
 import org.voetsky.dispatcherBot.services.output.messageMakerService.MessageMaker;
 import org.voetsky.dispatcherBot.services.repoServices.mainRepoService.MainService;
@@ -20,7 +21,7 @@ import static org.voetsky.dispatcherBot.services.logic.commands.command.Commands
 
 @Log4j
 @AllArgsConstructor
-public class Start implements Command, InlineKeyboard {
+public class Start implements Command, InlineKeyboard, EditOrder {
     private final MainService mainRepoService;
     private final MessageMaker messageMaker;
 
@@ -28,6 +29,9 @@ public class Start implements Command, InlineKeyboard {
     public SendMessage handle(Update update) {
         String text = messageMaker.getTextFromProperties(
                 update, "startCommand.h.m");
+
+        editOrder(update);
+
         InlineKeyboardMarkup markupInline = getInlineKeyboardMarkup(update);
         var msg = messageMaker.makeSendMessage(update, text, markupInline);
         changeState(update, AWAITING_FOR_BUTTON);
@@ -62,4 +66,8 @@ public class Start implements Command, InlineKeyboard {
         mainRepoService.setUserState(update, userState);
     }
 
+    @Override
+    public void editOrder(Update update) {
+        mainRepoService.addOrder(update);
+    }
 }
