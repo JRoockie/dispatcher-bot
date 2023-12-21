@@ -4,10 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.voetsky.dispatcherBot.repository.orderClient.OrderClient;
 import org.voetsky.dispatcherBot.repository.orderClient.OrderClientRepository;
 import org.voetsky.dispatcherBot.repository.song.Song;
@@ -26,15 +23,10 @@ public class ViewController {
     private final SongRepository songRepository;
 
 
-    @GetMapping("/orders")
+    @GetMapping("/")
     public String allOrders(Model model) {
         List<OrderClient> orders = orderClientRepository.findOrderClientsByIsAcceptedTrue();
         model.addAttribute("orders", orders);
-        return "orders/orders";
-    }
-
-    @GetMapping("/")
-    public String home(Model model) {
         return "orders/orders";
     }
 
@@ -54,7 +46,7 @@ public class ViewController {
         return "songs/show";
     }
 
-    @GetMapping("/orders/new")
+    @GetMapping("orders/new")
     public String newOrders(Model model) {
         List<OrderClient> orders = orderClientRepository.findOrderClientsByIsAcceptedTrue();
         List<OrderClient> newOrders = orders.stream()
