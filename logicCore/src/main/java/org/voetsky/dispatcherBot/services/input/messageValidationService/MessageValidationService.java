@@ -29,7 +29,7 @@ public class MessageValidationService implements MessageValidation {
             case AWAITING_FOR_TEXT:
                 return "mvs.err.text.input";
             case AWAITING_FOR_BUTTON:
-                return "mvs.err.button.input";
+                return "mvs.err.button.inpu";
             case AWAITING_FOR_AUDIO:
                 return "mvs.err.mp3.input";
             case AWAITING_FOR_VOICE:

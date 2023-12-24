@@ -24,80 +24,83 @@ public class LogicCoreLocalizationUnit implements LogicCoreLocalization {
     public void initLocalizations() throws IOException {
         this.loadDic("ru");
         this.loadDic("kk");
-        if (log.isDebugEnabled()){
+        if (log.isDebugEnabled()) {
             log.debug("LogicCore: ALL languages loaded");
         }
     }
 
     @Override
     public void loadDic(String lang) throws IOException {
-        if (log.isDebugEnabled()){
+        if (log.isDebugEnabled()) {
             log.debug(String.format("LogicCore: Loading language %S", lang));
         }
         var prop = new Properties();
+
         try (var langPr = LogicCoreApplication.class.getClassLoader()
                 .getResourceAsStream(String.format("lang_%s.properties", lang))) {
             prop.load(new InputStreamReader(
                     Objects.requireNonNull(langPr), StandardCharsets.UTF_8));
         }
         var map = new HashMap<String, String>();
-        for (var name : prop.keySet()) {
-            map.put(name.toString(), prop.getProperty(name.toString()));
-        }
+        prop.stringPropertyNames().forEach(name -> map.put(name, prop.getProperty(name)));
+
         dic.put(lang, map);
-        if (log.isDebugEnabled()){
+        if (log.isDebugEnabled()) {
             log.debug(String.format("LogicCore: Language %S loaded!", lang));
         }
     }
 
+
     @Override
     public String get(String lang, String key) {
-        try {
-                var res =  dic.get(lang).get(key);
-                if (res != null){
-                    return res;
-                }
-                throw new NullPointerException();
-        } catch (NullPointerException e) {
-            if (log.isDebugEnabled()) {
-                log.error(String.format(
-                        "LogicCore: Language not found %S", lang));
-            }
-            return getDefaultLocalValue(key);
-        }
-    }
+        String value = hasLangValue(lang, key);
 
-    @Override
-    public String getDefaultLocalValue(String key) {
+        if (value != null) {
+            return value;
+        }
         if (log.isDebugEnabled()) {
-            log.debug(String.format(
-                    "LogicCore: Getting default lang value %S",
-                    DEFAULT_LANG));
+            log.error(String.format(
+                    "LogicCore: Language not found %S", lang));
         }
-        try {
-            var res = dic.get(DEFAULT_LANG).get(key);
-            if (res != null){
-                return res;
-            }
-            throw  new NullPointerException();
-        }catch (NullPointerException e){
-            if (log.isDebugEnabled()) {
-                log.error(String.format(
-                        "LogicCore: Key not found %S", key));
-            }
-            return getUnknownKey(key);
-        }
+
+        return getKeyFromDefaultLang(key);
 
     }
 
+    private String hasLangValue(String lang, String key) {
+        return dic.get(lang) != null ? dic.get(lang).get(key) : null;
+    }
+
+    private String hasDefaultLangValue(String key) {
+        return dic.get(DEFAULT_LANG) != null ? dic.get(DEFAULT_LANG).get(key) : null;
+    }
+
     @Override
-    public String getUnknownKey(String lang){
+    public String getKeyFromDefaultLang(String key) {
+        if (log.isDebugEnabled()) {
+            log.debug(String.format("LogicCore: Getting default lang value %S", DEFAULT_LANG));
+        }
+
+        String value = hasDefaultLangValue(key);
+
+        if (value != null) {
+            return value;
+        }
+        if (log.isDebugEnabled()) {
+            log.error(String.format("LogicCore: Key not found %S", key));
+        }
+
+        return getUnknownKeyByDefaultLang();
+    }
+
+    @Override
+    public String getUnknownKeyByDefaultLang() {
         if (log.isDebugEnabled()) {
             log.debug(String.format(
-                    "LogicCore: Getting unknown value %S",
-                    DEFAULT_LANG));
+                    "LogicCore: Getting unknown value %S", DEFAULT_LANG));
         }
-        return dic.get(lang).get(UNKNOWN_KEY);
+
+        return dic.get(DEFAULT_LANG).get(UNKNOWN_KEY);
     }
 
 }

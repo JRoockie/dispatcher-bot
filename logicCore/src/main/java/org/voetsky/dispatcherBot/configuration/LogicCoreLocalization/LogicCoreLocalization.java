@@ -10,8 +10,7 @@ public interface LogicCoreLocalization {
 
     String get(String lang, String key);
 
-    String getDefaultLocalValue(String key);
+    String getKeyFromDefaultLang(String key);
 
-    String getUnknownKey(String lang);
-
+    String getUnknownKeyByDefaultLang();
 }

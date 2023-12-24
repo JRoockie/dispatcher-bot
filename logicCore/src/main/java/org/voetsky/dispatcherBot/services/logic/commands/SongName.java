@@ -33,7 +33,7 @@ public class SongName implements Command, EditSong, InlineKeyboard {
         String text = messageMaker.getTextFromProperties(
                 update, "songName.h.m");
         changeState(update, AWAITING_FOR_TEXT);
-        return messageMaker.makeSendMessage(update, text);
+        return messageMaker.makeSendMessage(update, text, false);
     }
 
     @Override
@@ -48,7 +48,7 @@ public class SongName implements Command, EditSong, InlineKeyboard {
         editSong(update);
 
         InlineKeyboardMarkup markupInline = getInlineKeyboardMarkup(update);
-        var msg = messageMaker.makeSendMessage(update, text, markupInline);
+        var msg = messageMaker.makeSendMessage(update, text, markupInline, false);
         changeState(update, AWAITING_FOR_BUTTON);
         return msg;
     }
@@ -57,7 +57,7 @@ public class SongName implements Command, EditSong, InlineKeyboard {
         InlineKeyboardMarkup markupInline = getInlineKeyboardMarkup(update);
         String text = messageMaker.getTextFromProperties(
                 update, "songName.c.m");
-        var msg = messageMaker.makeSendMessage(update, text, markupInline);
+        var msg = messageMaker.makeSendMessage(update, text, markupInline, false);
         changeState(update, AWAITING_FOR_BUTTON);
         return msg;
     }

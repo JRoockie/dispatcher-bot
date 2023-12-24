@@ -34,7 +34,7 @@ public class WhoWillSing implements Command, Chain, EditSong, InlineKeyboard {
         String text = messageMaker.getTextFromProperties(
                 update, "whoWillSing.h.m");
         InlineKeyboardMarkup markupInline = getInlineKeyboardMarkup(update);
-        var msg = messageMaker.makeSendMessage(update, text, markupInline);
+        var msg = messageMaker.makeSendMessage(update, text, markupInline, false);
         changeState(update, AWAITING_FOR_BUTTON);
         return msg;
     }
@@ -91,7 +91,7 @@ public class WhoWillSing implements Command, Chain, EditSong, InlineKeyboard {
         if (log.isDebugEnabled()) {
             log.debug(String.format("Put command for chain evoke %S", command));
         }
-        return messageMaker.makeSendMessage(update, command);
+        return messageMaker.makeSendMessage(update, command, false);
     }
 
     @Override

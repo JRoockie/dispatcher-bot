@@ -33,7 +33,7 @@ public class Start implements Command, InlineKeyboard, EditOrder {
         editOrder(update);
 
         InlineKeyboardMarkup markupInline = getInlineKeyboardMarkup(update);
-        var msg = messageMaker.makeSendMessage(update, text, markupInline);
+        var msg = messageMaker.makeSendMessage(update, text, markupInline, false);
         changeState(update, AWAITING_FOR_BUTTON);
         return msg;
     }

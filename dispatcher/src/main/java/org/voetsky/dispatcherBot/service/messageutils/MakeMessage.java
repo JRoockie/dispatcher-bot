@@ -11,11 +11,18 @@ import org.voetsky.dispatcherBot.configuration.dispatcherLocalization.Dispatcher
 public class MakeMessage implements MessageUtils {
     private final DispatcherLang dispatcherLang;
 
-    public SendMessage generateSendMessageWithText(Update update, String text) {
+    @Override
+    public SendMessage generateSendMessageWithText(Update update, String text, boolean property) {
         var message = update.getMessage();
         var sendMessage = new SendMessage();
         sendMessage.setChatId(message.getChatId().toString());
-        sendMessage.setText(localize(update, text));
+
+        if (property) {
+            sendMessage.setText(localize(update, text));
+        } else {
+            sendMessage.setText(text);
+        }
+
         return sendMessage;
     }
 

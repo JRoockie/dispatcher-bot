@@ -28,7 +28,7 @@ public class HowMuchPeople implements Command, Chain, EditSong {
         String text = messageMaker.getTextFromProperties(
                 update, "howMuchPeople.h.m");
 
-        var msg = messageMaker.makeSendMessage(update, text);
+        var msg = messageMaker.makeSendMessage(update, text, false);
         changeState(update, AWAITING_FOR_TEXT);
         return msg;
     }
@@ -58,7 +58,7 @@ public class HowMuchPeople implements Command, Chain, EditSong {
         if (log.isDebugEnabled()) {
             log.debug(String.format("Put command for chain evoke %S", command));
         }
-        return messageMaker.makeSendMessage(update, command);
+        return messageMaker.makeSendMessage(update, command, false);
     }
 
     @Override

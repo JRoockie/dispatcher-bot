@@ -49,7 +49,7 @@ public class ShowPrice implements Command, Chain {
         String invoice = String.format(startText, bill);
 
         InlineKeyboardMarkup markupInline = getInlineKeyboardMarkup(update);
-        var msg = messageMaker.makeSendMessage(update, invoice, markupInline);
+        var msg = messageMaker.makeSendMessage(update, invoice, markupInline, false);
         changeState(update, AWAITING_FOR_BUTTON);
         return msg;
     }
@@ -88,7 +88,7 @@ public class ShowPrice implements Command, Chain {
         if (log.isDebugEnabled()) {
             log.debug(String.format("Put command for chain evoke %S", command));
         }
-        return messageMaker.makeSendMessage(update, command);
+        return messageMaker.makeSendMessage(update, command, false);
     }
 }
 

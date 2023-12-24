@@ -75,13 +75,13 @@ public class UpdateController {
 
     public void setUnsupportedMessageTypeView(Update update) {
         var sendMessage = makeMessage.generateSendMessageWithText(update,
-                "type.error");
+                "type.error", true);
         setView(sendMessage);
     }
 
     public void setFileIsReceivedView(Update update) {
         var sendMessage = makeMessage.generateSendMessageWithText(update,
-                "process");
+                "process", true);
         setView(sendMessage);
     }
 

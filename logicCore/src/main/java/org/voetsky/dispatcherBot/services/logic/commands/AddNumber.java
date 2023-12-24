@@ -26,7 +26,7 @@ public class AddNumber implements Command, Chain, EditOrder {
     public SendMessage handle(Update update) {
         String text = messageMaker.getTextFromProperties(
                 update, "addNumber.h.m");
-        var msg = messageMaker.makeSendMessage(update, text);
+        var msg = messageMaker.makeSendMessage(update, text, false);
         changeState(update, AWAITING_FOR_TEXT);
         return msg;
     }
@@ -52,7 +52,7 @@ public class AddNumber implements Command, Chain, EditOrder {
         if (log.isDebugEnabled()) {
             log.debug(String.format("Put command for chain evoke %S", command));
         }
-        return messageMaker.makeSendMessage(update, command);
+        return messageMaker.makeSendMessage(update, command, false);
     }
 
     @Override

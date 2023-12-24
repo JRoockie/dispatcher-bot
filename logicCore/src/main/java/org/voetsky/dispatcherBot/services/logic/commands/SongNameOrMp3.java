@@ -30,7 +30,7 @@ public class SongNameOrMp3 implements Command, InlineKeyboard {
         String text = messageMaker.getTextFromProperties(
                 update, "songNameOrMp3.h.m");
         InlineKeyboardMarkup markupInline = getInlineKeyboardMarkup(update);
-        var msg = messageMaker.makeSendMessage(update, text, markupInline);
+        var msg = messageMaker.makeSendMessage(update, text, markupInline, false);
         mainRepoService.addSong(update, new Song());
         changeState(update, AWAITING_FOR_BUTTON);
         return msg;

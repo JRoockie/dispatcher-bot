@@ -24,7 +24,7 @@ public class Mp3Add implements Command, Chain {
     public SendMessage handle(Update update) {
         String text = messageMaker.getTextFromProperties(
                 update, "mp3AddCommand.h.m");
-        var msg = messageMaker.makeSendMessage(update, text);
+        var msg = messageMaker.makeSendMessage(update, text, false);
         changeState(update, AWAITING_FOR_AUDIO);
         return msg;
     }
@@ -50,6 +50,6 @@ public class Mp3Add implements Command, Chain {
         if (log.isDebugEnabled()) {
             log.debug(String.format("Put command for chain evoke %S", command));
         }
-        return messageMaker.makeSendMessage(update, command);
+        return messageMaker.makeSendMessage(update, command, false);
     }
 }

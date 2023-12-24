@@ -22,7 +22,7 @@ public class Finish implements Command {
         String text = messageMaker.getTextFromProperties(
                 update, "finish.h.m");
 
-        var msg = messageMaker.makeSendMessage(update, text);
+        var msg = messageMaker.makeSendMessage(update, text, false);
         changeState(update, AWAITING_FOR_COMMAND);
         return msg;
     }

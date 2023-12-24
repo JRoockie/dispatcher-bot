@@ -55,7 +55,7 @@ public class CommandHandlerService implements CommandHandler {
             if (log.isDebugEnabled()){
                 log.error("FATAL ERROR:", e);
             }
-            messageMaker.makeSendMessage(update, "fatal.err");
+            messageMaker.makeSendMessage(update, "fatal.err", true);
         }
         throw new LogicCoreException(
                 messageMaker.getTextFromProperties(update, "fatal.err"));

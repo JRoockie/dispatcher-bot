@@ -30,7 +30,7 @@ public class VoiceAdd implements Command, EditSong, InlineKeyboard {
     public SendMessage handle(Update update) {
         String text = messageMaker.getTextFromProperties(
                 update, "voiceAddCommand.h.m");
-        return messageMaker.makeSendMessage(update, text);
+        return messageMaker.makeSendMessage(update, text, false);
     }
 
     @Override
@@ -38,7 +38,7 @@ public class VoiceAdd implements Command, EditSong, InlineKeyboard {
         String text = messageMaker.getTextFromProperties(
                 update, "voiceAddCommand.c.m");
         InlineKeyboardMarkup markupInline = getInlineKeyboardMarkup(update);
-        var msg = messageMaker.makeSendMessage(update, text, markupInline);
+        var msg = messageMaker.makeSendMessage(update, text, markupInline, false);
         editSong(update);
         changeState(update, AWAITING_FOR_BUTTON);
         return msg;

@@ -24,27 +24,37 @@ public class MessageMakerService implements MessageMaker {
     }
 
     @Override
-    public SendMessage makeSendMessage(Update update, String text) {
-            return createSendMessage(update, text, null);
+    public SendMessage makeSendMessage(Update update,
+                                       String text,
+                                       boolean property) {
+
+        return createSendMessage(update, text, null, property);
     }
 
     @Override
-    public SendMessage makeSendMessage(Update update, String text, InlineKeyboardMarkup markup) {
-            return createSendMessage(update, text, markup);
+    public SendMessage makeSendMessage(Update update, String text,
+                                       InlineKeyboardMarkup markup,
+                                       boolean fromProperties) {
+
+        return createSendMessage(update, text, markup, fromProperties);
     }
 
-    public SendMessage createSendMessage(Update update, String text, InlineKeyboardMarkup markup) {
+    public SendMessage createSendMessage(Update update, String text, InlineKeyboardMarkup markup, boolean property) {
         SendMessage sendMessage = new SendMessage();
         sendMessage.enableMarkdown(true);
         sendMessage.setChatId(getIdFromUpdate(update));
-        sendMessage.setText(getTextFromProperties(update, text));
+        if (property) {
+            sendMessage.setText(getTextFromProperties(update, text));
+        } else {
+            sendMessage.setText(text);
+        }
         if (markup != null) {
             sendMessage.setReplyMarkup(markup);
         }
         return sendMessage;
     }
 
-    public String getLanguageFromTg(Update update){
+    public String getLanguageFromTg(Update update) {
         if (update.hasCallbackQuery()) {
             return update.getCallbackQuery().getFrom().getLanguageCode();
         } else {
@@ -54,7 +64,7 @@ public class MessageMakerService implements MessageMaker {
 
     public String getTextFromProperties(Update update, String text) {
         String lang = getLanguageFromTg(update);
-        if (localization.get(lang, text) != null){
+        if (localization.get(lang, text) != null) {
             return localization.get(lang, text);
         }
         return text;
@@ -65,7 +75,7 @@ public class MessageMakerService implements MessageMaker {
             log.error("ERROR", e);
         }
         String t = getTextFromProperties(update, e.getMessage());
-        return makeSendMessage(update, t);
+        return makeSendMessage(update, t, false);
     }
 
 }
