@@ -51,7 +51,7 @@ class DispatcherLangUnitTest {
     void testGetDefault() {
         String key = "type.error";
         String expectedValue = "Неподдерживаемый тип сообщения!";
-        String actualValue = dispatcherLangUnit.getDefaultLocalValue(key);
+        String actualValue = dispatcherLangUnit.getKeyFromDefaultLang(key);
 
         assertEquals(expectedValue, actualValue);
     }

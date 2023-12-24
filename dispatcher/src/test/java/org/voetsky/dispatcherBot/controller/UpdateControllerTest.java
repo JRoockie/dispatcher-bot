@@ -64,7 +64,7 @@ public class UpdateControllerTest extends TestCase {
         updateController.setUnsupportedMessageTypeView(update);
 
         verify(updateController).setUnsupportedMessageTypeView(update);
-        verify(makeMessage).generateSendMessageWithText(update, "type.error");
+        verify(makeMessage).generateSendMessageWithText(update, "type.error", true);
     }
 
     @Test(expected = NotAMockException.class)
@@ -73,7 +73,7 @@ public class UpdateControllerTest extends TestCase {
 
         updateController.setFileIsReceivedView(update);
 
-        verify(makeMessage).generateSendMessageWithText(update, "process");
+        verify(makeMessage).generateSendMessageWithText(update, "process", true);
         verify(updateController).setView(new SendMessage());
     }
 

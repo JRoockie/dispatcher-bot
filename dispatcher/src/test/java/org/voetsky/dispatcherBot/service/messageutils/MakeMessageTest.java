@@ -46,7 +46,7 @@ class MakeMessageTest {
         expectedSendMessage.setChatId("1234");
         expectedSendMessage.setText(newText);
         when(dispatcherLang.get("ru", text)).thenReturn(newText);
-        SendMessage actualSendMessage = makeMessage.generateSendMessageWithText(update, text);
+        SendMessage actualSendMessage = makeMessage.generateSendMessageWithText(update, text, true);
 
         assertEquals(expectedSendMessage, actualSendMessage);
     }
