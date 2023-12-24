@@ -5,11 +5,11 @@ import org.voetsky.dispatcherBot.UserState;
 import org.voetsky.dispatcherBot.WhoWillSing;
 import org.voetsky.dispatcherBot.repository.orderClient.OrderClient;
 import org.voetsky.dispatcherBot.repository.song.Song;
+import org.voetsky.dispatcherBot.repository.tgAudio.TgAudio;
 import org.voetsky.dispatcherBot.repository.tgUser.TgUser;
+import org.voetsky.dispatcherBot.repository.tgVoice.TgVoice;
 import org.voetsky.dispatcherBot.services.repoServices.comparingEntityService.ComparingEntity;
 import org.voetsky.dispatcherBot.services.repoServices.comparingEntityService.ComparingEntityService;
-
-import java.util.ArrayList;
 
 import static junit.framework.Assert.assertEquals;
 
@@ -24,15 +24,15 @@ class ComparingEntityServiceTest {
         OrderClient newOrder = new OrderClient();
 
         newOrder.setPrice("2323223");
-        newOrder.setComment("fgdsa");
-        newOrder.setAccepted(true);
+        newOrder.setComment("t");
+        newOrder.setIsAccepted(true);
         newOrder.setPhoneNumber("341134");
 
         OrderClient result = comparingEntityService.orderClientUpdate(newOrder, existingOrder);
 
         assertEquals(newOrder.getComment(), result.getComment());
         assertEquals(newOrder.getPrice(), result.getPrice());
-        assertEquals(newOrder.isAccepted(), result.isAccepted());
+        assertEquals(newOrder.getIsAccepted(), result.getIsAccepted());
         assertEquals(newOrder.getPhoneNumber(), result.getPhoneNumber());
     }
 
@@ -43,8 +43,8 @@ class ComparingEntityServiceTest {
         Song newSong = new Song();
 
         newSong.setSongName("1");
-        newSong.setTgAudios(new ArrayList<>());
-        newSong.setTgVoices(new ArrayList<>());
+        newSong.setTgAudio(new TgAudio());
+        newSong.setTgVoice(new TgVoice());
         newSong.setLink("1");
         newSong.setSingerCount(2);
         newSong.setFilled(true);
@@ -52,8 +52,8 @@ class ComparingEntityServiceTest {
 
         Song result = comparingEntityService.songUpdate(newSong, existingSong);
 
-        assertEquals(newSong.getTgAudios(), result.getTgAudios());
-        assertEquals(newSong.getTgVoices(), result.getTgVoices());
+        assertEquals(newSong.getTgAudio(), result.getTgAudio());
+        assertEquals(newSong.getTgVoice(), result.getTgVoice());
         assertEquals(newSong.getSongName(), result.getSongName());
         assertEquals(newSong.getLink(), result.getLink());
         assertEquals(newSong.getSingerCount(), result.getSingerCount());
@@ -75,7 +75,6 @@ class ComparingEntityServiceTest {
         TgUser result = comparingEntityService.tgUserUpdate(newUser, existingUser);
 
         assertEquals(newUser.getOrderList(), result.getOrderList());
-        assertEquals(newUser.getNameAsClient(), result.getNameAsClient());
         assertEquals(newUser.getCurrentOrderId(), result.getCurrentOrderId());
         assertEquals(newUser.getCurrentSongId(), result.getCurrentSongId());
         assertEquals(newUser.getUserState(), result.getUserState());

@@ -16,7 +16,7 @@ import java.io.IOException;
 @AllArgsConstructor
 @RestController
 @RequestMapping("/data")
-public class RawDataController {
+public class DownloadController {
 
     private final FileOperations fileOperations;
 
@@ -45,7 +45,6 @@ public class RawDataController {
 
     @RequestMapping(method = RequestMethod.GET, value = "/getVoice")
     public void getVoice(@RequestParam("id") Long id, HttpServletResponse response) {
-        //TODO для формирования badRequest добавить ControllerAdvice
         var voice = fileOperations.getTgVoice(id);
         if (voice == null) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);

@@ -46,7 +46,7 @@ public class TelegramBot extends TelegramLongPollingBot {
     }
 
     public void sendAnswerMessage(SendMessage message) {
-        if (message.getText() != null) {
+        if (message != null) {
             try {
                 if (log.isDebugEnabled()) {
                     log.debug(message.getText());
