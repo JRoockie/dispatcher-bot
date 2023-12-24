@@ -18,9 +18,9 @@ import java.util.Properties;
 public class LogicCoreLocalizationUnit implements LogicCoreLocalization {
     private final Map<String, Map<String, String>> dic = new HashMap<>();
     private final String DEFAULT_LANG = "ru";
+    private final String UNKNOWN_KEY = "unknown.key";
 
     @PostConstruct
-    @Override
     public void initLocalizations() throws IOException {
         this.loadDic("ru");
         this.loadDic("kk");
@@ -53,23 +53,51 @@ public class LogicCoreLocalizationUnit implements LogicCoreLocalization {
     @Override
     public String get(String lang, String key) {
         try {
-            return dic.get(lang).get(key);
-        } catch (NullPointerException e){
-            if (log.isDebugEnabled()){
+                var res =  dic.get(lang).get(key);
+                if (res != null){
+                    return res;
+                }
+                throw new NullPointerException();
+        } catch (NullPointerException e) {
+            if (log.isDebugEnabled()) {
                 log.error(String.format(
                         "LogicCore: Language not found %S", lang));
             }
-            return getDefault(key);
+            return getDefaultLocalValue(key);
         }
     }
 
-    public String getDefault(String key) {
-        if (log.isDebugEnabled()){
+    @Override
+    public String getDefaultLocalValue(String key) {
+        if (log.isDebugEnabled()) {
             log.debug(String.format(
                     "LogicCore: Getting default lang value %S",
                     DEFAULT_LANG));
         }
-        return dic.get(DEFAULT_LANG).get(key);
+        try {
+            var res = dic.get(DEFAULT_LANG).get(key);
+            if (res != null){
+                return res;
+            }
+            throw  new NullPointerException();
+        }catch (NullPointerException e){
+            if (log.isDebugEnabled()) {
+                log.error(String.format(
+                        "LogicCore: Key not found %S", key));
+            }
+            return getUnknownKey(key);
+        }
+
+    }
+
+    @Override
+    public String getUnknownKey(String lang){
+        if (log.isDebugEnabled()) {
+            log.debug(String.format(
+                    "LogicCore: Getting unknown value %S",
+                    DEFAULT_LANG));
+        }
+        return dic.get(lang).get(UNKNOWN_KEY);
     }
 
 }

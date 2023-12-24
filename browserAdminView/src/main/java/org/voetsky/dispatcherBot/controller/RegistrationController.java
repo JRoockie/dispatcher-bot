@@ -34,7 +34,7 @@ public class RegistrationController {
         newUser.setRoles(Collections.singleton(Role.USER));
         adminUserRepo.save(newUser);
 
-        return "redirect::/login";
+        return "redirect:/login";
     }
 
     @GetMapping("/login")

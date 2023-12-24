@@ -1,4 +1,4 @@
-package org.voetsky.dispatcherBot.service.dispatcherLocalization;
+package org.voetsky.dispatcherBot.configuration.dispatcherLocalization;
 
 import lombok.extern.log4j.Log4j;
 import org.springframework.stereotype.Service;
@@ -16,20 +16,22 @@ import java.util.Properties;
 @Log4j
 @Service
 public class DispatcherLangUnit implements DispatcherLang {
-    private final String DEFAULT_LANG = "ru";
     private final Map<String, Map<String, String>> dic = new HashMap<>();
+    private final String DEFAULT_LANG = "ru";
+    private final String UNKNOWN_KEY = "unknown.key";
 
     @PostConstruct
     public void initLocalizations() throws IOException {
         this.loadDic("ru");
         this.loadDic("kk");
-        if (log.isDebugEnabled()){
+        if (log.isDebugEnabled()) {
             log.debug("Dispatcher: ALL languages loaded");
         }
     }
 
+    @Override
     public void loadDic(String lang) throws IOException {
-        if (log.isDebugEnabled()){
+        if (log.isDebugEnabled()) {
             log.debug(String.format("Dispatcher: Loading language %S", lang));
         }
         var prop = new Properties();
@@ -43,30 +45,59 @@ public class DispatcherLangUnit implements DispatcherLang {
             map.put(name.toString(), prop.getProperty(name.toString()));
         }
         dic.put(lang, map);
-        if (log.isDebugEnabled()){
+        if (log.isDebugEnabled()) {
             log.debug(String.format("Dispatcher: Language %S loaded!", lang));
         }
     }
 
+    @Override
     public String get(String lang, String key) {
         try {
-                return dic.get(lang).get(key);
-        } catch (NullPointerException e){
-            if (log.isDebugEnabled()){
+                var res =  dic.get(lang).get(key);
+                if (res != null){
+                    return res;
+                }
+                throw new NullPointerException();
+        } catch (NullPointerException e) {
+            if (log.isDebugEnabled()) {
                 log.error(String.format(
                         "Dispatcher: Language not found %S", lang));
             }
-            return getDefault(key);
+            return getDefaultLocalValue(key);
         }
     }
 
-    public String getDefault(String key) {
-        if (log.isDebugEnabled()){
+    @Override
+    public String getDefaultLocalValue(String key) {
+        if (log.isDebugEnabled()) {
             log.debug(String.format(
                     "Dispatcher: Getting default lang value %S",
                     DEFAULT_LANG));
         }
-        return dic.get(DEFAULT_LANG).get(key);
+        try {
+            var res = dic.get(DEFAULT_LANG).get(key);
+            if (res != null){
+                return res;
+            }
+            throw  new NullPointerException();
+        }catch (NullPointerException e){
+            if (log.isDebugEnabled()) {
+                log.error(String.format(
+                        "Dispatcher: Key not found %S", key));
+            }
+            return getUnknownKey(DEFAULT_LANG);
+        }
+
+    }
+
+    @Override
+    public String getUnknownKey(String lang){
+        if (log.isDebugEnabled()) {
+            log.debug(String.format(
+                    "Dispatcher: Getting unknown value %S",
+                    DEFAULT_LANG));
+        }
+        return dic.get(lang).get(UNKNOWN_KEY);
     }
 
 }

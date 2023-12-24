@@ -36,10 +36,11 @@ public class UpdateController {
             if (log.isDebugEnabled()) {
                 log.error(String.format("Unsupported message type is received: %s", update));
             }
+            setUnsupportedMessageTypeView(update);
         }
     }
 
-    private void distributeMessagesByType(Update update) {
+    public void distributeMessagesByType(Update update) {
         var message = update.getMessage();
         loggingUpdate(update);
         if (update.hasCallbackQuery()) {
@@ -55,7 +56,7 @@ public class UpdateController {
         }
     }
 
-    private void loggingUpdate(Update update) {
+    public void loggingUpdate(Update update) {
         if (log.isDebugEnabled()) {
         var message = update.getMessage();
             if (update.hasCallbackQuery()) {
@@ -72,13 +73,13 @@ public class UpdateController {
         }
     }
 
-    private void setUnsupportedMessageTypeView(Update update) {
+    public void setUnsupportedMessageTypeView(Update update) {
         var sendMessage = makeMessage.generateSendMessageWithText(update,
                 "type.error");
         setView(sendMessage);
     }
 
-    private void setFileIsReceivedView(Update update) {
+    public void setFileIsReceivedView(Update update) {
         var sendMessage = makeMessage.generateSendMessageWithText(update,
                 "process");
         setView(sendMessage);

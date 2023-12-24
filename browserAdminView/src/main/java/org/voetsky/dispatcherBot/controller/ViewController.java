@@ -13,6 +13,7 @@ import org.voetsky.dispatcherBot.repository.orderClient.OrderClientRepository;
 import org.voetsky.dispatcherBot.repository.song.Song;
 import org.voetsky.dispatcherBot.repository.song.SongRepository;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -54,6 +55,8 @@ public class ViewController {
         List<OrderClient> orders = orderClientRepository.findOrderClientsByIsAcceptedTrue();
         List<OrderClient> newOrders = orders.stream()
                 .filter(order -> !order.getSuccessful())
+                .sorted(Comparator.comparing(OrderClient::getDate)
+                                .reversed())
                 .collect(Collectors.toList());
 
         model.addAttribute("orders", newOrders);
@@ -65,7 +68,10 @@ public class ViewController {
         List<OrderClient> orders = orderClientRepository.findOrderClientsByIsAcceptedTrue();
         List<OrderClient> newOrders = orders.stream()
                 .filter(OrderClient::getSuccessful)
+                .sorted(Comparator.comparing(OrderClient::getDate)
+                        .reversed())
                 .collect(Collectors.toList());
+        orders.sort(Comparator.comparing(OrderClient::getDate).reversed());
 
         model.addAttribute("orders", newOrders);
         return "orders/finalizedOrders";
