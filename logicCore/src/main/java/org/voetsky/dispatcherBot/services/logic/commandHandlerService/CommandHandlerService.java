@@ -98,6 +98,7 @@ public class CommandHandlerService implements CommandHandler {
             throw new LogicCoreException("Команды не существует");
         }
     }
+
     @Override
     public SendMessage processCommand(Update update, String text, String chatId) {
         if (actions.containsKey(text)) {
