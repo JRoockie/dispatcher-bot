@@ -14,13 +14,14 @@
 
 <form th:if="${!order.getSuccessful()}" th:action="@{/updateOrderClientTrue}" method="post">
     <input type="hidden" th:name="orderId" th:value="${order.getId()}"/>
-    <button type="submit">Человек записан в календарь</button>
+    <button type="submit">Записан</button>
 </form>
 <form th:if="${order.getSuccessful()}" th:action="@{/updateOrderClientFalse}" method="post">
     <input type="hidden" th:name="orderId" th:value="${order.getId()}"/>
-    <button type="submit">В процессе записи</button>
+    <button type="submit">Не записан</button>
 </form>
 <hr/>
+
 <p th:text="${'Песни : '}">VALUE</p>
 <div th:each="song : ${songs}">
     <a th:href="@{/songs/{id}(id=${song.getId})}"

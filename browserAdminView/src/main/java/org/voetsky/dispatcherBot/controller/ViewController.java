@@ -46,7 +46,10 @@ public class ViewController {
     @GetMapping("songs/{songId}")
     public String showSong(@PathVariable("songId") Long songId, Model model) {
         Song song = songRepository.findSongById(songId);
+        OrderClient order = orderClientRepository.findOrderClientById(song.getOrderClient().getId());
+        List<Song> allOrderSongs = songRepository.findSongsByOrderClient(order);
         model.addAttribute("song", song);
+        model.addAttribute("allOrderSongs", allOrderSongs);
         return "songs/show";
     }
 
