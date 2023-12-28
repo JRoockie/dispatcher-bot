@@ -2,102 +2,91 @@ package org.voetsky.dispatcherBot.controller;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j;
-import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.voetsky.dispatcherBot.repository.orderClient.OrderClient;
 import org.voetsky.dispatcherBot.repository.orderClient.OrderClientRepository;
 import org.voetsky.dispatcherBot.repository.song.Song;
 import org.voetsky.dispatcherBot.repository.song.SongRepository;
 
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Log4j
 @AllArgsConstructor
-@Controller
-
+@RestController
 public class ViewController {
-
     private final OrderClientRepository orderClientRepository;
     private final SongRepository songRepository;
 
-
     @GetMapping("/")
-    public String allOrders(Model model) {
-        List<OrderClient> orders = orderClientRepository.findOrderClientsByIsAcceptedTrue();
-        model.addAttribute("orders", orders);
-        return "orders/orders";
+    public List<OrderClient> allOrders(Model model) {
+        return orderClientRepository.findOrderClientsByIsAcceptedTrue();
     }
 
     @GetMapping("orders/{orderId}")
-    public String showOrder(@PathVariable("orderId") Long orderId, Model model) {
-        OrderClient order = orderClientRepository.findOrderClientById(orderId);
-        List<Song> songs = songRepository.findSongsByOrderClient(order);
-        model.addAttribute("order", order);
-        model.addAttribute("songs", songs);
-        return "orders/show";
+    public OrderClient showOrder(@PathVariable("orderId") Long orderId, Model model) {
+        return orderClientRepository.findOrderClientById(orderId);
     }
 
     @GetMapping("songs/{songId}")
-    public String showSong(@PathVariable("songId") Long songId, Model model) {
+    public Map<String, Object> showSong(@PathVariable("songId") Long songId, Model model) {
+        Map<String, Object> response = new HashMap<>();
         Song song = songRepository.findSongById(songId);
         OrderClient order = orderClientRepository.findOrderClientById(song.getOrderClient().getId());
         List<Song> allOrderSongs = songRepository.findSongsByOrderClient(order);
-        model.addAttribute("song", song);
-        model.addAttribute("allOrderSongs", allOrderSongs);
-        return "songs/show";
+
+        response.put("song", song);
+        response.put("allOrderSongs", allOrderSongs);
+
+        return response;
     }
 
     @GetMapping("orders/new")
-    public String newOrders(Model model) {
+    public List<OrderClient> newOrders(Model model) {
         List<OrderClient> orders = orderClientRepository.findOrderClientsByIsAcceptedTrue();
-        List<OrderClient> newOrders = orders.stream()
+
+        return orders.stream()
                 .filter(order -> !order.getSuccessful())
                 .sorted(Comparator.comparing(OrderClient::getDate)
-                                .reversed())
+                        .reversed())
                 .collect(Collectors.toList());
-
-        model.addAttribute("orders", newOrders);
-        return "orders/incomingOrders";
     }
 
     @GetMapping("/orders/fin")
-    public String finOrders(Model model) {
+    public List<OrderClient> finOrders(Model model) {
         List<OrderClient> orders = orderClientRepository.findOrderClientsByIsAcceptedTrue();
-        List<OrderClient> newOrders = orders.stream()
+        List<OrderClient> finalizedOrders = orders.stream()
                 .filter(OrderClient::getSuccessful)
                 .sorted(Comparator.comparing(OrderClient::getDate)
                         .reversed())
                 .collect(Collectors.toList());
         orders.sort(Comparator.comparing(OrderClient::getDate).reversed());
 
-        model.addAttribute("orders", newOrders);
-        return "orders/finalizedOrders";
+        return finalizedOrders;
     }
 
     @PostMapping("/updateOrderClientFalse")
-    public String updateOrderFalse(@RequestParam("orderId") Long orderId) {
-        OrderClient orderClient = orderClientRepository.findById(orderId).orElse(null);
-        if (orderClient != null) {
-            orderClient.setSuccessful(false);
-            orderClientRepository.save(orderClient);
+    public OrderClient updateOrderFalse(@RequestParam("orderId") Long orderId) {
+        OrderClient updateOrderFalse = orderClientRepository.findById(orderId).orElse(null);
+        if (updateOrderFalse != null) {
+            updateOrderFalse.setSuccessful(false);
+            orderClientRepository.save(updateOrderFalse);
         }
-        return String.format("redirect:/orders/%s", orderId);
+        return updateOrderFalse;
     }
 
     @PostMapping("/updateOrderClientTrue")
-    public String updateOrderTrue(@RequestParam("orderId") Long orderId) {
-        OrderClient orderClient = orderClientRepository.findById(orderId).orElse(null);
-        if (orderClient != null) {
-            orderClient.setSuccessful(true);
-            orderClientRepository.save(orderClient);
+    public OrderClient updateOrderTrue(@RequestParam("orderId") Long orderId) {
+        OrderClient updateOrderTrue = orderClientRepository.findById(orderId).orElse(null);
+        if (updateOrderTrue != null) {
+            updateOrderTrue.setSuccessful(true);
+            orderClientRepository.save(updateOrderTrue);
         }
-        return String.format("redirect:/orders/%s", orderId);
+        return updateOrderTrue;
     }
 
     @PostMapping("/deleteOrder")
@@ -105,5 +94,4 @@ public class ViewController {
         orderClientRepository.deleteById(orderId);
         return "redirect:/";
     }
-
 }

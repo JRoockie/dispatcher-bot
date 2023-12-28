@@ -1,5 +1,8 @@
 package org.voetsky.dispatcherBot.repository.tgAudio;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.voetsky.dispatcherBot.repository.binaryContent.BinaryContent;
@@ -23,15 +26,22 @@ public class TgAudio {
     @CreationTimestamp
     private LocalDateTime date;
 
+    @JsonIgnore
     private String telegramFileId;
     private String audioName;
 
+    @JsonIgnore
+    @JsonIdentityInfo(
+            generator = ObjectIdGenerators.PropertyGenerator.class,
+            property = "id")
     @OneToOne
     @JoinColumn(name = "song_id", referencedColumnName = "id")
     private Song song;
 
+    @JsonIgnore
     @OneToOne(cascade = CascadeType.MERGE)
     private BinaryContent binaryContent;
+
     private String mimeType;
     private Long fileSize;
 

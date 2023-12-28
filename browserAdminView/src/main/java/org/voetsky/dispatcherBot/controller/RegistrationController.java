@@ -6,10 +6,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.voetsky.dispatcherBot.repository.viewEntities.AdminUser.AdminUser;
 import org.voetsky.dispatcherBot.repository.viewEntities.AdminUser.AdminUserRepo;
-import org.voetsky.dispatcherBot.repository.viewEntities.Role;
 
 import java.util.Collections;
 import java.util.Map;
+
+import static org.voetsky.dispatcherBot.repository.viewEntities.Role.USER;
 
 @Controller
 public class RegistrationController {
@@ -31,7 +32,7 @@ public class RegistrationController {
         }
 
         newUser.setActive(true);
-        newUser.setRoles(Collections.singleton(Role.USER));
+        newUser.setRoles(Collections.singleton(USER));
         adminUserRepo.save(newUser);
 
         return "redirect:/login";

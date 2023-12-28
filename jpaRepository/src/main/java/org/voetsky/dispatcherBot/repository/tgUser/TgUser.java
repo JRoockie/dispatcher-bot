@@ -1,5 +1,6 @@
 package org.voetsky.dispatcherBot.repository.tgUser;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.voetsky.dispatcherBot.UserState;
@@ -24,6 +25,7 @@ public class TgUser {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "tgUser", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderClient> orderList;
 
@@ -40,6 +42,7 @@ public class TgUser {
 
     @Enumerated(EnumType.STRING)
     private UserState userState;
+
     private String localization;
 
 }

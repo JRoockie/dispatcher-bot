@@ -1,5 +1,8 @@
 package org.voetsky.dispatcherBot.repository.song;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -32,25 +35,30 @@ public class Song implements Serializable {
     @CreationTimestamp
     private LocalDateTime date;
 
+    @JsonIdentityInfo(
+            generator = ObjectIdGenerators.PropertyGenerator.class,
+            property = "id")
     @ManyToOne
+    @JsonIgnore
     @JoinColumn(name = "order_client_id", referencedColumnName = "id")
     private OrderClient orderClient;
 
-
+    @JsonIgnore
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     private TgAudio tgAudio;
 
+    @JsonIgnore
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     private TgVoice tgVoice;
-
-    private String songName;
-    private String link;
-    private Integer singerCount;
-    private Boolean hasAudio = false;
 
     @Enumerated(EnumType.STRING)
     private WhoWillSing whoWillSing;
 
     private boolean isFilled;
+    private String songName;
+    private String link;
+    private Integer singerCount;
+    private Boolean hasAudio = false;
+
 
 }

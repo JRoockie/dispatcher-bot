@@ -1,6 +1,9 @@
 package org.voetsky.dispatcherBot.repository.orderClient;
 
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.voetsky.dispatcherBot.repository.song.Song;
@@ -27,10 +30,14 @@ public class OrderClient implements Serializable {
     private Long id;
 
     @ManyToOne
+    @JsonIgnore
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private TgUser tgUser;
 
-    @OneToMany(mappedBy = "orderClient", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIdentityInfo(
+            generator = ObjectIdGenerators.PropertyGenerator.class,
+            property = "id")
+    @OneToMany(mappedBy = "orderClient", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<Song> songs;
 
     private String comment;
