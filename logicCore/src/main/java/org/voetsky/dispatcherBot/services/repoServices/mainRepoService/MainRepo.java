@@ -6,11 +6,9 @@ import org.voetsky.dispatcherBot.repository.orderClient.OrderClient;
 import org.voetsky.dispatcherBot.repository.song.Song;
 import org.voetsky.dispatcherBot.repository.tgUser.TgUser;
 
-public interface MainService {
+public interface MainRepo {
 
     void setUserState(Update update, UserState userState);
-
-    void updateUser(Update update, TgUser newTgUser);
 
     void addMp3(Update update);
 

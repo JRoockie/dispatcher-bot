@@ -10,6 +10,4 @@ public interface SongRepository extends JpaRepository<Song, Long> {
 
     List<Song> findSongsByOrderClient(OrderClient orderClient);
 
-    List<Song> findSongsByOrderClientId(Long id);
-
 }

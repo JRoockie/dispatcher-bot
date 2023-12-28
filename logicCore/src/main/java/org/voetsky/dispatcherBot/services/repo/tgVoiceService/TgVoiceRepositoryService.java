@@ -8,33 +8,40 @@ import org.voetsky.dispatcherBot.repository.song.Song;
 import org.voetsky.dispatcherBot.repository.tgUser.TgUser;
 import org.voetsky.dispatcherBot.repository.tgVoice.TgVoice;
 import org.voetsky.dispatcherBot.repository.tgVoice.TgVoiceRepository;
-import org.voetsky.dispatcherBot.services.repo.songService.SongRepositoryService;
-import org.voetsky.dispatcherBot.services.repo.tgUserService.TgUserRepositoryService;
-import org.voetsky.dispatcherBot.services.repoServices.fileService.FileService;
+import org.voetsky.dispatcherBot.services.repo.songService.SongRepo;
+import org.voetsky.dispatcherBot.services.repo.tgUserService.TgUserRepo;
+import org.voetsky.dispatcherBot.services.repoServices.fileService.FileOperations;
+
+import java.util.List;
 
 @Log4j
 @AllArgsConstructor
 @Service
 public class TgVoiceRepositoryService implements TgVoiceRepo {
 
-    private final TgVoiceRepository tgVoiceRepository;
-    private final SongRepositoryService songRepositoryService;
-    private final TgUserRepositoryService tgUserRepositoryService;
-    private final FileService fileService;
+    private final TgVoiceRepository tgVoiceRepositoryJpa;
+    private final SongRepo songRepository;
+    private final TgUserRepo tgUserRepository;
+    private final FileOperations fileOperations;
 
     public void addVoice(Update update) {
-        TgVoice tgVoice = fileService.processVoice(update);
-        tgVoice = tgVoiceRepository.save(tgVoice);
+        TgVoice tgVoice = fileOperations.processVoice(update);
+        tgVoice = tgVoiceRepositoryJpa.save(tgVoice);
 
-        TgUser tgUser = tgUserRepositoryService.findOrSaveAppUser(
-                tgUserRepositoryService.findUserIdFromUpdate(update));
-        Song song = songRepositoryService.findSongById(tgUser.getCurrentSongId());
+        TgUser tgUser = tgUserRepository.findOrSaveAppUser(
+                tgUserRepository.findUserIdFromUpdate(update));
+        Song song = songRepository.findSongById(tgUser.getCurrentSongId());
 
         tgVoice.setSong(song);
-        tgVoice = tgVoiceRepository.save(tgVoice);
+        tgVoice = tgVoiceRepositoryJpa.save(tgVoice);
 
         song.setTgVoice(tgVoice);
-        songRepositoryService.save(song);
+        songRepository.save(song);
+    }
+
+    @Override
+    public void save(List<TgVoice> tgVoices) {
+        tgVoiceRepositoryJpa.saveAll(tgVoices);
     }
 
 }

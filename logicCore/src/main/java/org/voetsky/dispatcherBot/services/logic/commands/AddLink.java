@@ -10,7 +10,7 @@ import org.voetsky.dispatcherBot.services.logic.commands.command.Command;
 import org.voetsky.dispatcherBot.services.logic.commands.commandFunctions.Chain;
 import org.voetsky.dispatcherBot.services.logic.commands.commandFunctions.EditSong;
 import org.voetsky.dispatcherBot.services.output.messageMakerService.MessageMaker;
-import org.voetsky.dispatcherBot.services.repoServices.mainRepoService.MainService;
+import org.voetsky.dispatcherBot.services.repoServices.mainRepoService.MainRepo;
 
 import static org.voetsky.dispatcherBot.UserState.AWAITING_FOR_BUTTON;
 import static org.voetsky.dispatcherBot.UserState.AWAITING_FOR_TEXT;
@@ -19,7 +19,7 @@ import static org.voetsky.dispatcherBot.services.logic.commands.command.Commands
 @Log4j
 @AllArgsConstructor
 public class AddLink implements Command, Chain, EditSong {
-    private final MainService mainRepoService;
+    private final MainRepo mainRepo;
     private final MessageMaker messageMaker;
 
     @Override
@@ -44,7 +44,7 @@ public class AddLink implements Command, Chain, EditSong {
         if (log.isDebugEnabled()) {
             log.debug(String.format("State changed to %s", userState));
         }
-        mainRepoService.setUserState(update, userState);
+        mainRepo.setUserState(update, userState);
     }
 
     @Override
@@ -61,7 +61,7 @@ public class AddLink implements Command, Chain, EditSong {
         Song newSong = Song.builder()
                 .link(link)
                 .build();
-        mainRepoService.updateSong(update, newSong);
+        mainRepo.updateSong(update, newSong);
     }
 
 }

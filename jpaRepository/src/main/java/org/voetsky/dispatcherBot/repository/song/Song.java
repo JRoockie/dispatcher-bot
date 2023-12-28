@@ -6,6 +6,8 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import org.hibernate.annotations.TypeDef;
 import org.voetsky.dispatcherBot.WhoWillSing;
 import org.voetsky.dispatcherBot.repository.orderClient.OrderClient;
@@ -35,12 +37,15 @@ public class Song implements Serializable {
     @CreationTimestamp
     private LocalDateTime date;
 
+    private LocalDateTime deletedWhen;
+
     @JsonIdentityInfo(
             generator = ObjectIdGenerators.PropertyGenerator.class,
             property = "id")
     @ManyToOne
     @JsonIgnore
     @JoinColumn(name = "order_client_id", referencedColumnName = "id")
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private OrderClient orderClient;
 
     @JsonIgnore

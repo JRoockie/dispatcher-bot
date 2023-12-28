@@ -17,10 +17,10 @@ import static org.voetsky.dispatcherBot.UserState.AWAITING_FOR_COMMAND;
 @Service
 public class TgUserRepositoryService implements TgUserRepo {
 
-    private final TgUserRepository tgUserRepository;
+    private final TgUserRepository tgUserRepositoryJpa;
 
     public TgUser findOrSaveAppUser(User telegramUser) {
-        TgUser persistentTgUser = tgUserRepository.findByTelegramUserId(telegramUser.getId());
+        TgUser persistentTgUser = tgUserRepositoryJpa.findByTelegramUserId(telegramUser.getId());
         if (persistentTgUser == null) {
             if (log.isDebugEnabled()) {
                 log.debug("NEW user in system, adding: " + telegramUser.getId());
@@ -43,8 +43,15 @@ public class TgUserRepositoryService implements TgUserRepo {
                 .localization("ru")
                 .build();
 
-        transientTgUser = tgUserRepository.save(transientTgUser);
+        transientTgUser = tgUserRepositoryJpa.save(transientTgUser);
         return transientTgUser;
+    }
+
+    @Override
+    public TgUser getTgUserFromUpdate(Update update) {
+        return
+                findAppUsersByTelegramUserId(
+                        getIdFromUpdate(update));
     }
 
     public Long getIdFromUpdate(Update update) {
@@ -56,13 +63,13 @@ public class TgUserRepositoryService implements TgUserRepo {
     }
 
     public TgUser findAppUsersByTelegramUserId(Long id) {
-        return tgUserRepository.findByTelegramUserId(id);
+        return tgUserRepositoryJpa.findByTelegramUserId(id);
     }
 
     @Override
     public void addOrderToTgUser(TgUser tgUser, OrderClient orderClient) {
         tgUser.setCurrentOrderId(orderClient.getId());
-        tgUserRepository.save(tgUser);
+        tgUserRepositoryJpa.save(tgUser);
     }
 
     public User findUserIdFromUpdate(Update update) {
@@ -77,19 +84,19 @@ public class TgUserRepositoryService implements TgUserRepo {
     }
 
     public void setState(Update update, UserState userState) {
-        TgUser tgUser = tgUserRepository.findByTelegramUserId(findUserIdFromUpdate(update).getId());
+        TgUser tgUser = tgUserRepositoryJpa.findByTelegramUserId(findUserIdFromUpdate(update).getId());
         tgUser.setUserState(userState);
-        tgUserRepository.save(tgUser);
+        tgUserRepositoryJpa.save(tgUser);
     }
 
     public void setCurrentSong(Update update, Long songId) {
-        TgUser tgUser = tgUserRepository.findByTelegramUserId(findUserIdFromUpdate(update).getId());
+        TgUser tgUser = tgUserRepositoryJpa.findByTelegramUserId(findUserIdFromUpdate(update).getId());
         tgUser.setCurrentSongId(songId);
-        tgUserRepository.save(tgUser);
+        tgUserRepositoryJpa.save(tgUser);
     }
 
     public TgUser save(TgUser tgUser) {
-        return tgUserRepository.save(tgUser);
+        return tgUserRepositoryJpa.save(tgUser);
     }
 
     public UserState getState(Update update) {

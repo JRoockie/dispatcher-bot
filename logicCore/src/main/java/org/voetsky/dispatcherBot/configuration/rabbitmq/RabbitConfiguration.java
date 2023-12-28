@@ -1,4 +1,4 @@
-package org.voetsky.dispatcherBot.configuration;
+package org.voetsky.dispatcherBot.configuration.rabbitmq;
 
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
 import org.springframework.amqp.support.converter.MessageConverter;

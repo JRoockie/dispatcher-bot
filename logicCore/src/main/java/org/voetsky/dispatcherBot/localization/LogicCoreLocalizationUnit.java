@@ -1,4 +1,4 @@
-package org.voetsky.dispatcherBot.configuration.LogicCoreLocalization;
+package org.voetsky.dispatcherBot.localization;
 
 import lombok.extern.log4j.Log4j;
 import org.springframework.stereotype.Service;
@@ -99,7 +99,6 @@ public class LogicCoreLocalizationUnit implements LogicCoreLocalization {
             log.debug(String.format(
                     "LogicCore: Getting unknown value %S", DEFAULT_LANG));
         }
-
         return dic.get(DEFAULT_LANG).get(UNKNOWN_KEY);
     }
 

@@ -1,11 +1,11 @@
-package org.voetsky.dispatcherBot.configuration.Initialization;
+package org.voetsky.dispatcherBot.services.logic.commandInitialization;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.voetsky.dispatcherBot.services.logic.commands.*;
 import org.voetsky.dispatcherBot.services.logic.commands.command.Command;
 import org.voetsky.dispatcherBot.services.output.messageMakerService.MessageMaker;
-import org.voetsky.dispatcherBot.services.repoServices.mainRepoService.MainService;
+import org.voetsky.dispatcherBot.services.repoServices.mainRepoService.MainRepo;
 
 import javax.annotation.PostConstruct;
 import java.util.HashMap;
@@ -15,8 +15,8 @@ import static org.voetsky.dispatcherBot.services.logic.commands.command.Commands
 
 @AllArgsConstructor
 @Service
-public class CommandInit implements Initialization {
-    private final MainService mainRepoService;
+public class CommandInitService implements CommandInit {
+    private final MainRepo mainRepoService;
     private final MessageMaker messageMaker;
 
     @PostConstruct

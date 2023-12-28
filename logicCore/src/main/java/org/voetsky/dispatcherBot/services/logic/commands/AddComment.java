@@ -10,7 +10,7 @@ import org.voetsky.dispatcherBot.services.logic.commands.command.Command;
 import org.voetsky.dispatcherBot.services.logic.commands.commandFunctions.Chain;
 import org.voetsky.dispatcherBot.services.logic.commands.commandFunctions.EditOrder;
 import org.voetsky.dispatcherBot.services.output.messageMakerService.MessageMaker;
-import org.voetsky.dispatcherBot.services.repoServices.mainRepoService.MainService;
+import org.voetsky.dispatcherBot.services.repoServices.mainRepoService.MainRepo;
 
 import static org.voetsky.dispatcherBot.UserState.AWAITING_FOR_TEXT;
 import static org.voetsky.dispatcherBot.services.logic.commands.command.Commands.FINISH;
@@ -18,7 +18,7 @@ import static org.voetsky.dispatcherBot.services.logic.commands.command.Commands
 @Log4j
 @AllArgsConstructor
 public class AddComment implements Command, Chain, EditOrder {
-    private final MainService mainRepoService;
+    private final MainRepo mainRepo;
     private final MessageMaker messageMaker;
 
     @Override
@@ -43,7 +43,7 @@ public class AddComment implements Command, Chain, EditOrder {
         if (log.isDebugEnabled()) {
             log.debug(String.format("State changed to %s", userState));
         }
-        mainRepoService.setUserState(update, userState);
+        mainRepo.setUserState(update, userState);
     }
 
     @Override
@@ -61,6 +61,6 @@ public class AddComment implements Command, Chain, EditOrder {
                 .comment(comment)
                 .isAccepted(true)
                 .build();
-        mainRepoService.updateOrder(update, orderClient);
+        mainRepo.updateOrder(update, orderClient);
     }
 }

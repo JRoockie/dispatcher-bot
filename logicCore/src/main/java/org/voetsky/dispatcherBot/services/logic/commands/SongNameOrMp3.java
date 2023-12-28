@@ -11,7 +11,7 @@ import org.voetsky.dispatcherBot.repository.song.Song;
 import org.voetsky.dispatcherBot.services.logic.commands.command.Command;
 import org.voetsky.dispatcherBot.services.logic.commands.commandFunctions.InlineKeyboard;
 import org.voetsky.dispatcherBot.services.output.messageMakerService.MessageMaker;
-import org.voetsky.dispatcherBot.services.repoServices.mainRepoService.MainService;
+import org.voetsky.dispatcherBot.services.repoServices.mainRepoService.MainRepo;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,7 +22,7 @@ import static org.voetsky.dispatcherBot.services.logic.commands.command.Commands
 @Log4j
 @AllArgsConstructor
 public class SongNameOrMp3 implements Command, InlineKeyboard {
-    private final MainService mainRepoService;
+    private final MainRepo mainRepo;
     private final MessageMaker messageMaker;
 
     @Override
@@ -31,7 +31,7 @@ public class SongNameOrMp3 implements Command, InlineKeyboard {
                 update, "songNameOrMp3.h.m");
         InlineKeyboardMarkup markupInline = getInlineKeyboardMarkup(update);
         var msg = messageMaker.makeSendMessage(update, text, markupInline, false);
-        mainRepoService.addSong(update, new Song());
+        mainRepo.addSong(update, new Song());
         changeState(update, AWAITING_FOR_BUTTON);
         return msg;
     }
@@ -66,7 +66,7 @@ public class SongNameOrMp3 implements Command, InlineKeyboard {
         if (log.isDebugEnabled()) {
             log.debug(String.format("State changed to %s", userState));
         }
-        mainRepoService.setUserState(update, userState);
+        mainRepo.setUserState(update, userState);
     }
 
 }

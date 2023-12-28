@@ -9,8 +9,8 @@ import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.User;
-import org.voetsky.dispatcherBot.configuration.Initialization.CommandInit;
-import org.voetsky.dispatcherBot.configuration.LogicCoreLocalization.LogicCoreLocalization;
+import org.voetsky.dispatcherBot.services.logic.commandInitialization.CommandInitService;
+import org.voetsky.dispatcherBot.localization.LogicCoreLocalization;
 import org.voetsky.dispatcherBot.exceptions.ParentException.LogicCoreException;
 import org.voetsky.dispatcherBot.services.logic.commandHandlerService.CommandHandlerService;
 import org.voetsky.dispatcherBot.services.logic.commands.Finish;
@@ -37,7 +37,7 @@ class CommandHandlerServiceTest {
     private MainRepoService mainRepoService;
 
     @Mock
-    private CommandInit mockInitialization;
+    private CommandInitService mockInitialization;
 
     @Mock
     private LogicCoreLocalization localization;

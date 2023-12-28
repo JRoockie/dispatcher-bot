@@ -9,7 +9,7 @@ import org.voetsky.dispatcherBot.exceptions.ParentException.LogicCoreException;
 import org.voetsky.dispatcherBot.services.input.messageValidationService.MessageValidation;
 import org.voetsky.dispatcherBot.services.logic.commandHandlerService.CommandHandler;
 import org.voetsky.dispatcherBot.services.output.messageMakerService.MessageMakerService;
-import org.voetsky.dispatcherBot.services.output.producerService.ProducerService;
+import org.voetsky.dispatcherBot.services.output.producerService.Producer;
 
 @Log4j
 @AllArgsConstructor
@@ -19,7 +19,7 @@ public class ReceiverController {
     private final CommandHandler commandHandler;
     private final MessageMakerService messageMakerService;
     private final MessageValidation messageValidation;
-    private final ProducerService producerService;
+    private final Producer producer;
 
     public void processTextMessage(Update update) {
         try {
@@ -72,7 +72,7 @@ public class ReceiverController {
     }
 
     public void sendMessageToView(SendMessage s) {
-        producerService.producerAnswer(s);
+        producer.producerAnswer(s);
     }
 
 }

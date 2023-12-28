@@ -13,7 +13,7 @@ import org.voetsky.dispatcherBot.services.logic.commands.commandFunctions.Chain;
 import org.voetsky.dispatcherBot.services.logic.commands.commandFunctions.EditSong;
 import org.voetsky.dispatcherBot.services.logic.commands.commandFunctions.InlineKeyboard;
 import org.voetsky.dispatcherBot.services.output.messageMakerService.MessageMaker;
-import org.voetsky.dispatcherBot.services.repoServices.mainRepoService.MainService;
+import org.voetsky.dispatcherBot.services.repoServices.mainRepoService.MainRepo;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,7 +26,7 @@ import static org.voetsky.dispatcherBot.services.logic.commands.command.Commands
 @Log4j
 @AllArgsConstructor
 public class WhoWillSing implements Command, Chain, EditSong, InlineKeyboard {
-    private final MainService mainRepoService;
+    private final MainRepo mainRepo;
     private final MessageMaker messageMaker;
 
     @Override
@@ -83,7 +83,7 @@ public class WhoWillSing implements Command, Chain, EditSong, InlineKeyboard {
         if (log.isDebugEnabled()) {
             log.debug(String.format("State changed to %s", userState));
         }
-        mainRepoService.setUserState(update, userState);
+        mainRepo.setUserState(update, userState);
     }
 
     @Override
@@ -107,8 +107,8 @@ public class WhoWillSing implements Command, Chain, EditSong, InlineKeyboard {
                 .getTextFromProperties(update, "whoWillSing.b3.m"))) {
             song.setWhoWillSing(CHILD);
         }
-        mainRepoService.updateSong(update, song);
-        mainRepoService.fillSongNullFields(update);
+        mainRepo.updateSong(update, song);
+        mainRepo.fillSongNullFields(update);
     }
 
     private Song createDefaultSong() {

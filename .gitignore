@@ -45,6 +45,6 @@ build/
 *.iml
 logs
 *.log
-*/pgdata
-*/rabbitmq_data
-*/jenkins_home
+*/pgdata/*
+*/rabbitmq_data/*
+*/jenkins_home/*

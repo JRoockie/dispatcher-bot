@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
-import org.voetsky.dispatcherBot.configuration.LogicCoreLocalization.LogicCoreLocalization;
+import org.voetsky.dispatcherBot.localization.LogicCoreLocalization;
 
 @Log4j
 @AllArgsConstructor
@@ -66,6 +66,13 @@ public class MessageMakerService implements MessageMaker {
         String lang = getLanguageFromTg(update);
         if (localization.get(lang, text) != null) {
             return localization.get(lang, text);
+        }
+        return text;
+    }
+
+    public String getTextFromProperties(String text) {
+        if (localization.getKeyFromDefaultLang( text) != null) {
+            return localization.getKeyFromDefaultLang(text);
         }
         return text;
     }

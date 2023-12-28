@@ -18,48 +18,41 @@ import org.voetsky.dispatcherBot.services.repoServices.comparingEntityService.Co
 @Log4j
 @AllArgsConstructor
 @Service
-public class MainRepoService implements MainService {
+public class MainRepoService implements MainRepo {
 
-    private final OrderClientRepo orderClientRepo;
-    private final SongRepo songRepo;
-    private final TgUserRepo tgUserRepo;
-    private final TgAudioRepo tgAudioRepo;
-    private final TgVoiceRepo tgVoiceRepo;
+    private final OrderClientRepo orderClientRepository;
+    private final SongRepo songRepository;
+    private final TgUserRepo tgUserRepository;
+    private final TgAudioRepo tgAudioRepository;
+    private final TgVoiceRepo tgVoiceRepository;
     private final ComparingEntity comparingEntity;
 
     @Override
     public void setUserState(Update update, UserState userState) {
-        tgUserRepo.setState(update, userState);
-    }
-
-    @Override
-    public void updateUser(Update update, TgUser newTgUser) {
-        TgUser updatable = getTgUserFromUpdate(update);
-        updatable = comparingEntity.tgUserUpdate(newTgUser, updatable);
-        tgUserRepo.save(updatable);
+        tgUserRepository.setState(update, userState);
     }
 
     @Override
     public void addMp3(Update update) {
-        tgAudioRepo.addMp3(update);
+        tgAudioRepository.addMp3(update);
     }
 
     @Override
     public void addVoice(Update update) {
-        tgVoiceRepo.addVoice(update);
+        tgVoiceRepository.addVoice(update);
     }
 
     @Override
     public void addSong(Update update, Song song) {
         TgUser tgUser = getTgUserFromUpdate(update);
 
-        OrderClient orderClient = orderClientRepo.findOrderClientById(
+        OrderClient orderClient = orderClientRepository.findOrderClientById(
                 tgUser.getCurrentOrderId());
 
         song.setOrderClient(orderClient);
-        Song song1 = songRepo.save(song);
+        Song song1 = songRepository.save(song);
 
-        tgUserRepo.setCurrentSong(update, song1.getId());
+        tgUserRepository.setCurrentSong(update, song1.getId());
     }
 
     @Override
@@ -68,35 +61,35 @@ public class MainRepoService implements MainService {
         if (tgUser.getCurrentSongId() == null) {
             addSong(update, song);
             return;
-        } else if (songRepo.findSongById(tgUser.getCurrentSongId()).isFilled()) {
+        } else if (songRepository.findSongById(tgUser.getCurrentSongId()).isFilled()) {
             addSong(update, song);
             return;
         }
-        Song original = songRepo.findSongById(tgUser.getCurrentSongId());
+        Song original = songRepository.findSongById(tgUser.getCurrentSongId());
         original = comparingEntity.songUpdate(song, original);
-        songRepo.save(original);
+        songRepository.save(original);
     }
 
     @Override
     public void addOrder(Update update) {
         TgUser tgUser = getTgUserFromUpdate(update);
-        OrderClient orderClient = orderClientRepo.defaultOrder(tgUser);
-        tgUserRepo.addOrderToTgUser(tgUser, orderClient);
+        OrderClient orderClient = orderClientRepository.defaultOrder(tgUser);
+        tgUserRepository.addOrderToTgUser(tgUser, orderClient);
     }
 
     @Override
     public void updateOrder(Update update, OrderClient newOrderClient) {
         TgUser tgUser = getTgUserFromUpdate(update);
-        OrderClient original = orderClientRepo.findOrderClientById(tgUser.getCurrentOrderId());
+        OrderClient original = orderClientRepository.findOrderClientById(tgUser.getCurrentOrderId());
         original = comparingEntity.orderClientUpdate(newOrderClient, original);
-        orderClientRepo.save(original);
+        orderClientRepository.save(original);
     }
 
     @Override
     public String getPrice(Update update, Long oneSingerPrice, Long oneSongPrice, String bill, Long discountLimit) {
         TgUser tgUser = getTgUserFromUpdate(update);
-        OrderClient order = orderClientRepo.findOrderClientById(tgUser.getCurrentOrderId());
-        var songs = songRepo.findSongsByOrderClient(order);
+        OrderClient order = orderClientRepository.findOrderClientById(tgUser.getCurrentOrderId());
+        var songs = songRepository.findSongsByOrderClient(order);
 
         int singerCount = songs.stream().mapToInt(Song::getSingerCount).sum();
         int songCount = songs.size();
@@ -149,22 +142,20 @@ public class MainRepoService implements MainService {
 
     @Override
     public TgUser getTgUserFromUpdate(Update update) {
-        return tgUserRepo
-                .findAppUsersByTelegramUserId(
-                        tgUserRepo.getIdFromUpdate(update));
+        return tgUserRepository.getTgUserFromUpdate(update);
     }
 
     @Override
     public void fillSongNullFields(Update update) {
         TgUser tgUser = getTgUserFromUpdate(update);
-        Song song = songRepo.findSongById(tgUser.getCurrentSongId());
+        Song song = songRepository.findSongById(tgUser.getCurrentSongId());
         if (song.getLink() == null) {
             song.setLink("");
         }
         if (song.getSongName() == null) {
             song.setSongName("");
         }
-        songRepo.save(song);
+        songRepository.save(song);
     }
 
 }

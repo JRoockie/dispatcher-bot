@@ -11,7 +11,7 @@ import org.voetsky.dispatcherBot.services.logic.commands.command.Command;
 import org.voetsky.dispatcherBot.services.logic.commands.commandFunctions.EditOrder;
 import org.voetsky.dispatcherBot.services.logic.commands.commandFunctions.InlineKeyboard;
 import org.voetsky.dispatcherBot.services.output.messageMakerService.MessageMaker;
-import org.voetsky.dispatcherBot.services.repoServices.mainRepoService.MainService;
+import org.voetsky.dispatcherBot.services.repoServices.mainRepoService.MainRepo;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,7 +22,7 @@ import static org.voetsky.dispatcherBot.services.logic.commands.command.Commands
 @Log4j
 @AllArgsConstructor
 public class Start implements Command, InlineKeyboard, EditOrder {
-    private final MainService mainRepoService;
+    private final MainRepo mainRepo;
     private final MessageMaker messageMaker;
 
     @Override
@@ -63,11 +63,11 @@ public class Start implements Command, InlineKeyboard, EditOrder {
         if (log.isDebugEnabled()) {
             log.debug(String.format("State changed to %s", userState));
         }
-        mainRepoService.setUserState(update, userState);
+        mainRepo.setUserState(update, userState);
     }
 
     @Override
     public void editOrder(Update update) {
-        mainRepoService.addOrder(update);
+        mainRepo.addOrder(update);
     }
 }

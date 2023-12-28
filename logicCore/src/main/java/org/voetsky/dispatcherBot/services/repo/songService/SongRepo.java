@@ -12,4 +12,7 @@ public interface SongRepo {
     Song save(Song song);
 
     List<Song> findSongsByOrderClient(OrderClient orderClient);
+
+    void save(List<Song> songs);
+
 }

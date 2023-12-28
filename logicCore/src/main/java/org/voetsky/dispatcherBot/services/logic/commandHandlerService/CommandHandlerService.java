@@ -6,8 +6,9 @@ import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
-import org.voetsky.dispatcherBot.configuration.Initialization.Initialization;
+import org.voetsky.dispatcherBot.services.logic.commandInitialization.CommandInit;
 import org.voetsky.dispatcherBot.exceptions.ParentException.LogicCoreException;
+import org.voetsky.dispatcherBot.exceptions.ServiceException;
 import org.voetsky.dispatcherBot.services.logic.commands.command.Command;
 import org.voetsky.dispatcherBot.services.output.messageMakerService.MessageMaker;
 
@@ -23,17 +24,17 @@ public class CommandHandlerService implements CommandHandler {
     private final Map<String, String> bindingBy = new ConcurrentHashMap<>();
     private final MessageMaker messageMaker;
     private Map<String, Command> actions;
-    private final Initialization initialization;
+    private final CommandInit commandInit;
 
-    public CommandHandlerService(MessageMaker messageMaker, Initialization commandInit) {
+    public CommandHandlerService(MessageMaker messageMaker, CommandInit commandInit) {
         this.messageMaker = messageMaker;
-        this.initialization = commandInit;
+        this.commandInit = commandInit;
     }
 
     @PostConstruct
     @Override
     public void initCommands() {
-        actions = initialization.initCommands();
+        actions = commandInit.initCommands();
     }
 
     @Override
@@ -95,7 +96,7 @@ public class CommandHandlerService implements CommandHandler {
             var msg = actions.get(text).callback(update);
             return processChain(msg, update);
         } catch (NullPointerException e) {
-            throw new LogicCoreException("Команды не существует");
+            throw new ServiceException("Команды не существует");
         }
     }
 
@@ -106,7 +107,7 @@ public class CommandHandlerService implements CommandHandler {
         } else if (bindingBy.containsKey(chatId)) {
             return processCallBack(update, chatId);
         }
-        throw new LogicCoreException("tech.err.command");
+        throw new ServiceException("tech.err.command");
     }
 
     @Override
@@ -123,7 +124,7 @@ public class CommandHandlerService implements CommandHandler {
             if (log.isDebugEnabled()){
                 log.error("FATAL ERROR:", e);
             }
-            throw new LogicCoreException("tech.err.commandDoesNotExist");
+            throw new ServiceException("tech.err.commandDoesNotExist");
         }
     }
 

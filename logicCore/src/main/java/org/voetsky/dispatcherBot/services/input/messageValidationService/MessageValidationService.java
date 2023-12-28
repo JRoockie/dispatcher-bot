@@ -6,8 +6,12 @@ import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.voetsky.dispatcherBot.UserState;
 import org.voetsky.dispatcherBot.exceptions.IncorrectInputException;
+import org.voetsky.dispatcherBot.exceptions.ParentException.LogicCoreException;
+import org.voetsky.dispatcherBot.repository.orderClient.OrderClient;
+import org.voetsky.dispatcherBot.repository.tgUser.TgUser;
 import org.voetsky.dispatcherBot.services.logic.commandHandlerService.CommandHandlerService;
-import org.voetsky.dispatcherBot.services.repo.tgUserService.TgUserRepositoryService;
+import org.voetsky.dispatcherBot.services.repo.orderClientService.OrderClientRepo;
+import org.voetsky.dispatcherBot.services.repo.tgUserService.TgUserRepo;
 
 import static org.voetsky.dispatcherBot.UserState.*;
 
@@ -18,7 +22,8 @@ import static org.voetsky.dispatcherBot.UserState.*;
 public class MessageValidationService implements MessageValidation {
 
     private final CommandHandlerService commandHandlerService;
-    private final TgUserRepositoryService tgUserRepositoryService;
+    private final TgUserRepo tgUserRepository;
+    private final OrderClientRepo orderClientRepository;
 
     public String whichStateError(Update update) {
         UserState state = getState(update);
@@ -29,7 +34,7 @@ public class MessageValidationService implements MessageValidation {
             case AWAITING_FOR_TEXT:
                 return "mvs.err.text.input";
             case AWAITING_FOR_BUTTON:
-                return "mvs.err.button.inpu";
+                return "mvs.err.button.input";
             case AWAITING_FOR_AUDIO:
                 return "mvs.err.mp3.input";
             case AWAITING_FOR_VOICE:
@@ -40,7 +45,7 @@ public class MessageValidationService implements MessageValidation {
         }
     }
 
-    public boolean isValid(Update update){
+    public boolean isValid(Update update) {
         if (log.isDebugEnabled()) {
             log.debug("Validation...");
         }
@@ -53,17 +58,19 @@ public class MessageValidationService implements MessageValidation {
     }
 
     public UserState getState(Update update) {
-        return tgUserRepositoryService.getState(update);
+        return tgUserRepository.getState(update);
     }
 
     public boolean isActualState(Update update) {
         UserState state = getState(update);
 
+        checkForInvalidOrder(update);
+
         if (update.getMessage() != null) {
             if (update.getMessage().getText() != null) {
                 var text = update.getMessage().getText();
                 var chatId = update.getMessage().getChatId().toString();
-                if (text.equals("/start")){
+                if (text.equals("/start")) {
                     return true;
                 }
                 if (commandHandlerService.getActions().containsKey(text)) {
@@ -80,6 +87,26 @@ public class MessageValidationService implements MessageValidation {
             return AWAITING_FOR_BUTTON == state;
         }
         return false;
+    }
+
+    private void checkForInvalidOrder(Update update) {
+        if (update.hasMessage() && update.getMessage().hasText()) {
+            if (update.getMessage().getText().equals("/start")) {
+                tgUserRepository.setState(update, AWAITING_FOR_COMMAND);
+                return;
+            }
+        }
+
+        TgUser tgUser = tgUserRepository.getTgUserFromUpdate(update);
+        OrderClient order = orderClientRepository.findOrderClientById(tgUser.getCurrentOrderId());
+        if (order != null) {
+            if (order.getDeletedWhen() != null) {
+                tgUser.setUserState(INVALID_SESSION);
+                throw new LogicCoreException("mvs.err.session");
+            }
+
+        }
+
     }
 
 }

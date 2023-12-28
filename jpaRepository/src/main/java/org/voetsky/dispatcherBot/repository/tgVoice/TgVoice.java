@@ -26,6 +26,8 @@ public class TgVoice {
     @CreationTimestamp
     private LocalDateTime date;
 
+    private LocalDateTime deletedWhen;
+
     @JsonIgnore
     private String telegramFileId;
 

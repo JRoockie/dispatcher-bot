@@ -23,7 +23,7 @@ import java.net.URL;
 
 @Log4j
 @Service
-public class FileServiceImpl implements FileService {
+public class FileOperationsService implements FileOperations {
     @Value("${bot.token}")
     private String token;
     @Value("${service.file_info.uri}")
@@ -32,7 +32,7 @@ public class FileServiceImpl implements FileService {
     private String fileStorageUri;
     private final BinaryContentRepository binaryContentRepository;
 
-    public FileServiceImpl(BinaryContentRepository binaryContentRepository) {
+    public FileOperationsService(BinaryContentRepository binaryContentRepository) {
         this.binaryContentRepository = binaryContentRepository;
     }
 

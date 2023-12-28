@@ -20,6 +20,8 @@ public interface TgUserRepo {
 
     UserState getState(Update update);
 
+    TgUser getTgUserFromUpdate(Update update);
+
     Long getIdFromUpdate(Update update);
 
     void setCurrentSong(Update update, Long songId);

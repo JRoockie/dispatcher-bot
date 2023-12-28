@@ -7,12 +7,14 @@ import org.voetsky.dispatcherBot.repository.orderClient.OrderClient;
 import org.voetsky.dispatcherBot.repository.orderClient.OrderClientRepository;
 import org.voetsky.dispatcherBot.repository.tgUser.TgUser;
 
+import java.util.List;
+
 @Log4j
 @AllArgsConstructor
 @Service
 public class OrderClientRepositoryService implements OrderClientRepo {
 
-    private final OrderClientRepository orderClientRepository;
+    private final OrderClientRepository orderClientRepositoryJpa;
 
     @Override
     public OrderClient defaultOrder(TgUser tgUser) {
@@ -24,16 +26,26 @@ public class OrderClientRepositoryService implements OrderClientRepo {
                 .isAccepted(false)
                 .successful(false)
                 .build();
-        return orderClientRepository.save(orderClient);
+        return orderClientRepositoryJpa.save(orderClient);
     }
 
     @Override
     public OrderClient save(OrderClient orderClient) {
-        return orderClientRepository.save(orderClient);
+        return orderClientRepositoryJpa.save(orderClient);
+    }
+
+    @Override
+    public void save(List<OrderClient> orderClients) {
+        orderClientRepositoryJpa.saveAll(orderClients);
     }
 
     public OrderClient findOrderClientById(Long id) {
-        return orderClientRepository.findOrderClientById(id);
+        return orderClientRepositoryJpa.findOrderClientById(id);
+    }
+
+    @Override
+    public List<OrderClient> findOrderClientsByIsAcceptedFalse() {
+        return orderClientRepositoryJpa.findOrderClientsByIsAcceptedFalse();
     }
 
 }

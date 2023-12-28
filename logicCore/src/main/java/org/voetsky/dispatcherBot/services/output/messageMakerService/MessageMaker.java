@@ -8,10 +8,6 @@ public interface MessageMaker {
 
     Long getIdFromUpdate(Update update);
 
-//    SendMessage makeSendMessage(Update update, String string);
-
-//    SendMessage makeSendMessage(Update update, String text, InlineKeyboardMarkup markup);
-
     SendMessage makeSendMessage(Update update,
                                 String text,
                                 boolean fromProperties);
@@ -25,4 +21,7 @@ public interface MessageMaker {
     String getLanguageFromTg(Update update);
 
     String getTextFromProperties(Update update, String text);
+
+    String getTextFromProperties(String text);
+
 }

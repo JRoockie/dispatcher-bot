@@ -10,7 +10,7 @@ import org.voetsky.dispatcherBot.UserState;
 import org.voetsky.dispatcherBot.services.logic.commands.command.Command;
 import org.voetsky.dispatcherBot.services.logic.commands.commandFunctions.Chain;
 import org.voetsky.dispatcherBot.services.output.messageMakerService.MessageMaker;
-import org.voetsky.dispatcherBot.services.repoServices.mainRepoService.MainService;
+import org.voetsky.dispatcherBot.services.repoServices.mainRepoService.MainRepo;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,7 +22,7 @@ import static org.voetsky.dispatcherBot.services.logic.commands.command.Commands
 @Log4j
 @AllArgsConstructor
 public class ShowPrice implements Command, Chain {
-    private final MainService mainRepoService;
+    private final MainRepo mainRepo;
     private final MessageMaker messageMaker;
 
     @Override
@@ -37,7 +37,7 @@ public class ShowPrice implements Command, Chain {
         Long discountLimit = Long.parseLong(messageMaker
                 .getTextFromProperties(update, "price.discount"));
 
-        bill = mainRepoService.getPrice(update,
+        bill = mainRepo.getPrice(update,
                 priceSinger,
                 priceMusic,
                 bill,
@@ -66,7 +66,7 @@ public class ShowPrice implements Command, Chain {
         if (log.isDebugEnabled()) {
             log.debug(String.format("State changed to %s", userState));
         }
-        mainRepoService.setUserState(update, userState);
+        mainRepo.setUserState(update, userState);
     }
 
     private InlineKeyboardMarkup getInlineKeyboardMarkup(Update update) {

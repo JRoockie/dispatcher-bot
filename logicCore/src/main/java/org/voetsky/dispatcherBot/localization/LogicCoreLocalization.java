@@ -1,4 +1,4 @@
-package org.voetsky.dispatcherBot.configuration.LogicCoreLocalization;
+package org.voetsky.dispatcherBot.localization;
 
 import javax.annotation.PostConstruct;
 import java.io.IOException;

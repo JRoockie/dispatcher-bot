@@ -10,23 +10,28 @@ import java.util.List;
 @Service
 public class SongRepositoryService implements SongRepo {
 
-    private final SongRepository songRepository;
+    private final SongRepository songRepositoryJpa;
 
     public SongRepositoryService(SongRepository songRepository) {
-        this.songRepository = songRepository;
+        this.songRepositoryJpa = songRepository;
     }
 
     public Song findSongById(Long id) {
-        return songRepository.findSongById(id);
+        return songRepositoryJpa.findSongById(id);
     }
 
     public Song save(Song song) {
-        return songRepository.save(song);
+        return songRepositoryJpa.save(song);
     }
 
     @Override
     public List<Song> findSongsByOrderClient(OrderClient orderClient) {
-        return songRepository.findSongsByOrderClient(orderClient);
+        return songRepositoryJpa.findSongsByOrderClient(orderClient);
+    }
+
+    @Override
+    public void save(List<Song> songs) {
+        songRepositoryJpa.saveAll(songs);
     }
 
 }

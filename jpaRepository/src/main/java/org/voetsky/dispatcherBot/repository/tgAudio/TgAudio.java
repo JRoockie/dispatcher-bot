@@ -26,6 +26,8 @@ public class TgAudio {
     @CreationTimestamp
     private LocalDateTime date;
 
+    private LocalDateTime deletedWhen;
+
     @JsonIgnore
     private String telegramFileId;
     private String audioName;

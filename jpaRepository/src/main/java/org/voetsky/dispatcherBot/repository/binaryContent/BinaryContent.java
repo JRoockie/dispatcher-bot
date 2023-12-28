@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @Getter
 @Builder
@@ -19,4 +20,6 @@ public class BinaryContent {
     private Long id;
 
     private byte[] fileAsArrayOfBytes;
+
+    private LocalDateTime deletedWhen;
 }

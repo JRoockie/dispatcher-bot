@@ -11,7 +11,7 @@ import org.voetsky.dispatcherBot.services.logic.commands.command.Command;
 import org.voetsky.dispatcherBot.services.logic.commands.commandFunctions.EditSong;
 import org.voetsky.dispatcherBot.services.logic.commands.commandFunctions.InlineKeyboard;
 import org.voetsky.dispatcherBot.services.output.messageMakerService.MessageMaker;
-import org.voetsky.dispatcherBot.services.repoServices.mainRepoService.MainService;
+import org.voetsky.dispatcherBot.services.repoServices.mainRepoService.MainRepo;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,7 +23,7 @@ import static org.voetsky.dispatcherBot.services.logic.commands.command.Commands
 @Log4j
 @AllArgsConstructor
 public class VoiceAdd implements Command, EditSong, InlineKeyboard {
-    private final MainService mainRepoService;
+    private final MainRepo mainRepo;
     private final MessageMaker messageMaker;
 
     @Override
@@ -49,7 +49,7 @@ public class VoiceAdd implements Command, EditSong, InlineKeyboard {
         if (log.isDebugEnabled()) {
             log.debug(String.format("State changed to %s", AWAITING_FOR_BUTTON));
         }
-        mainRepoService.setUserState(update, userState);
+        mainRepo.setUserState(update, userState);
     }
 
     @Override
@@ -74,6 +74,6 @@ public class VoiceAdd implements Command, EditSong, InlineKeyboard {
 
     @Override
     public void editSong(Update update) {
-        mainRepoService.addVoice(update);
+        mainRepo.addVoice(update);
     }
 }
