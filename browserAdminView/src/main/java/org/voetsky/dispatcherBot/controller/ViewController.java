@@ -2,8 +2,11 @@ package org.voetsky.dispatcherBot.controller;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.voetsky.dispatcherBot.debug.UpdateOrderRequest;
 import org.voetsky.dispatcherBot.repository.orderClient.OrderClient;
 import org.voetsky.dispatcherBot.repository.orderClient.OrderClientRepository;
 import org.voetsky.dispatcherBot.repository.song.Song;
@@ -67,30 +70,30 @@ public class ViewController {
     }
 
     @PostMapping("/updateOrderClientFalse")
-    public OrderClient updateOrderFalse(@RequestParam("orderId") Long orderId) {
-        OrderClient updateOrderFalse = orderClientRepository.findById(orderId).orElse(null);
+    public ResponseEntity<HttpStatus> updateOrderFalse(@RequestBody UpdateOrderRequest request) {
+        OrderClient updateOrderFalse = orderClientRepository.findById(request.getId()).orElse(null);
         if (updateOrderFalse != null) {
             updateOrderFalse.setSuccessful(false);
             orderClientRepository.save(updateOrderFalse);
         }
-        return updateOrderFalse;
+        return ResponseEntity.ok(HttpStatus.OK);
     }
 
     @PostMapping("/updateOrderClientTrue")
-    public OrderClient updateOrderTrue(@RequestParam("orderId") Long orderId) {
-        OrderClient updateOrderTrue = orderClientRepository.findById(orderId).orElse(null);
+    public ResponseEntity<HttpStatus> updateOrderTrue(@RequestBody UpdateOrderRequest request) {
+        OrderClient updateOrderTrue = orderClientRepository.findById(request.getId()).orElse(null);
         if (updateOrderTrue != null) {
             updateOrderTrue.setSuccessful(true);
             orderClientRepository.save(updateOrderTrue);
         }
-        return updateOrderTrue;
+        return ResponseEntity.ok(HttpStatus.OK);
     }
 
     @PostMapping("/deleteOrder")
-    public String deleteOrder(@RequestParam("orderId") Long orderId) {
+    public ResponseEntity<HttpStatus> deleteOrder(@RequestBody UpdateOrderRequest request) {
         LocalDateTime today = LocalDateTime.now();
-        OrderClient orderClient = orderClientRepository.findOrderClientById(orderId);
+        OrderClient orderClient = orderClientRepository.findOrderClientById(request.getId());
         orderClient.setDeletedWhen(today);
-        return "Удалено";
+        return ResponseEntity.ok(HttpStatus.OK);
     }
 }
