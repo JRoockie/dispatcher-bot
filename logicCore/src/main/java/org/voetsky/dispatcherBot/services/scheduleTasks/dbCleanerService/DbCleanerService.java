@@ -31,8 +31,7 @@ public class DbCleanerService implements DbCleaner {
     private final MessageMaker messageMaker;
 
     @Override
-    @Scheduled(fixedRate = 30000)
-//    @Scheduled(cron = "@weekly")
+    @Scheduled(cron = "@weekly")
     public void clearDB(){
         if (log.isDebugEnabled()) {
             log.debug("Начинаю очистку баз данных");
@@ -40,9 +39,9 @@ public class DbCleanerService implements DbCleaner {
 
         List<OrderClient> orderClients = orderClientRepository.findOrderClientsByIsAcceptedFalse();
         LocalDateTime today = LocalDateTime.now();
-        Long difference = 60L;
+        Long differenceDays = 7L;
 
-        orderClients = removeOrderClients(orderClients, today, difference);
+        orderClients = removeOrderClients(orderClients, today, differenceDays);
         List<Song> songs = removeSongs(orderClients, today);
         List<TgVoice> tgVoices = removeTgVoices(songs, today);
         List<TgAudio> tgAudios = removeTgAudios(songs, today);
@@ -66,7 +65,7 @@ public class DbCleanerService implements DbCleaner {
         orderClients = orderClients.stream()
                 .filter(Objects::nonNull)
                 .filter(x -> Objects.isNull(x.getDeletedWhen()))
-                .filter(x -> x.getDate().plusSeconds(difference).isBefore(today))
+                .filter(x -> x.getDate().plusDays(difference).isBefore(today))
                 .collect(Collectors.toList());
 
         if (!orderClients.isEmpty()) {

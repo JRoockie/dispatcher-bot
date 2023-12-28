@@ -9,6 +9,7 @@ import org.voetsky.dispatcherBot.repository.orderClient.OrderClientRepository;
 import org.voetsky.dispatcherBot.repository.song.Song;
 import org.voetsky.dispatcherBot.repository.song.SongRepository;
 
+import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -22,9 +23,14 @@ public class ViewController {
     private final OrderClientRepository orderClientRepository;
     private final SongRepository songRepository;
 
+//    @GetMapping("/")
+//    public List<OrderClient> allOrders(Model model) {
+//        return orderClientRepository.findOrderClientsByIsAcceptedTrue();
+//    }
+
     @GetMapping("/")
-    public List<OrderClient> allOrders(Model model) {
-        return orderClientRepository.findOrderClientsByIsAcceptedTrue();
+    public String allOrders(Model model) {
+        return "обработанные и необработанные заявки. \nЗдесь эндпоинты на /orders/fin (обработанные) и на необработанные на /orders/new";
     }
 
     @GetMapping("orders/{orderId}")
@@ -39,7 +45,6 @@ public class ViewController {
         OrderClient order = orderClientRepository.findOrderClientById(song.getOrderClient().getId());
         List<Song> allOrderSongs = songRepository.findSongsByOrderClient(order);
 
-        response.put("song", song);
         response.put("allOrderSongs", allOrderSongs);
 
         return response;
@@ -49,21 +54,13 @@ public class ViewController {
     public List<OrderClient> newOrders(Model model) {
         List<OrderClient> orders = orderClientRepository.findOrderClientsByIsAcceptedTrue();
 
-        return orders.stream()
-                .filter(order -> !order.getSuccessful())
-                .sorted(Comparator.comparing(OrderClient::getDate)
-                        .reversed())
-                .collect(Collectors.toList());
+        return orders.stream().filter(order -> !order.getSuccessful()).sorted(Comparator.comparing(OrderClient::getDate).reversed()).collect(Collectors.toList());
     }
 
     @GetMapping("/orders/fin")
     public List<OrderClient> finOrders(Model model) {
         List<OrderClient> orders = orderClientRepository.findOrderClientsByIsAcceptedTrue();
-        List<OrderClient> finalizedOrders = orders.stream()
-                .filter(OrderClient::getSuccessful)
-                .sorted(Comparator.comparing(OrderClient::getDate)
-                        .reversed())
-                .collect(Collectors.toList());
+        List<OrderClient> finalizedOrders = orders.stream().filter(OrderClient::getSuccessful).sorted(Comparator.comparing(OrderClient::getDate).reversed()).collect(Collectors.toList());
         orders.sort(Comparator.comparing(OrderClient::getDate).reversed());
 
         return finalizedOrders;
@@ -91,7 +88,9 @@ public class ViewController {
 
     @PostMapping("/deleteOrder")
     public String deleteOrder(@RequestParam("orderId") Long orderId) {
-        orderClientRepository.deleteById(orderId);
-        return "redirect:/";
+        LocalDateTime today = LocalDateTime.now();
+        OrderClient orderClient = orderClientRepository.findOrderClientById(orderId);
+        orderClient.setDeletedWhen(today);
+        return "Удалено";
     }
 }
