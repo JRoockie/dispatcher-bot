@@ -65,5 +65,4 @@ public class Song implements Serializable {
     private Integer singerCount;
     private Boolean hasAudio = false;
 
-
 }

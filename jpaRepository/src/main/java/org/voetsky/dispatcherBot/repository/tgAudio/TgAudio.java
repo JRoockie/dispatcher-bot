@@ -47,6 +47,4 @@ public class TgAudio {
     private String mimeType;
     private Long fileSize;
 
-
-
 }

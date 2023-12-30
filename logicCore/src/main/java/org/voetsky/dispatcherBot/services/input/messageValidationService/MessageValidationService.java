@@ -5,6 +5,7 @@ import lombok.extern.log4j.Log4j;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.voetsky.dispatcherBot.UserState;
+import org.voetsky.dispatcherBot.exceptions.DatabaseException;
 import org.voetsky.dispatcherBot.exceptions.IncorrectInputException;
 import org.voetsky.dispatcherBot.exceptions.ParentException.LogicCoreException;
 import org.voetsky.dispatcherBot.repository.orderClient.OrderClient;
@@ -62,7 +63,13 @@ public class MessageValidationService implements MessageValidation {
     }
 
     public boolean isActualState(Update update) {
-        UserState state = getState(update);
+        UserState state;
+        try {
+             state = getState(update);
+        } catch (RuntimeException e){
+            log.error("FATAL ERROR: ", e);
+            throw new DatabaseException("mvs.err.db");
+        }
 
         checkForInvalidOrder(update);
 

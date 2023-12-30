@@ -6,9 +6,9 @@ import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
-import org.voetsky.dispatcherBot.services.logic.commandInitialization.CommandInit;
 import org.voetsky.dispatcherBot.exceptions.ParentException.LogicCoreException;
 import org.voetsky.dispatcherBot.exceptions.ServiceException;
+import org.voetsky.dispatcherBot.services.logic.commandInitialization.CommandInit;
 import org.voetsky.dispatcherBot.services.logic.commands.command.Command;
 import org.voetsky.dispatcherBot.services.output.messageMakerService.MessageMaker;
 

@@ -46,5 +46,4 @@ public class TgVoice {
     private String mimeType;
     private Long fileSize;
 
-
 }

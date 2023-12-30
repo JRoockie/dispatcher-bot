@@ -1,4 +1,4 @@
-package org.voetsky.dispatcherBot.controller;
+package org.voetsky.dispatcherBot.controllers;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j;
@@ -15,6 +15,8 @@ import java.io.IOException;
 @Log4j
 @AllArgsConstructor
 @RestController
+
+//@RequestMapping("bot/data")
 @RequestMapping("/data")
 public class DownloadController {
 
