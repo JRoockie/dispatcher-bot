@@ -48,3 +48,5 @@ logs
 */pgdata/*
 */rabbitmq_data/*
 */jenkins_home/*
+*/jenkins_home/
+jenkins_home/
