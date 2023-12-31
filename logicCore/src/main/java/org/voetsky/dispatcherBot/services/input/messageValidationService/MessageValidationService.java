@@ -42,7 +42,7 @@ public class MessageValidationService implements MessageValidation {
                 return "mvs.err.voice.input";
             default:
                 log.error("Unknown state: " + state);
-                throw new IllegalStateException(String.format("mvs.err.unknown.input" + state));
+                throw new IllegalStateException("mvs.err.unknown.input");
         }
     }
 

@@ -44,4 +44,9 @@ public class TgVoiceRepositoryService implements TgVoiceRepo {
         tgVoiceRepositoryJpa.saveAll(tgVoices);
     }
 
+    @Override
+    public TgVoice save(TgVoice tgVoice) {
+        return tgVoiceRepositoryJpa.save(tgVoice);
+    }
+
 }

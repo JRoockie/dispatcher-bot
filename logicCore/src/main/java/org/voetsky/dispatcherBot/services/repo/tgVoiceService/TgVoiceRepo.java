@@ -11,4 +11,5 @@ public interface TgVoiceRepo {
 
     void save(List<TgVoice> tgVoices);
 
+    TgVoice save(TgVoice tgVoice);
 }

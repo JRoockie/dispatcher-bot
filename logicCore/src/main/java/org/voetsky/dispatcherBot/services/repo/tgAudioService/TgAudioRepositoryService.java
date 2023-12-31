@@ -42,4 +42,8 @@ public class TgAudioRepositoryService implements TgAudioRepo {
         tgAudioRepositoryJpa.saveAll(tgAudios);
     }
 
+    @Override
+    public TgAudio save(TgAudio tgAudio){
+        return tgAudioRepositoryJpa.save(tgAudio);
+    }
 }

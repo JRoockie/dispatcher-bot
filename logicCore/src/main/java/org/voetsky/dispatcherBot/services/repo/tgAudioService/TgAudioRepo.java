@@ -12,4 +12,5 @@ public interface TgAudioRepo {
    void save(List<TgAudio> tgAudios);
 
 
+    TgAudio save(TgAudio tgAudio);
 }
