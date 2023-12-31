@@ -12,7 +12,6 @@
     <name>dispatcher</name>
 
     <dependencies>
-
         <dependency>
             <groupId>org.telegram</groupId>
             <artifactId>telegrambots-spring-boot-starter</artifactId>
