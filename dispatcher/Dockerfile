@@ -11,7 +11,6 @@ WORKDIR /app
 #ADD target/dispatcher.jar dispatcher.jar
 COPY target/dispatcher.jar dispatcher.jar
 #ARG JAR_FILE=target/dispatcher.jar
-EXPOSE 8084
 #COPY build/lib/*.jar app.jar
 #COPY ${JAR_FILE} dispatcher.jar
 ENTRYPOINT ["java", "-jar", "./dispatcher.jar"]

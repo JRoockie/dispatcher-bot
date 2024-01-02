@@ -10,7 +10,6 @@ volumes:
   postgres:
 
 services:
-
   browseradminview:
     build:
       context: ./browserAdminView
@@ -21,14 +20,37 @@ services:
     depends_on:
       - rabbitmq
       - postgres
-    environment:
-      SPRING_RABBITMQ_HOST: rabbitmq
-      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5434/postgres
-      SPRING_DATASOURCE_USERNAME: roockie
-      SPRING_DATASOURCE_PASSWORD: 1
     restart: unless-stopped
+    networks:
+      - my-network
 
+  dispatcher:
+    build:
+      context: ./dispatcher
+      dockerfile: ./Dockerfile
+    container_name: tg-bot-dispatcher
+    ports:
+      - "8085:8085"
+    depends_on:
+      - rabbitmq
+      - postgres
+    restart: unless-stopped
+    networks:
+      - my-network
 
+  logiccore:
+    build:
+      context: ./logicCore
+      dockerfile: ./Dockerfile
+    container_name: tg-bot-logiccore
+    ports:
+      - "8086:8086"
+    depends_on:
+      - rabbitmq
+      - postgres
+    restart: unless-stopped
+    networks:
+      - my-network
 
   postgres:
     image: postgres:14.5
@@ -43,7 +65,8 @@ services:
     volumes:
       - ./pgdata:/var/lib/postgresql/data
     restart: unless-stopped
-
+    networks:
+      - my-network
 
   rabbitmq:
     image: rabbitmq:3.11.0-management
@@ -59,7 +82,8 @@ services:
       RABBITMQ_DEFAULT_PASS: password
     command: bash -c "rabbitmq-server && rabbitmqctl add_user roockie password && rabbitmqctl set_user_tags roockie administrator && rabbitmqctl set_permissions -p / roockie '.*' '.*' '.*'"
     restart: unless-stopped
-
+    networks:
+      - my-network
 
   jenkins:
     image: jenkins/jenkins:lts
@@ -69,11 +93,5 @@ services:
       - ./jenkins_home:/var/jenkins_home
   ssh-agent:
     image: jenkins/ssh-agent
-
-
-
-
-
-
-
-
+    networks:
+      - my-network

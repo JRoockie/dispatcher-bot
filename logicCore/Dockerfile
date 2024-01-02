@@ -4,5 +4,4 @@ COPY src src
 COPY pom.xml pom.xml
 WORKDIR /app
 COPY target/logicCore.jar logicCore.jar
-EXPOSE 8084
 ENTRYPOINT ["java", "-jar", "logicCore.jar"]
