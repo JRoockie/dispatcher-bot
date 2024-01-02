@@ -1,5 +1,6 @@
 package org.voetsky.dispatcherBot.services.logic.commandInitialization;
 
+import javax.annotation.PostConstruct;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.voetsky.dispatcherBot.services.logic.commands.*;
@@ -7,7 +8,6 @@ import org.voetsky.dispatcherBot.services.logic.commands.command.Command;
 import org.voetsky.dispatcherBot.services.output.messageMakerService.MessageMaker;
 import org.voetsky.dispatcherBot.services.repoServices.mainRepoService.MainRepo;
 
-import javax.annotation.PostConstruct;
 import java.util.HashMap;
 import java.util.Map;
 

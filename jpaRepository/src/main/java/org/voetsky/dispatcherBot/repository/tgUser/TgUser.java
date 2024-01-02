@@ -1,12 +1,13 @@
 package org.voetsky.dispatcherBot.repository.tgUser;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import javax.persistence.*;
+
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.voetsky.dispatcherBot.UserState;
 import org.voetsky.dispatcherBot.repository.orderClient.OrderClient;
 
-import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
 

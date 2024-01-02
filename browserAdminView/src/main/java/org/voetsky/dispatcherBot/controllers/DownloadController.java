@@ -1,5 +1,6 @@
 package org.voetsky.dispatcherBot.controllers;
 
+import javax.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j;
 import org.springframework.http.MediaType;
@@ -9,7 +10,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.voetsky.dispatcherBot.services.FileOperations;
 
-import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 @Log4j

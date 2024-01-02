@@ -1,5 +1,6 @@
 package org.voetsky.dispatcherBot.services.logic.commandHandlerService;
 
+import javax.annotation.PostConstruct;
 import lombok.Getter;
 import lombok.extern.log4j.Log4j;
 import org.springframework.stereotype.Component;
@@ -12,7 +13,6 @@ import org.voetsky.dispatcherBot.services.logic.commandInitialization.CommandIni
 import org.voetsky.dispatcherBot.services.logic.commands.command.Command;
 import org.voetsky.dispatcherBot.services.output.messageMakerService.MessageMaker;
 
-import javax.annotation.PostConstruct;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 

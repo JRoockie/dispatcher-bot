@@ -1,4 +1,4 @@
-package org.voetsky.dispatcherBot.configuration.dispatcherLocalization;
+package org.voetsky.dispatcherBot.configuration.localization;
 
 import lombok.extern.log4j.Log4j;
 import org.springframework.stereotype.Service;

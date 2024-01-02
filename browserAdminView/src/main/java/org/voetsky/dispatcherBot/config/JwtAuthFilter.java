@@ -1,11 +1,9 @@
 package org.voetsky.dispatcherBot.config;
 
-
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
-
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -47,4 +45,5 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
         filterChain.doFilter(request, response);
     }
+
 }

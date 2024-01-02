@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { request, setAuthHeader } from '../helpers/axios_helper';
+import {request, setAuthHeader} from '../helpers/axios_helper';
 
 export default class AuthContent extends React.Component {
 

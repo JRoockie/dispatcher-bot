@@ -12,7 +12,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
-import org.voetsky.dispatcherBot.service.messageutils.MakeMessage;
+import org.voetsky.dispatcherBot.service.messageutils.MessageUtils;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.Mockito.verify;
@@ -31,7 +31,7 @@ public class UpdateControllerTest extends TestCase {
     private TelegramBot telegramBot;
 
     @Mock
-    private MakeMessage makeMessage;
+    private MessageUtils makeMessage;
 
     @Test
     public void testRegisterBot() {

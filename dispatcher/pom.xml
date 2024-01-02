@@ -8,20 +8,25 @@
     </parent>
 
     <artifactId>dispatcher</artifactId>
-    <packaging>jar</packaging>
     <name>dispatcher</name>
+    <packaging>jar</packaging>
+
+    <properties>
+        <start-class>org.voetsky.dispatcherBot.DispatcherApplication</start-class>
+    </properties>
 
     <dependencies>
+
         <dependency>
-            <groupId>org.telegram</groupId>
-            <artifactId>telegrambots-spring-boot-starter</artifactId>
-            <version>${telegrambot.starter.version}</version>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
         </dependency>
 
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
-            <version>32.1.2-jre</version> <!-- Укажите актуальную версию -->
+            <version>32.1.2-jre</version>
         </dependency>
 
         <dependency>
@@ -30,16 +35,64 @@
         </dependency>
 
         <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
             <groupId>org.telegram</groupId>
             <artifactId>telegrambots-meta</artifactId>
             <version>6.7.0</version>
             <scope>compile</scope>
         </dependency>
 
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
+
     </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <version>2.5.2</version>
+
+            </plugin>
+        </plugins>
+        <finalName>dispatcher</finalName>
+    </build>
+
+    <!--    <build>-->
+    <!--        <plugins>-->
+    <!--            <plugin>-->
+    <!--                <groupId>org.apache.maven.plugins</groupId>-->
+    <!--                <artifactId>maven-dependency-plugin</artifactId>-->
+    <!--                <version>3.6.1</version>-->
+    <!--            </plugin>-->
+    <!--            <plugin>-->
+    <!--                <groupId>org.apache.maven.plugins</groupId>-->
+    <!--                <artifactId>maven-compiler-plugin</artifactId>-->
+    <!--                <version>3.8.1</version>-->
+    <!--                <configuration>-->
+    <!--                    <source>${java.version}</source>-->
+    <!--                    <target>${java.version}</target>-->
+    <!--                </configuration>-->
+    <!--            </plugin>-->
+    <!--            <plugin>-->
+    <!--                <groupId>org.springframework.boot</groupId>-->
+    <!--                <artifactId>spring-boot-maven-plugin</artifactId>-->
+    <!--                <version>2.5.2</version>-->
+    <!--                <configuration>-->
+    <!--                    <mainClass>${start-class}</mainClass>-->
+    <!--                </configuration>-->
+    <!--                <executions>-->
+    <!--                    <execution>-->
+    <!--                        <goals>-->
+    <!--                            <goal>repackage</goal>-->
+    <!--                        </goals>-->
+    <!--                    </execution>-->
+    <!--                </executions>-->
+    <!--            </plugin>-->
+    <!--        </plugins>-->
+    <!--        <finalName>dispatcher</finalName>-->
+    <!--    </build>-->
 </project>

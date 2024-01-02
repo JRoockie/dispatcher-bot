@@ -3,18 +3,16 @@ package org.voetsky.dispatcherBot.repository.song;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
-import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
+import javax.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
-import org.hibernate.annotations.TypeDef;
 import org.voetsky.dispatcherBot.WhoWillSing;
 import org.voetsky.dispatcherBot.repository.orderClient.OrderClient;
 import org.voetsky.dispatcherBot.repository.tgAudio.TgAudio;
 import org.voetsky.dispatcherBot.repository.tgVoice.TgVoice;
 
-import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
@@ -26,7 +24,6 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "songs")
-@TypeDef(name = "jsonb", typeClass = JsonBinaryType.class)
 @Entity
 public class Song implements Serializable {
 

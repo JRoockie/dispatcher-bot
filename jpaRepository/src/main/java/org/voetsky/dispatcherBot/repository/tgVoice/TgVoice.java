@@ -3,12 +3,12 @@ package org.voetsky.dispatcherBot.repository.tgVoice;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import javax.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.voetsky.dispatcherBot.repository.binaryContent.BinaryContent;
 import org.voetsky.dispatcherBot.repository.song.Song;
 
-import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Builder

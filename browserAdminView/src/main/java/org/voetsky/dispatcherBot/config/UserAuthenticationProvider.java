@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 import org.voetsky.dispatcherBot.dtos.UserDto;
 import org.voetsky.dispatcherBot.services.UserService;
 
-import javax.annotation.PostConstruct;
+import javax.annotation.*;
 import java.util.Base64;
 import java.util.Collections;
 import java.util.Date;

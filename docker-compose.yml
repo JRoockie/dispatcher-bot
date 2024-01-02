@@ -1,6 +1,35 @@
 version: '3'
 
+networks:
+  my-network:
+    driver: "bridge"
+
+volumes:
+  rabbitmq_data:
+  jenkins_home:
+  postgres:
+
 services:
+
+  browseradminview:
+    build:
+      context: ./browserAdminView
+      dockerfile: ./Dockerfile
+    container_name: tg-bot-browser-admin-view
+    ports:
+      - "8084:8084"
+    depends_on:
+      - rabbitmq
+      - postgres
+    environment:
+      SPRING_RABBITMQ_HOST: rabbitmq
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5434/postgres
+      SPRING_DATASOURCE_USERNAME: roockie
+      SPRING_DATASOURCE_PASSWORD: 1
+    restart: unless-stopped
+
+
+
   postgres:
     image: postgres:14.5
     container_name: tg-bot-postgres
@@ -44,9 +73,6 @@ services:
 
 
 
-volumes:
-  rabbitmq_data:
-  jenkins_home:
 
 
 

@@ -1,4 +1,5 @@
-package org.voetsky.dispatcherBot.configuration.dispatcherLocalization;
+package org.voetsky.dispatcherBot.configuration.localization;
+
 
 import javax.annotation.PostConstruct;
 import java.io.IOException;
