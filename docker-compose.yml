@@ -21,12 +21,12 @@ services:
     environment:
       POSTGRES_USER: roockie
       POSTGRES_PASSWORD: 1
-      POSTGRES_DB: tg-bot-postgres
+      POSTGRES_DB: postgres
     volumes:
       - ./pgdata:/var/lib/postgresql/data
     restart: unless-stopped
     networks:
-      - app
+        - app
 
   rabbitmq:
     image: rabbitmq:3.11.0-management
@@ -38,7 +38,6 @@ services:
     expose:
       - 5672
       - 15672
-
     volumes:
       - ./rabbitmq_data:/var/lib/rabbitmq
     environment:
@@ -62,34 +61,6 @@ services:
 #    networks:
 #      - app
 
-  browseradminview:
-    build:
-      context: ./browserAdminView
-      dockerfile: ./Dockerfile
-    container_name: admin-view
-    expose:
-      - 8086
-    ports:
-      - "8086:8086"
-    environment:
-      server.port: 8086
-      security.jwt.token.secret-key: secret-key
-      spring.datasource.url: jdbc:postgresql://192.168.48.3:5432/postgres
-      spring.datasource.username: roockie
-      spring.datasource.password: 1
-      spring.jpa.generate-ddl: true
-      spring.jpa.open-in-view: false
-    volumes:
-      - ./pgdata:/var/lib/postgresql/data
-    depends_on:
-      - rabbitmq
-      - postgres
-      - dispatcher
-      - logiccore
-    restart: always
-    networks:
-      - app
-
   dispatcher:
     build:
       context: ./dispatcher
@@ -108,12 +79,40 @@ services:
       spring.rabbitmq.queues.answer: answer_message
       spring.rabbitmq.queues.voice: voice_message_update
       spring.rabbitmq.queues.button: button_update
-      spring.rabbitmq.host: 192.168.48.2
+      spring.rabbitmq.host: rabbitmq
       spring.rabbitmq.port: 5672
       spring.rabbitmq.username: roockie
       spring.rabbitmq.password: password
     depends_on:
       - rabbitmq
+    restart: always
+    networks:
+      - app
+
+  browseradminview:
+    build:
+      context: ./browserAdminView
+      dockerfile: ./Dockerfile
+    container_name: admin-view
+    expose:
+      - 8086
+    ports:
+      - "8086:8086"
+    environment:
+      server.port: 8086
+      security.jwt.token.secret-key: secret-key
+      spring.datasource.url: jdbc:postgresql://postgres:5432/postgres
+      spring.datasource.username: roockie
+      spring.datasource.password: 1
+      spring.jpa.generate-ddl: true
+      spring.jpa.open-in-view: false
+    volumes:
+      - ./pgdata:/var/lib/postgresql/data
+    depends_on:
+      - rabbitmq
+      - postgres
+      - dispatcher
+      - logiccore
     restart: always
     networks:
       - app
@@ -129,7 +128,7 @@ services:
       - "8085:8085"
     environment:
       server.port: 8085
-      spring.rabbitmq.host: 192.168.48.2
+      spring.rabbitmq.host: rabbitmq
       spring.rabbitmq.port: 5672
       spring.rabbitmq.username: roockie
       spring.rabbitmq.password: password
@@ -138,7 +137,7 @@ services:
       spring.rabbitmq.queues.answer: answer_message
       spring.rabbitmq.queues.voice: voice_message_update
       spring.rabbitmq.queues.button: button_update
-      spring.datasource.url: jdbc:postgresql://192.168.48.3:5432/postgres
+      spring.datasource.url: jdbc:postgresql://postgres:5432/postgres
       spring.datasource.username: roockie
       spring.datasource.password: 1
       spring.jpa.generate-ddl: true
