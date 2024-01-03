@@ -72,26 +72,28 @@ services:
       - "8084:8084"
     environment:
       server.port: 8084
-      bot.name: OlegRecords_bot
-      bot.token: 5998428609:AAGqaLslPcF-ZLC0YzzL2J85UobZ1o0-ZVY
+      spring.rabbitmq.host: rabbitmq
+      spring.rabbitmq.username: roockie
+      spring.rabbitmq.password: password
+      spring.rabbitmq.port: 5672
       spring.rabbitmq.queues.audio: audio_message_update
       spring.rabbitmq.queues.text: text_message_update
       spring.rabbitmq.queues.answer: answer_message
       spring.rabbitmq.queues.voice: voice_message_update
       spring.rabbitmq.queues.button: button_update
-      spring.rabbitmq.host: rabbitmq
-      spring.rabbitmq.port: 5672
-      spring.rabbitmq.username: roockie
-      spring.rabbitmq.password: password
+      bot.name: OlegRecords_bot
+      bot.token: 5998428609:AAGqaLslPcF-ZLC0YzzL2J85UobZ1o0-ZVY
     depends_on:
       - rabbitmq
+      - browser-admin-view
+      - logic-core
     restart: always
     networks:
       - app
 
-  browseradminview:
+  browser-admin-view:
     build:
-      context: ./browserAdminView
+      context: ./browser-admin-view
       dockerfile: ./Dockerfile
     container_name: admin-view
     expose:
@@ -109,19 +111,17 @@ services:
     volumes:
       - ./pgdata:/var/lib/postgresql/data
     depends_on:
-      - rabbitmq
+      - logic-core
       - postgres
-      - dispatcher
-      - logiccore
     restart: always
     networks:
       - app
 
-  logiccore:
+  logic-core:
     build:
-      context: ./logicCore
+      context: ./logic-core
       dockerfile: ./Dockerfile
-    container_name: logiccore
+    container_name: logic-core
     expose:
       - 8085
     ports:
@@ -148,7 +148,6 @@ services:
     depends_on:
       - rabbitmq
       - postgres
-      - dispatcher
     restart: always
     networks:
       - app

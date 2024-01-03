@@ -1,4 +1,5 @@
 FROM bellsoft/liberica-openjdk-debian:16 as build
+ENV LANG=ru_RU.UTF-8 LANGUAGE=ru_RU:ru
 
 #FROM maven:3.9.5
 COPY src src
