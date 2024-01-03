@@ -13,4 +13,4 @@ COPY target/dispatcher.jar dispatcher.jar
 #ARG JAR_FILE=target/dispatcher.jar
 #COPY build/lib/*.jar app.jar
 #COPY ${JAR_FILE} dispatcher.jar
-ENTRYPOINT ["java", "-jar", "./dispatcher.jar"]
+ENTRYPOINT ["java", "-Dfile.encoding=UTF-8", "-jar", "./dispatcher.jar"]

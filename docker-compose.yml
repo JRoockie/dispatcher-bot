@@ -1,8 +1,8 @@
 version: '3'
 
 networks:
-  my-network:
-    driver: "bridge"
+  app:
+    driver: bridge
 
 volumes:
   rabbitmq_data:
@@ -10,52 +10,12 @@ volumes:
   postgres:
 
 services:
-  browseradminview:
-    build:
-      context: ./browserAdminView
-      dockerfile: ./Dockerfile
-    container_name: tg-bot-browser-admin-view
-    ports:
-      - "8084:8084"
-    depends_on:
-      - rabbitmq
-      - postgres
-    restart: unless-stopped
-    networks:
-      - my-network
-
-  dispatcher:
-    build:
-      context: ./dispatcher
-      dockerfile: ./Dockerfile
-    container_name: tg-bot-dispatcher
-    ports:
-      - "8085:8085"
-    depends_on:
-      - rabbitmq
-      - postgres
-    restart: unless-stopped
-    networks:
-      - my-network
-
-  logiccore:
-    build:
-      context: ./logicCore
-      dockerfile: ./Dockerfile
-    container_name: tg-bot-logiccore
-    ports:
-      - "8086:8086"
-    depends_on:
-      - rabbitmq
-      - postgres
-    restart: unless-stopped
-    networks:
-      - my-network
-
   postgres:
     image: postgres:14.5
-    container_name: tg-bot-postgres
-    hostname: tg-bot-postgres
+    container_name: postgres
+    hostname: postgres
+    expose:
+      - 5434
     ports:
       - "5434:5432"
     environment:
@@ -66,15 +26,19 @@ services:
       - ./pgdata:/var/lib/postgresql/data
     restart: unless-stopped
     networks:
-      - my-network
+      - app
 
   rabbitmq:
     image: rabbitmq:3.11.0-management
-    container_name: tg-bot-rabbitmq
-    hostname: tg-bot-rabbitmq
+    container_name: rabbitmq
+    hostname: rabbitmq
     ports:
       - "5672:5672"
       - "15672:15672"
+    expose:
+      - 5672
+      - 15672
+
     volumes:
       - ./rabbitmq_data:/var/lib/rabbitmq
     environment:
@@ -83,15 +47,109 @@ services:
     command: bash -c "rabbitmq-server && rabbitmqctl add_user roockie password && rabbitmqctl set_user_tags roockie administrator && rabbitmqctl set_permissions -p / roockie '.*' '.*' '.*'"
     restart: unless-stopped
     networks:
-      - my-network
+      - app
 
-  jenkins:
-    image: jenkins/jenkins:lts
+#  jenkins:
+#    image: jenkins/jenkins:lts
+#    expose:
+#      - 8080
+#    ports:
+#      - "8080:8080"
+#    volumes:
+#      - ./jenkins_home:/var/jenkins_home
+#  ssh-agent:
+#    image: jenkins/ssh-agent
+#    networks:
+#      - app
+
+  browseradminview:
+    build:
+      context: ./browserAdminView
+      dockerfile: ./Dockerfile
+    container_name: admin-view
+    expose:
+      - 8086
     ports:
-      - "8080:8080"
+      - "8086:8086"
+    environment:
+      server.port: 8086
+      security.jwt.token.secret-key: secret-key
+      spring.datasource.url: jdbc:postgresql://192.168.48.3:5432/postgres
+      spring.datasource.username: roockie
+      spring.datasource.password: 1
+      spring.jpa.generate-ddl: true
+      spring.jpa.open-in-view: false
     volumes:
-      - ./jenkins_home:/var/jenkins_home
-  ssh-agent:
-    image: jenkins/ssh-agent
+      - ./pgdata:/var/lib/postgresql/data
+    depends_on:
+      - rabbitmq
+      - postgres
+      - dispatcher
+      - logiccore
+    restart: always
     networks:
-      - my-network
+      - app
+
+  dispatcher:
+    build:
+      context: ./dispatcher
+      dockerfile: ./Dockerfile
+    container_name: dispatcher
+    expose:
+      - 8084
+    ports:
+      - "8084:8084"
+    environment:
+      server.port: 8084
+      bot.name: OlegRecords_bot
+      bot.token: 5998428609:AAGqaLslPcF-ZLC0YzzL2J85UobZ1o0-ZVY
+      spring.rabbitmq.queues.audio: audio_message_update
+      spring.rabbitmq.queues.text: text_message_update
+      spring.rabbitmq.queues.answer: answer_message
+      spring.rabbitmq.queues.voice: voice_message_update
+      spring.rabbitmq.queues.button: button_update
+      spring.rabbitmq.host: 192.168.48.2
+      spring.rabbitmq.port: 5672
+      spring.rabbitmq.username: roockie
+      spring.rabbitmq.password: password
+    depends_on:
+      - rabbitmq
+    restart: always
+    networks:
+      - app
+
+  logiccore:
+    build:
+      context: ./logicCore
+      dockerfile: ./Dockerfile
+    container_name: logiccore
+    expose:
+      - 8085
+    ports:
+      - "8085:8085"
+    environment:
+      server.port: 8085
+      spring.rabbitmq.host: 192.168.48.2
+      spring.rabbitmq.port: 5672
+      spring.rabbitmq.username: roockie
+      spring.rabbitmq.password: password
+      spring.rabbitmq.queues.audio: audio_message_update
+      spring.rabbitmq.queues.text: text_message_update
+      spring.rabbitmq.queues.answer: answer_message
+      spring.rabbitmq.queues.voice: voice_message_update
+      spring.rabbitmq.queues.button: button_update
+      spring.datasource.url: jdbc:postgresql://192.168.48.3:5432/postgres
+      spring.datasource.username: roockie
+      spring.datasource.password: 1
+      spring.jpa.generate-ddl: true
+      spring.jpa.open-in-view: false
+      bot.token: 5998428609:AAGqaLslPcF-ZLC0YzzL2J85UobZ1o0-ZVY
+      service.file_info.uri: https://api.telegram.org/bot{token}/getFile?file_id={fileId}
+      service.file_storage.uri: https://api.telegram.org/file/bot{token}/{filePath}
+    depends_on:
+      - rabbitmq
+      - postgres
+      - dispatcher
+    restart: always
+    networks:
+      - app
