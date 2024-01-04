@@ -4,12 +4,29 @@ networks:
   app:
     driver: bridge
 
+
+#networks:
+#  app:
+#    driver: bridge
+#    ipam:
+#      driver: default
+#      config:
+#        - subnet: 192.168.1.0/24
+
 volumes:
   rabbitmq_data:
   jenkins_home:
   postgres:
 
 services:
+
+  nginx:
+    image: nginx
+    ports:
+      - "8080:80"
+  #    volumes:
+  #      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+
   postgres:
     image: postgres:14.5
     container_name: postgres
@@ -26,7 +43,7 @@ services:
       - ./pgdata:/var/lib/postgresql/data
     restart: unless-stopped
     networks:
-        - app
+      - app
 
   rabbitmq:
     image: rabbitmq:3.11.0-management
@@ -48,18 +65,18 @@ services:
     networks:
       - app
 
-#  jenkins:
-#    image: jenkins/jenkins:lts
-#    expose:
-#      - 8080
-#    ports:
-#      - "8080:8080"
-#    volumes:
-#      - ./jenkins_home:/var/jenkins_home
-#  ssh-agent:
-#    image: jenkins/ssh-agent
-#    networks:
-#      - app
+  jenkins:
+    image: jenkins/jenkins:lts
+    expose:
+      - 8080
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./jenkins_home:/var/jenkins_home
+  ssh-agent:
+    image: jenkins/ssh-agent
+    networks:
+      - app
 
   dispatcher:
     build:

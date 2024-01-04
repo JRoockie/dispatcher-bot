@@ -139,7 +139,6 @@ public class DataFiller {
 
     public void makeSong(OrderClient orderClient, Boolean deleted, boolean hasAudio, int count) {
         List<Song> songList = new ArrayList<>();
-
         for (int i = 0; i < count; i++) {
             songsCount++;
             LocalDateTime localDateTime = null;
@@ -152,8 +151,7 @@ public class DataFiller {
             if (hasAudio) {
                 tgAudio = makeTgAudio(deleted);
             }
-
-            Song song = songRepo.save(Song.builder()
+            Song song = Song.builder()
                     .tgAudio(tgAudio)
                     .tgVoice(tgVoice)
                     .orderClient(orderClient)
@@ -164,8 +162,12 @@ public class DataFiller {
                     .singerCount(faker.number().numberBetween(1, 15))
                     .songName(faker.lorem().sentence())
                     .whoWillSing(WhoWillSing.ADULT_AND_CHILD)
-                    .build());
+                    .build();
 
+            if (hasAudio) {
+                song.setTgAudio(tgAudio);
+            }
+            songRepo.save(song);
             // если до этого сущности сохранить в бд в методе makeTgVoice то будет ошибка с detached persistent
             tgVoice.setSong(song);
             tgVoiceRepo.save(tgVoice);
@@ -173,10 +175,8 @@ public class DataFiller {
                 tgAudio.setSong(song);
                 tgAudioRepo.save(tgAudio);
             }
-
             songList.add(song);
         }
-
         orderClient.setSongs(songList);
         orderClientRepo.save(orderClient);
     }
