@@ -7,22 +7,16 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.voetsky.dispatcherBot.dtos.UpdateOrderDto;
 import org.voetsky.dispatcherBot.repository.orderClient.OrderClient;
-import org.voetsky.dispatcherBot.repository.orderClient.OrderClientRepository;
 import org.voetsky.dispatcherBot.repository.song.Song;
-import org.voetsky.dispatcherBot.repository.song.SongRepository;
-
-import java.time.LocalDateTime;
-import java.util.Comparator;
+import org.voetsky.dispatcherBot.services.OrdersService.OrdersOperations;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Log4j
 @AllArgsConstructor
 @RestController
 //@RequestMapping("/bot")
 public class ViewController {
-    private final OrderClientRepository orderClientRepository;
-    private final SongRepository songRepository;
+    private final OrdersOperations ordersOperations;
 
     @GetMapping("/")
     public String allOrders() {
@@ -31,37 +25,32 @@ public class ViewController {
 
     @GetMapping("orders/{orderId}")
     public ResponseEntity<OrderClient> showOrder(@PathVariable("orderId") Long orderId) {
-        OrderClient order = orderClientRepository.findOrderClientById(orderId);
+        OrderClient order = ordersOperations.showOrder(orderId);
         return ResponseEntity.ok(order);
     }
 
     @GetMapping("songs/{orderId}")
     public ResponseEntity<List<Song>> showSong(@PathVariable("orderId") Long orderId) {
-        OrderClient order = orderClientRepository.findOrderClientById(orderId);
-        return ResponseEntity.ok(songRepository.findSongsByOrderClient(order));
+        List<Song> songs = ordersOperations.showSong(orderId);
+        return ResponseEntity.ok(songs);
     }
 
     @GetMapping("orders/new")
     public ResponseEntity<List<OrderClient>> newOrders() {
-        List<OrderClient> orders = orderClientRepository.findOrderClientsByIsAcceptedTrue();
-        orders = orders.stream().filter(order -> !order.getSuccessful()).sorted(Comparator.comparing(OrderClient::getDate).reversed()).collect(Collectors.toList());
+        List<OrderClient> orders = ordersOperations.newOrders();
         return ResponseEntity.ok(orders);
     }
 
     @GetMapping("/orders/fin")
     public ResponseEntity<List<OrderClient>> finOrders() {
-        List<OrderClient> orders = orderClientRepository.findOrderClientsByIsAcceptedTrue();
-        List<OrderClient> finalizedOrders = orders.stream().filter(OrderClient::getSuccessful).sorted(Comparator.comparing(OrderClient::getDate).reversed()).collect(Collectors.toList());
-        orders.sort(Comparator.comparing(OrderClient::getDate).reversed());
+        List<OrderClient> finalizedOrders = ordersOperations.finOrders();
         return ResponseEntity.ok(finalizedOrders);
     }
 
     @PostMapping("/updateOrderClientFalse")
     public ResponseEntity<HttpStatus> updateOrderFalse(@RequestBody UpdateOrderDto request) {
-        OrderClient updateOrderFalse = orderClientRepository.findById(request.id()).orElse(null);
-        if (updateOrderFalse != null) {
-            updateOrderFalse.setSuccessful(false);
-            orderClientRepository.save(updateOrderFalse);
+        Boolean success = ordersOperations.updateOrderFalse(request);
+        if (success) {
             return ResponseEntity.ok(HttpStatus.OK);
         }
         return ResponseEntity.ok(HttpStatus.BAD_REQUEST);
@@ -69,10 +58,8 @@ public class ViewController {
 
     @PostMapping("/updateOrderClientTrue")
     public ResponseEntity<HttpStatus> updateOrderTrue(@RequestBody UpdateOrderDto request) {
-        OrderClient updateOrderTrue = orderClientRepository.findById(request.id()).orElse(null);
-        if (updateOrderTrue != null) {
-            updateOrderTrue.setSuccessful(true);
-            orderClientRepository.save(updateOrderTrue);
+        Boolean success = ordersOperations.updateOrderTrue(request);
+        if (success) {
             return ResponseEntity.ok(HttpStatus.OK);
         }
         return ResponseEntity.ok(HttpStatus.BAD_REQUEST);
@@ -80,20 +67,8 @@ public class ViewController {
 
     @PostMapping("/deleteOrder")
     public ResponseEntity<HttpStatus> deleteOrder(@RequestBody UpdateOrderDto request) {
-        LocalDateTime deleteTime = LocalDateTime.now();
-
-        OrderClient orderClient = orderClientRepository.findOrderClientById(request.id());
-        if (orderClient != null) {
-            orderClient.setDeletedWhen(deleteTime);
-            orderClientRepository.save(orderClient);
-            List<Song> songs = songRepository.findSongsByOrderClient(orderClient);
-
-            if (!songs.isEmpty()){
-                songs = songs.stream()
-                        .peek(x -> x.setDeletedWhen(deleteTime))
-                        .toList();
-                songRepository.saveAll(songs);
-            }
+        Boolean success = ordersOperations.deleteOrder(request);
+        if (success) {
             return ResponseEntity.ok(HttpStatus.OK);
         }
         return ResponseEntity.ok(HttpStatus.BAD_REQUEST);

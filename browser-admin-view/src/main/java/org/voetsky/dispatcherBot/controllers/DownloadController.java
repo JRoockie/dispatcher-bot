@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.voetsky.dispatcherBot.services.FileOperations;
+import org.voetsky.dispatcherBot.services.FileOperationsService.FileOperations;
 
 import java.io.IOException;
 
@@ -24,7 +24,6 @@ public class DownloadController {
 
     @RequestMapping(method = RequestMethod.GET, value = "/getAudio")
     public void getAudio(@RequestParam("id") Long id, HttpServletResponse response) {
-        //TODO для формирования badRequest добавить ControllerAdvice
         var audio = fileOperations.getTgAudio(id);
         if (audio == null) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);

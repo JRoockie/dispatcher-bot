@@ -1,4 +1,4 @@
-package org.voetsky.dispatcherBot.services;
+package org.voetsky.dispatcherBot.services.FileOperationsService;
 
 import org.voetsky.dispatcherBot.repository.tgAudio.TgAudio;
 import org.voetsky.dispatcherBot.repository.tgVoice.TgVoice;

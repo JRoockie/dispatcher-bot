@@ -11,7 +11,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 import org.voetsky.dispatcherBot.dtos.UserDto;
-import org.voetsky.dispatcherBot.services.UserService;
+import org.voetsky.dispatcherBot.services.UserService.UserOperationsService;
 
 import java.util.Base64;
 import java.util.Collections;
@@ -23,9 +23,7 @@ public class UserAuthenticationProvider {
 
     @Value("${security.jwt.token.secret-key}")
     private String secretKey;
-
-    private final UserService userService;
-
+    private final UserOperationsService userOperationsService;
     @PostConstruct
     protected void init() {
         secretKey = Base64.getEncoder().encodeToString(secretKey.getBytes());
@@ -66,7 +64,7 @@ public class UserAuthenticationProvider {
 
         DecodedJWT decoded = verifier.verify(token);
 
-        UserDto user = userService.findByLogin(decoded.getSubject());
+        UserDto user = userOperationsService.findByLogin(decoded.getSubject());
 
         return new UsernamePasswordAuthenticationToken(user, null, Collections.emptyList());
     }

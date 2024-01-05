@@ -26,7 +26,6 @@ public class WebConfig {
         config.setAllowCredentials(true);
         config.addAllowedOrigin("http://localhost:3000");
 //        config.addAllowedOrigin("http://localhost:8086");
-        config.addAllowedOrigin("https://dev-mode-test.vercel.app");
         config.setAllowedHeaders(Arrays.asList(
                 HttpHeaders.AUTHORIZATION,
                 HttpHeaders.CONTENT_TYPE,

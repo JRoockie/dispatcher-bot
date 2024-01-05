@@ -1,4 +1,4 @@
-package org.voetsky.dispatcherBot.services;
+package org.voetsky.dispatcherBot.services.FileOperationsService;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j;

@@ -1,4 +1,4 @@
-package org.voetsky.dispatcherBot.services;
+package org.voetsky.dispatcherBot.services.UserService;
 
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
@@ -18,14 +18,13 @@ import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
-public class UserService {
+public class UserOperationsService implements UserOperations{
 
     private final UserRepository userRepository;
-
     private final PasswordEncoder passwordEncoder;
-
     private final UserMapper userMapper;
 
+    @Override
     public UserDto login(CredentialsDto credentialsDto) {
         User user = userRepository.findByLogin(credentialsDto.login())
                 .orElseThrow(() -> new AdminViewException("Unknown user", HttpStatus.NOT_FOUND));
@@ -36,19 +35,20 @@ public class UserService {
         throw new AdminViewException("Invalid password", HttpStatus.BAD_REQUEST);
     }
 
+
     @PostConstruct
+    @Override
     public UserDto registerAdmin() {
         User user = new User();
         user.setPassword("u");
         user.setLogin("u");
-
         user.setPassword(passwordEncoder.encode(CharBuffer.wrap(user.getPassword())));
 
         User savedUser = userRepository.save(user);
-
         return userMapper.toUserDto(savedUser);
     }
 
+    @Override
     public UserDto register(SignUpDto userDto) {
         Optional<User> optionalUser = userRepository.findByLogin(userDto.login());
 
@@ -64,10 +64,10 @@ public class UserService {
         return userMapper.toUserDto(savedUser);
     }
 
+    @Override
     public UserDto findByLogin(String login) {
         User user = userRepository.findByLogin(login)
                 .orElseThrow(() -> new AdminViewException("Unknown user", HttpStatus.NOT_FOUND));
         return userMapper.toUserDto(user);
     }
-
 }

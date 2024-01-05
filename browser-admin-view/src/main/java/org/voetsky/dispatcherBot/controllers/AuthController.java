@@ -10,7 +10,7 @@ import org.voetsky.dispatcherBot.config.UserAuthenticationProvider;
 import org.voetsky.dispatcherBot.dtos.CredentialsDto;
 import org.voetsky.dispatcherBot.dtos.SignUpDto;
 import org.voetsky.dispatcherBot.dtos.UserDto;
-import org.voetsky.dispatcherBot.services.UserService;
+import org.voetsky.dispatcherBot.services.UserService.UserOperationsService;
 
 import java.net.URI;
 
@@ -19,19 +19,19 @@ import java.net.URI;
 //@RequestMapping("/bot")
 public class AuthController {
 
-    private final UserService userService;
+    private final UserOperationsService userOperationsService;
     private final UserAuthenticationProvider userAuthenticationProvider;
 
     @PostMapping("/login")
     public ResponseEntity<UserDto> login(@RequestBody @Valid CredentialsDto credentialsDto) {
-        UserDto userDto = userService.login(credentialsDto);
+        UserDto userDto = userOperationsService.login(credentialsDto);
         userDto.setToken(userAuthenticationProvider.createToken(userDto));
         return ResponseEntity.ok(userDto);
     }
 
     @PostMapping("/register")
     public ResponseEntity<UserDto> register(@RequestBody @Valid SignUpDto user) {
-        UserDto createdUser = userService.register(user);
+        UserDto createdUser = userOperationsService.register(user);
         createdUser.setToken(userAuthenticationProvider.createToken(createdUser));
         return ResponseEntity.created(URI.create("/users/" + createdUser.getId())).body(createdUser);
     }
