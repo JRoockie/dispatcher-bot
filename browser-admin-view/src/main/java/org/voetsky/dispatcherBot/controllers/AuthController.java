@@ -7,9 +7,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.voetsky.dispatcherBot.config.UserAuthenticationProvider;
-import org.voetsky.dispatcherBot.dtos.CredentialsDto;
-import org.voetsky.dispatcherBot.dtos.SignUpDto;
-import org.voetsky.dispatcherBot.dtos.UserDto;
+import org.voetsky.dispatcherBot.dtos.*;
 import org.voetsky.dispatcherBot.services.UserService;
 
 import java.net.URI;

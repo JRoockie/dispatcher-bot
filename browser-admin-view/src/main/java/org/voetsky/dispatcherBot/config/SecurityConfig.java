@@ -9,13 +9,6 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
-//import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
-//import springfox.documentation.builders.PathSelectors;
-//import springfox.documentation.builders.RequestHandlerSelectors;
-//import springfox.documentation.spi.DocumentationType;
-//import springfox.documentation.spring.web.plugins.Docket;
-//
-//import java.util.Arrays;
 
 @RequiredArgsConstructor
 @Configuration
@@ -34,7 +27,7 @@ public class SecurityConfig {
 //                .csrf().csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
 //                .and()
                 .sessionManagement(customizer -> customizer.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .authorizeRequests(authorizeRequests ->
+                .authorizeHttpRequests(authorizeRequests ->
                         authorizeRequests
                                 .antMatchers(HttpMethod.POST, "/login", "/register").permitAll()
                                 .antMatchers(HttpMethod.GET, "/token/csrf").permitAll()
@@ -47,6 +40,7 @@ public class SecurityConfig {
                                 .antMatchers("/swagger-ui/index.html").permitAll()
                                 .anyRequest().authenticated()
                 )
+
         ;
         return http.build();
     }
