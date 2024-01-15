@@ -74,8 +74,9 @@ public class ViewController {
         if (updateOrderFalse != null) {
             updateOrderFalse.setSuccessful(false);
             orderClientRepository.save(updateOrderFalse);
+            return ResponseEntity.ok(HttpStatus.OK);
         }
-        return ResponseEntity.ok(HttpStatus.OK);
+        return ResponseEntity.ok(HttpStatus.NOT_FOUND);
     }
 
     @PostMapping("/updateOrderClientTrue")
@@ -84,15 +85,19 @@ public class ViewController {
         if (updateOrderTrue != null) {
             updateOrderTrue.setSuccessful(true);
             orderClientRepository.save(updateOrderTrue);
+            return ResponseEntity.ok(HttpStatus.OK);
         }
-        return ResponseEntity.ok(HttpStatus.OK);
+        return ResponseEntity.ok(HttpStatus.NOT_FOUND);
     }
 
     @PostMapping("/deleteOrder")
     public ResponseEntity<HttpStatus> deleteOrder(@RequestBody UpdateOrderDto request) {
         LocalDateTime today = LocalDateTime.now();
         OrderClient orderClient = orderClientRepository.findOrderClientById(request.id());
-        orderClient.setDeletedWhen(today);
-        return ResponseEntity.ok(HttpStatus.OK);
+        if (orderClient != null) {
+            orderClient.setDeletedWhen(today);
+            return ResponseEntity.ok(HttpStatus.OK);
+        }
+        return ResponseEntity.ok(HttpStatus.NOT_FOUND);
     }
 }
