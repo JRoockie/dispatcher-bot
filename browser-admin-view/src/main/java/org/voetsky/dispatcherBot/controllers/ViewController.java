@@ -31,13 +31,13 @@ public class ViewController {
 
     @GetMapping("orders/{orderId}")
     public ResponseEntity<OrderClient> showOrder(@PathVariable("orderId") Long orderId) {
-        return ResponseEntity.ok(orderClientRepository.findOrderClientById(orderId));
+        OrderClient order = orderClientRepository.findOrderClientById(orderId);
+        return ResponseEntity.ok(order);
     }
 
     @GetMapping("songs/{orderId}")
     public ResponseEntity<List<Song>> showSong(@PathVariable("orderId") Long orderId) {
         OrderClient order = orderClientRepository.findOrderClientById(orderId);
-
         return ResponseEntity.ok(songRepository.findSongsByOrderClient(order));
     }
 
@@ -63,8 +63,9 @@ public class ViewController {
         if (updateOrderFalse != null) {
             updateOrderFalse.setSuccessful(false);
             orderClientRepository.save(updateOrderFalse);
+            return ResponseEntity.ok(HttpStatus.OK);
         }
-        return ResponseEntity.ok(HttpStatus.OK);
+        return ResponseEntity.ok(HttpStatus.BAD_REQUEST);
     }
 
     @PostMapping("/updateOrderClientTrue")
@@ -73,15 +74,29 @@ public class ViewController {
         if (updateOrderTrue != null) {
             updateOrderTrue.setSuccessful(true);
             orderClientRepository.save(updateOrderTrue);
+            return ResponseEntity.ok(HttpStatus.OK);
         }
-        return ResponseEntity.ok(HttpStatus.OK);
+        return ResponseEntity.ok(HttpStatus.BAD_REQUEST);
     }
 
     @PostMapping("/deleteOrder")
     public ResponseEntity<HttpStatus> deleteOrder(@RequestBody UpdateOrderDto request) {
-        LocalDateTime today = LocalDateTime.now();
+        LocalDateTime deleteTime = LocalDateTime.now();
+
         OrderClient orderClient = orderClientRepository.findOrderClientById(request.id());
-        orderClient.setDeletedWhen(today);
-        return ResponseEntity.ok(HttpStatus.OK);
+        if (orderClient != null) {
+            orderClient.setDeletedWhen(deleteTime);
+            orderClientRepository.save(orderClient);
+            List<Song> songs = songRepository.findSongsByOrderClient(orderClient);
+
+            if (!songs.isEmpty()){
+                songs = songs.stream()
+                        .peek(x -> x.setDeletedWhen(deleteTime))
+                        .toList();
+                songRepository.saveAll(songs);
+            }
+            return ResponseEntity.ok(HttpStatus.OK);
+        }
+        return ResponseEntity.ok(HttpStatus.BAD_REQUEST);
     }
 }
