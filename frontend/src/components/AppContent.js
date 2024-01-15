@@ -52,8 +52,6 @@ export default class AppContent extends React.Component {
             "POST",
             "/register",
             {
-                firstName: firstName,
-                lastName: lastName,
                 login: username,
                 password: password
             }).then(

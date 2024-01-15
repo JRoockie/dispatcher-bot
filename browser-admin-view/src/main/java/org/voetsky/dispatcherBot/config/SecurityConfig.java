@@ -27,7 +27,7 @@ public class SecurityConfig {
 //                .csrf().csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
 //                .and()
                 .sessionManagement(customizer -> customizer.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .authorizeHttpRequests(authorizeRequests ->
+                .authorizeRequests(authorizeRequests ->
                         authorizeRequests
                                 .antMatchers(HttpMethod.POST, "/login", "/register").permitAll()
                                 .antMatchers(HttpMethod.GET, "/token/csrf").permitAll()
@@ -37,7 +37,6 @@ public class SecurityConfig {
                                 .antMatchers("/v2/api-docs").permitAll()
                                 .antMatchers("/swagger-resources/configuration/ui").permitAll()
                                 .antMatchers("/swagger-resources/*").permitAll()
-                                .antMatchers("/swagger-ui/index.html").permitAll()
                                 .anyRequest().authenticated()
                 )
 

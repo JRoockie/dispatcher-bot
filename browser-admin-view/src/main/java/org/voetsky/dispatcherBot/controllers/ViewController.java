@@ -44,14 +44,25 @@ public class ViewController {
     @GetMapping("orders/new")
     public ResponseEntity<List<OrderClient>> newOrders() {
         List<OrderClient> orders = orderClientRepository.findOrderClientsByIsAcceptedTrue();
-        orders = orders.stream().filter(order -> !order.getSuccessful()).sorted(Comparator.comparing(OrderClient::getDate).reversed()).collect(Collectors.toList());
+
+        orders = orders.stream()
+                .filter(order -> order.getDeletedWhen() == null)
+                .filter(order -> !order.getSuccessful()).sorted(Comparator.comparing(OrderClient::getDate).reversed())
+                .collect(Collectors.toList());
+
         return ResponseEntity.ok(orders);
     }
 
     @GetMapping("/orders/fin")
     public ResponseEntity<List<OrderClient>> finOrders() {
         List<OrderClient> orders = orderClientRepository.findOrderClientsByIsAcceptedTrue();
-        List<OrderClient> finalizedOrders = orders.stream().filter(OrderClient::getSuccessful).sorted(Comparator.comparing(OrderClient::getDate).reversed()).collect(Collectors.toList());
+
+        List<OrderClient> finalizedOrders = orders.stream()
+                .filter(OrderClient::getSuccessful)
+                .filter(order -> order.getDeletedWhen() == null)
+                .sorted(Comparator.comparing(OrderClient::getDate).reversed())
+                .collect(Collectors.toList());
+
         orders.sort(Comparator.comparing(OrderClient::getDate).reversed());
 
         return ResponseEntity.ok(finalizedOrders);

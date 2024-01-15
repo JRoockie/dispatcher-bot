@@ -25,12 +25,10 @@ public class UserAuthenticationProvider {
     private String secretKey;
 
     private final UserService userService;
-
     @PostConstruct
     protected void init() {
         secretKey = Base64.getEncoder().encodeToString(secretKey.getBytes());
     }
-
     public String createToken(UserDto user) {
         Date now = new Date();
         Date validity = new Date(now.getTime() + 3600000); // 1 h
