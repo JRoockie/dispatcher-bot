@@ -53,7 +53,6 @@ public class ViewController {
         List<OrderClient> orders = orderClientRepository.findOrderClientsByIsAcceptedTrue();
         List<OrderClient> finalizedOrders = orders.stream().filter(OrderClient::getSuccessful).sorted(Comparator.comparing(OrderClient::getDate).reversed()).collect(Collectors.toList());
         orders.sort(Comparator.comparing(OrderClient::getDate).reversed());
-
         return ResponseEntity.ok(finalizedOrders);
     }
 

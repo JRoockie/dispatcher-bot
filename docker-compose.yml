@@ -64,7 +64,7 @@ services:
 #      - app
 
   dispatcher:
-    image: roockie1/dispatcherbot-dispatcher:latest
+#    image: roockie1/dispatcherbot-dispatcher:latest
     build:
       context: ./dispatcher
       dockerfile: ./Dockerfile
