@@ -16,6 +16,7 @@ import java.util.Properties;
 @Log4j
 @Service
 public class LogicCoreLocalizationUnit implements LogicCoreLocalization {
+
     private final Map<String, Map<String, String>> dic = new HashMap<>();
     private final String DEFAULT_LANG = "ru";
     private final String UNKNOWN_KEY = "unknown.key";
@@ -49,7 +50,6 @@ public class LogicCoreLocalizationUnit implements LogicCoreLocalization {
             log.debug(String.format("LogicCore: Language %S loaded!", lang));
         }
     }
-
 
     @Override
     public String get(String lang, String key) {

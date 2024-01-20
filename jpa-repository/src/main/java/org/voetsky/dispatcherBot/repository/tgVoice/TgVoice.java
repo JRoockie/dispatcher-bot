@@ -19,6 +19,7 @@ import java.time.LocalDateTime;
 @Table(name = "tg_voice")
 @Entity
 public class TgVoice {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

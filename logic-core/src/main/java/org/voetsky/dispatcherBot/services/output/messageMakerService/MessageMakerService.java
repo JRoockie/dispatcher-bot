@@ -12,6 +12,7 @@ import org.voetsky.dispatcherBot.localization.LogicCoreLocalization;
 @AllArgsConstructor
 @Service
 public class MessageMakerService implements MessageMaker {
+
     private final LogicCoreLocalization localization;
 
     @Override
@@ -27,7 +28,6 @@ public class MessageMakerService implements MessageMaker {
     public SendMessage makeSendMessage(Update update,
                                        String text,
                                        boolean property) {
-
         return createSendMessage(update, text, null, property);
     }
 

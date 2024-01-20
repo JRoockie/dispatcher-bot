@@ -22,6 +22,7 @@ import static org.voetsky.dispatcherBot.services.logic.commands.command.Commands
 @Log4j
 @AllArgsConstructor
 public class Start implements Command, InlineKeyboard, EditOrder {
+
     private final MainRepo mainRepo;
     private final MessageMaker messageMaker;
 

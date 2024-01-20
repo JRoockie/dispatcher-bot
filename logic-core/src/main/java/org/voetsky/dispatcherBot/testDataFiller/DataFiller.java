@@ -41,12 +41,9 @@ public class DataFiller {
     private final int ordersNotSuccess = 15;
     private final int ordersDeleted = 5;
     private int songsCount = 0;
-
     private final int orders = 100;
     int songs = 300;
-
     private final int songHasAudio = 50;
-
 
     public DataFiller(TgUserRepo tgUserRepo, OrderClientRepo orderClientRepo, SongRepo songRepo, TgAudioRepo tgAudioRepo, TgVoiceRepo tgVoiceRepo, BinaryContentRepository binaryContentRepo) {
         this.tgUserRepo = tgUserRepo;
@@ -60,34 +57,27 @@ public class DataFiller {
     @PostConstruct
     synchronized public void fillData() {
         for (int i = 0; i <= orders; i++) {
-//            System.out.println("orders;"+i);
             OrderClient order;
             TgUser tgUser = makeTgUser();
 
             if (i < orders) {
                 if (i < ordersDeleted) {
-//                    System.out.println("orders deleted;"+i);
                     order = makeOrder(tgUser, true, true, true);
                     fillSongs(order, true);
 
                 } else if (i < ordersNotSuccess) {
-//                    System.out.println("orders not success;"+i);
                     order = makeOrder(tgUser, true, false, false);
                     fillSongs(order, false);
 
                 } else if (i < ordersSuccessful) {
-//                    System.out.println("orders success;"+i);
                     order = makeOrder(tgUser, true, true, false);
                     fillSongs(order, false);
 
                 } else if (i < ordersAccepted) {
-//                    System.out.println("orders accepted;"+i);
                     order = makeOrder(tgUser, false, true, false);
                     fillSongs(order, false);
                 }
             }
-
-//            System.out.println(songsCount);
         }
 
     }
@@ -127,11 +117,9 @@ public class DataFiller {
     public void fillSongs(OrderClient order, boolean deleted) {
             if (songsCount < songHasAudio) {
                 int count = ThreadLocalRandom.current().nextInt(1, 6);
-//            songs = songs - count;
                 makeSong(order, deleted, true, count);
             } else if (songsCount < songs) {
                 int count = ThreadLocalRandom.current().nextInt(1, 6);
-//            songs = songs - count;
                 makeSong(order, deleted, false, count);
         }
     }
@@ -234,6 +222,5 @@ public class DataFiller {
                 .deletedWhen(localDateTime)
                 .build());
     }
-
 
 }

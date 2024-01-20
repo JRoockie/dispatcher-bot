@@ -14,6 +14,7 @@ import static org.voetsky.dispatcherBot.UserState.AWAITING_FOR_COMMAND;
 @Log4j
 @AllArgsConstructor
 public class Finish implements Command {
+
     private final MainRepo mainRepo;
     private final MessageMaker messageMaker;
 

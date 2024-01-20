@@ -20,6 +20,7 @@ import static org.voetsky.dispatcherBot.services.logic.commands.command.Commands
 @Log4j
 @AllArgsConstructor
 public class HowMuchPeople implements Command, Chain, EditSong {
+
     private final MainRepo mainRepo;
     private final MessageMaker messageMaker;
 

@@ -27,7 +27,6 @@ public class RabbitConfiguration {
     @Value("${spring.rabbitmq.queues.answer}")
     private String answerMessageQueue;
 
-
     @Bean
     public MessageConverter jsonMessageConverter() {
         return new Jackson2JsonMessageConverter();

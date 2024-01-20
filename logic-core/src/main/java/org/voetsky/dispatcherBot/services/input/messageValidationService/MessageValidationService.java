@@ -111,9 +111,7 @@ public class MessageValidationService implements MessageValidation {
                 tgUser.setUserState(INVALID_SESSION);
                 throw new LogicCoreException("mvs.err.session");
             }
-
         }
-
     }
 
 }

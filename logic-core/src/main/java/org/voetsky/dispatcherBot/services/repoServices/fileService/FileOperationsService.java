@@ -24,6 +24,7 @@ import java.net.URL;
 @Log4j
 @Service
 public class FileOperationsService implements FileOperations {
+
     @Value("${bot.token}")
     private String token;
     @Value("${service.file_info.uri}")
@@ -138,7 +139,6 @@ public class FileOperationsService implements FileOperations {
         } catch (IOException e) {
             throw new RuntimeException(urlObj.toExternalForm(), e);
         }
-
         return outputStream.toByteArray();
     }
 

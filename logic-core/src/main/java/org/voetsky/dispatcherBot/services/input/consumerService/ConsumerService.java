@@ -10,6 +10,7 @@ import org.voetsky.dispatcherBot.services.input.ReceiverController;
 @Log4j
 @Service
 public class ConsumerService implements Consumer {
+
     private final ReceiverController receiverController;
 
     public ConsumerService(ReceiverController receiverController) {

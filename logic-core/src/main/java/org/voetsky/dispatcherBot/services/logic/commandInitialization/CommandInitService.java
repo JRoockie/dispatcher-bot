@@ -16,6 +16,7 @@ import static org.voetsky.dispatcherBot.services.logic.commands.command.Commands
 @AllArgsConstructor
 @Service
 public class CommandInitService implements CommandInit {
+
     private final MainRepo mainRepoService;
     private final MessageMaker messageMaker;
 
@@ -38,4 +39,5 @@ public class CommandInitService implements CommandInit {
         actions.put(FINISH.toString(), new Finish(mainRepoService, messageMaker));
         return actions;
     }
+
 }

@@ -1,6 +1,7 @@
 package org.voetsky.dispatcherBot.exceptions.ParentException;
 
 public class LogicCoreException extends RuntimeException{
+
     public LogicCoreException() {
     }
 

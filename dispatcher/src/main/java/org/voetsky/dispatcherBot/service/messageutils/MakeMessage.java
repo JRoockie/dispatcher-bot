@@ -9,6 +9,7 @@ import org.voetsky.dispatcherBot.configuration.localization.DispatcherLang;
 @AllArgsConstructor
 @Component
 public class MakeMessage implements MessageUtils {
+
     private final DispatcherLang dispatcherLang;
 
     @Override

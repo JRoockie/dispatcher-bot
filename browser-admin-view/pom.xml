@@ -17,40 +17,11 @@
     </properties>
 
     <dependencies>
-
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
 
-<!--        <dependency>-->
-<!--            <groupId>org.springdoc</groupId>-->
-<!--            <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>-->
-<!--            <version>2.0.0</version>-->
-<!--        </dependency>-->
-
-
-<!--        <dependency>-->
-<!--            <groupId>io.springfox</groupId>-->
-<!--            <artifactId>springfox-swagger2</artifactId>-->
-<!--            <version>3.0.0</version>-->
-<!--        </dependency>-->
-<!--        <dependency>-->
-<!--            <groupId>io.springfox</groupId>-->
-<!--            <artifactId>springfox-swagger-ui</artifactId>-->
-<!--            <version>3.0.0</version>-->
-<!--        </dependency>-->
-<!--        <dependency>-->
-<!--            <groupId>io.springfox</groupId>-->
-<!--            <artifactId>springfox-boot-starter</artifactId>-->
-<!--            <version>3.0.0</version>-->
-<!--        </dependency>-->
-
-        <!--    <dependency>-->
-        <!--        <groupId>org.thymeleaf.extras</groupId>-->
-        <!--        <artifactId>thymeleaf-extras-springsecurity6</artifactId>-->
-        <!--        <version>3.1.1.RELEASE</version>-->
-        <!--    </dependency>-->
         <dependency>
             <groupId>org.voetsky.dispatcherBot</groupId>
             <artifactId>jpa-repository</artifactId>
@@ -68,12 +39,6 @@
             <artifactId>postgresql</artifactId>
             <version>42.2.18</version>
         </dependency>
-
-        <!--    <dependency>-->
-        <!--        <groupId>org.thymeleaf</groupId>-->
-        <!--        <artifactId>thymeleaf-spring5</artifactId>-->
-        <!--        <version>3.0.11.RELEASE</version>-->
-        <!--    </dependency>-->
 
         <dependency>
             <groupId>junit</groupId>
@@ -141,21 +106,11 @@
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-test</artifactId>
         </dependency>
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-security</artifactId>
         </dependency>
-
-        <!--        <dependency>-->
-<!--            <groupId>org.springframework.security</groupId>-->
-<!--            <artifactId>spring-security-test</artifactId>-->
-<!--        </dependency>-->
-
-<!--        <dependency>-->
-<!--            <groupId>org.springframework.boot</groupId>-->
-<!--            <artifactId>spring-boot-starter-security</artifactId>-->
-<!--        </dependency>-->
-
     </dependencies>
 
     <build>
@@ -168,36 +123,6 @@
         </plugins>
         <finalName>browser-admin-view</finalName>
     </build>
-
-<!--    <build>-->
-<!--        <plugins>-->
-<!--            <plugin>-->
-<!--                <groupId>org.apache.maven.plugins</groupId>-->
-<!--                <artifactId>maven-compiler-plugin</artifactId>-->
-<!--                <version>3.8.1</version>-->
-<!--                <configuration>-->
-<!--                    <source>${java.version}</source>-->
-<!--                    <target>${java.version}</target>-->
-<!--                </configuration>-->
-<!--            </plugin>-->
-<!--            <plugin>-->
-<!--                <groupId>org.springframework.boot</groupId>-->
-<!--                <artifactId>spring-boot-maven-plugin</artifactId>-->
-<!--                <version>2.5.2</version>-->
-<!--                <configuration>-->
-<!--                    <mainClass>${start-class}</mainClass>-->
-<!--                </configuration>-->
-<!--                <executions>-->
-<!--                    <execution>-->
-<!--                        <goals>-->
-<!--                            <goal>repackage</goal>-->
-<!--                        </goals>-->
-<!--                    </execution>-->
-<!--                </executions>-->
-<!--            </plugin>-->
-<!--        </plugins>-->
-<!--        <finalName>browserAdminView</finalName>-->
-<!--    </build>-->
 
 </project>
 

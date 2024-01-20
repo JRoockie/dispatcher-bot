@@ -3,6 +3,7 @@ package org.voetsky.dispatcherBot.exceptions;
 import org.voetsky.dispatcherBot.exceptions.ParentException.LogicCoreException;
 
 public class ServiceException extends LogicCoreException {
+
     public ServiceException() {
     }
 

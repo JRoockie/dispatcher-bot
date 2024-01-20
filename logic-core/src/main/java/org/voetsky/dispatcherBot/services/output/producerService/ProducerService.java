@@ -7,6 +7,7 @@ import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 
 @Service
 public class ProducerService implements Producer {
+
     private final RabbitTemplate rabbitTemplate;
     @Value("${spring.rabbitmq.queues.answer}")
     private String answerMessageQueue;
@@ -19,4 +20,5 @@ public class ProducerService implements Producer {
     public void producerAnswer(SendMessage sendMessage) {
         rabbitTemplate.convertAndSend(answerMessageQueue, sendMessage);
     }
+
 }

@@ -16,6 +16,7 @@ import java.util.Properties;
 @Log4j
 @Service
 public class DispatcherLangUnit implements DispatcherLang {
+
     private final Map<String, Map<String, String>> dic = new HashMap<>();
     private final String DEFAULT_LANG = "ru";
     private final String UNKNOWN_KEY = "unknown.key";

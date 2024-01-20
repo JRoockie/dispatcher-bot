@@ -18,6 +18,7 @@ import static org.voetsky.dispatcherBot.services.logic.commands.command.Commands
 @Log4j
 @AllArgsConstructor
 public class AddComment implements Command, Chain, EditOrder {
+
     private final MainRepo mainRepo;
     private final MessageMaker messageMaker;
 

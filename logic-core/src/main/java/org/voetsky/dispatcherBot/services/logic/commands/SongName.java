@@ -25,6 +25,7 @@ import static org.voetsky.dispatcherBot.services.logic.commands.command.Commands
 @Log4j
 @AllArgsConstructor
 public class SongName implements Command, EditSong, InlineKeyboard {
+
     private final MainRepo mainRepo;
     private final MessageMaker messageMaker;
 

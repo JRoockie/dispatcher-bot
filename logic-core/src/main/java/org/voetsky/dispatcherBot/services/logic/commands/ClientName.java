@@ -19,6 +19,7 @@ import static org.voetsky.dispatcherBot.services.logic.commands.command.Commands
 @Log4j
 @AllArgsConstructor
 public class ClientName implements Command, Chain, EditUser {
+
     private final MainRepo mainRepo;
     private final MessageMaker messageMaker;
 

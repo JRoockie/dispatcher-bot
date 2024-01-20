@@ -22,10 +22,6 @@ public class TelegramBot extends TelegramLongPollingBot {
     @Autowired
     private final UpdateController updateController;
 
-//    public TelegramBot(UpdateController updateController) {
-//        this.updateController = updateController;
-//    }
-
     public TelegramBot(@Value("${bot.token}") String botToken,
                        @Value("${bot.name}") String botName,
                        UpdateController updateController) {

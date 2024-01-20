@@ -17,6 +17,7 @@ import static org.voetsky.dispatcherBot.services.logic.commands.command.Commands
 @Log4j
 @AllArgsConstructor
 public class Mp3Add implements Command, Chain {
+
     private final MainRepo mainRepo;
     private final MessageMaker messageMaker;
 
