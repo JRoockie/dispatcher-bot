@@ -1,7 +1,8 @@
 package org.voetsky.dispatcherBot.controller;
 
-import javax.annotation.*;
+import jakarta.annotation.PostConstruct;
 import lombok.extern.log4j.Log4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
@@ -18,9 +19,19 @@ public class TelegramBot extends TelegramLongPollingBot {
     @Value("${bot.name}")
     private String botName;
 
+    @Autowired
     private final UpdateController updateController;
 
-    public TelegramBot(UpdateController updateController) {
+//    public TelegramBot(UpdateController updateController) {
+//        this.updateController = updateController;
+//    }
+
+    public TelegramBot(@Value("${bot.token}") String botToken,
+                       @Value("${bot.name}") String botName,
+                       UpdateController updateController) {
+        super(botToken);
+        this.botToken = botToken;
+        this.botName = botName;
         this.updateController = updateController;
     }
 
@@ -32,11 +43,6 @@ public class TelegramBot extends TelegramLongPollingBot {
     @Override
     public String getBotUsername() {
         return botName;
-    }
-
-    @Override
-    public String getBotToken() {
-        return botToken;
     }
 
     @Override

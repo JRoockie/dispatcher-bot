@@ -1,7 +1,6 @@
 package org.voetsky.dispatcherBot.repository.binaryContent;
 
-import javax.persistence.*;
-
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;

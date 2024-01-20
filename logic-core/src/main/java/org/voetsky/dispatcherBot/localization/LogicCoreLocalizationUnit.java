@@ -1,6 +1,6 @@
 package org.voetsky.dispatcherBot.localization;
 
-import javax.annotation.PostConstruct;
+import jakarta.annotation.PostConstruct;
 import lombok.extern.log4j.Log4j;
 import org.springframework.stereotype.Service;
 import org.voetsky.dispatcherBot.LogicCoreApplication;

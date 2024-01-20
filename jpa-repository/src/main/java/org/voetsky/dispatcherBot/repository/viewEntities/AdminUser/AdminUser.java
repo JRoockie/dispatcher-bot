@@ -1,9 +1,9 @@
 package org.voetsky.dispatcherBot.repository.viewEntities.AdminUser;
 
+import jakarta.persistence.*;
 import lombok.*;
 import org.voetsky.dispatcherBot.repository.viewEntities.Role;
 
-import javax.persistence.*;
 import java.util.Set;
 
 @Builder

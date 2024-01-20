@@ -1,10 +1,10 @@
 package org.voetsky.dispatcherBot.configuration.localization;
 
+import jakarta.annotation.PostConstruct;
 import lombok.extern.log4j.Log4j;
 import org.springframework.stereotype.Service;
 import org.voetsky.dispatcherBot.DispatcherApplication;
 
-import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;

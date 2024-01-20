@@ -1,6 +1,6 @@
 package org.voetsky.dispatcherBot.services.logic.commandHandlerService;
 
-import javax.annotation.PostConstruct;
+import jakarta.annotation.PostConstruct;
 import lombok.Getter;
 import lombok.extern.log4j.Log4j;
 import org.springframework.stereotype.Component;

@@ -1,6 +1,7 @@
 package org.voetsky.dispatcherBot.localization;
 
-import javax.annotation.PostConstruct;
+import jakarta.annotation.PostConstruct;
+
 import java.io.IOException;
 
 public interface LogicCoreLocalization {

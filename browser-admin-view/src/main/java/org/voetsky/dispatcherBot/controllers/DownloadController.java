@@ -1,6 +1,6 @@
 package org.voetsky.dispatcherBot.controllers;
 
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j;
 import org.springframework.http.MediaType;

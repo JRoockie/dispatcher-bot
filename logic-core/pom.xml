@@ -6,7 +6,7 @@
 
     <parent>
         <groupId>org.voetsky.dispatcherBot</groupId>
-        <artifactId>dispatcher-bot</artifactId>
+        <artifactId>dispatcherBot</artifactId>
         <version>1.0-SNAPSHOT</version>
     </parent>
 

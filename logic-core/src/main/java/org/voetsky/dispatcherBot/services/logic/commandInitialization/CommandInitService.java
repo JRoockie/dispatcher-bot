@@ -1,6 +1,6 @@
 package org.voetsky.dispatcherBot.services.logic.commandInitialization;
 
-import javax.annotation.PostConstruct;
+import jakarta.annotation.PostConstruct;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.voetsky.dispatcherBot.services.logic.commands.*;

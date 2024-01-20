@@ -64,10 +64,10 @@ services:
 #      - app
 
   dispatcher:
-#    image: roockie1/dispatcherbot-dispatcher:latest
-    build:
-      context: ./dispatcher
-      dockerfile: ./Dockerfile
+    image: roockie1/dispatcherbot-dispatcher:latest
+#    build:
+#      context: ./dispatcher
+#      dockerfile: ./Dockerfile
     container_name: dispatcher
     expose:
       - 8084

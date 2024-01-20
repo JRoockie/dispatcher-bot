@@ -1,8 +1,7 @@
 package org.voetsky.dispatcherBot.repository.tgUser;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import javax.persistence.*;
-
+import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.voetsky.dispatcherBot.UserState;

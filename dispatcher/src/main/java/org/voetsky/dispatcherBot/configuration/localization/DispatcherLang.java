@@ -1,7 +1,9 @@
 package org.voetsky.dispatcherBot.configuration.localization;
 
 
-import javax.annotation.PostConstruct;
+
+import jakarta.annotation.PostConstruct;
+
 import java.io.IOException;
 
 public interface DispatcherLang {

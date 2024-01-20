@@ -1,6 +1,6 @@
 package org.voetsky.dispatcherBot.services.logic.commandHandlerService;
 
-import javax.annotation.PostConstruct;
+import jakarta.annotation.PostConstruct;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
