@@ -46,8 +46,9 @@ build/
 *.iml
 logs
 *.log
-*/pgdata/*
-*/rabbitmq_data/*
+pgdata
+rabbitmq_data
 */jenkins_home/*
 */jenkins_home/
-jenkins_home/
+jenkins_home
+node_modules
