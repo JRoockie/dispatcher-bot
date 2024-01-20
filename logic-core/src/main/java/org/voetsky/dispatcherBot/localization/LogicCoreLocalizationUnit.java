@@ -1,9 +1,9 @@
-package org.voetsky.dispatcherBot.configuration.localization;
+package org.voetsky.dispatcherBot.localization;
 
 import jakarta.annotation.PostConstruct;
 import lombok.extern.log4j.Log4j;
 import org.springframework.stereotype.Service;
-import org.voetsky.dispatcherBot.DispatcherApplication;
+import org.voetsky.dispatcherBot.LogicCoreApplication;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -15,7 +15,7 @@ import java.util.Properties;
 
 @Log4j
 @Service
-public class DispatcherLangUnit implements DispatcherLang {
+public class LogicCoreLocalizationUnit implements LogicCoreLocalization {
     private final Map<String, Map<String, String>> dic = new HashMap<>();
     private final String DEFAULT_LANG = "ru";
     private final String UNKNOWN_KEY = "unknown.key";
@@ -25,18 +25,18 @@ public class DispatcherLangUnit implements DispatcherLang {
         this.loadDic("ru");
         this.loadDic("kk");
         if (log.isDebugEnabled()) {
-            log.debug("Dispatcher: ALL languages loaded");
+            log.debug("LogicCore: ALL languages loaded");
         }
     }
 
     @Override
     public void loadDic(String lang) throws IOException {
         if (log.isDebugEnabled()) {
-            log.debug(String.format("Dispatcher: Loading language %S", lang));
+            log.debug(String.format("LogicCore: Loading language %S", lang));
         }
         var prop = new Properties();
 
-        try (var langPr = DispatcherApplication.class.getClassLoader()
+        try (var langPr = LogicCoreApplication.class.getClassLoader()
                 .getResourceAsStream(String.format("lang_%s.properties", lang))) {
             prop.load(new InputStreamReader(
                     Objects.requireNonNull(langPr), StandardCharsets.UTF_8));
@@ -46,13 +46,14 @@ public class DispatcherLangUnit implements DispatcherLang {
 
         dic.put(lang, map);
         if (log.isDebugEnabled()) {
-            log.debug(String.format("Dispatcher: Language %S loaded!", lang));
+            log.debug(String.format("LogicCore: Language %S loaded!", lang));
         }
     }
 
+
     @Override
     public String get(String lang, String key) {
-        var value = hasLangValue(lang, key);
+        String value = hasLangValue(lang, key);
 
         if (value != null) {
             return value;
@@ -61,6 +62,7 @@ public class DispatcherLangUnit implements DispatcherLang {
             log.error(String.format(
                     "LogicCore: Language not found %S", lang));
         }
+
         return getKeyFromDefaultLang(key);
 
     }
@@ -85,7 +87,7 @@ public class DispatcherLangUnit implements DispatcherLang {
             return value;
         }
         if (log.isDebugEnabled()) {
-            log.error(String.format("Dispatcher: Key not found %S", key));
+            log.error(String.format("LogicCore: Key not found %S", key));
         }
 
         return getUnknownKeyByDefaultLang();
@@ -95,9 +97,8 @@ public class DispatcherLangUnit implements DispatcherLang {
     public String getUnknownKeyByDefaultLang() {
         if (log.isDebugEnabled()) {
             log.debug(String.format(
-                    "Dispatcher: Getting unknown value %S", DEFAULT_LANG));
+                    "LogicCore: Getting unknown value %S", DEFAULT_LANG));
         }
-
         return dic.get(DEFAULT_LANG).get(UNKNOWN_KEY);
     }
 

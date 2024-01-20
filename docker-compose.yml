@@ -4,28 +4,12 @@ networks:
   app:
     driver: bridge
 
-
-#networks:
-#  app:
-#    driver: bridge
-#    ipam:
-#      driver: default
-#      config:
-#        - subnet: 192.168.1.0/24
-
 volumes:
   rabbitmq_data:
   jenkins_home:
   postgres:
 
 services:
-
-  #  nginx:
-  #    image: nginx
-  #    ports:
-  #      - "8080:80"
-  #    volumes:
-  #      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
 
   postgres:
     image: postgres:14.5
@@ -65,56 +49,56 @@ services:
     networks:
       - app
 
-  #  jenkins:
-  #    image: jenkins/jenkins:lts
-  #    expose:
-  #      - 8080
-  #    ports:
-  #      - "8080:8080"
-  #    volumes:
-  #      - ./jenkins_home:/var/jenkins_home
+#  jenkins:
+#    image: jenkins/jenkins:lts
+#    expose:
+#      - 8080
+#    ports:
+#      - "8080:8080"
+#    volumes:
+#      - ./jenkins_home:/var/jenkins_home
+#
+#  ssh-agent:
+#    image: jenkins/ssh-agent
+#    networks:
+#      - app
 
-  #  ssh-agent:
-  #    image: jenkins/ssh-agent
-  #    networks:
-  #      - app
-
-  #  dispatcher:
-  #    #    image: roockie1/dispatcherbot-dispatcher:latest
-  #    build:
-  #      context: ./dispatcher
-  #      dockerfile: ./Dockerfile
-  #    container_name: dispatcher
-  #    expose:
-  #      - 8084
-  #    ports:
-  #      - "8084:8084"
-  #    environment:
-  #      server.port: 8084
-  #      spring.rabbitmq.host: rabbitmq
-  #      spring.rabbitmq.username: roockie
-  #      spring.rabbitmq.password: password
-  #      spring.rabbitmq.port: 5672
-  #      spring.rabbitmq.queues.audio: audio_message_update
-  #      spring.rabbitmq.queues.text: text_message_update
-  #      spring.rabbitmq.queues.answer: answer_message
-  #      spring.rabbitmq.queues.voice: voice_message_update
-  #      spring.rabbitmq.queues.button: button_update
-  #      bot.name: OlegRecords_bot
-  #      bot.token: 5998428609:AAGqaLslPcF-ZLC0YzzL2J85UobZ1o0-ZVY
-  #    depends_on:
-  #      - rabbitmq
-  #      - browser-admin-view
-  #      - logic-core
-  #    restart: always
-  #    networks:
-  #      - app
+  dispatcher:
+    image: roockie1/dispatcherbot-dispatcher:latest
+#    build:
+#      context: ./dispatcher
+#      dockerfile: ./Dockerfile
+    container_name: dispatcher
+    expose:
+      - 8084
+    ports:
+      - "8084:8084"
+    environment:
+      server.port: 8084
+      spring.rabbitmq.host: rabbitmq
+      spring.rabbitmq.username: roockie
+      spring.rabbitmq.password: password
+      spring.rabbitmq.port: 5672
+      spring.rabbitmq.queues.audio: audio_message_update
+      spring.rabbitmq.queues.text: text_message_update
+      spring.rabbitmq.queues.answer: answer_message
+      spring.rabbitmq.queues.voice: voice_message_update
+      spring.rabbitmq.queues.button: button_update
+      bot.name: OlegRecords_bot
+      bot.token: 5998428609:AAGqaLslPcF-ZLC0YzzL2J85UobZ1o0-ZVY
+    depends_on:
+      - rabbitmq
+      - browser-admin-view
+      - logic-core
+    restart: always
+    networks:
+      - app
 
   browser-admin-view:
-    image: roockie1/dispatcherbot-browser-admin-view:latest
-    #    build:
-    #      context: ./browser-admin-view
-    #      dockerfile: ./Dockerfile
+#    image: roockie1/dispatcherbot-browser-admin-view:latest
+    build:
+      context: ./browser-admin-view
+      dockerfile: ./Dockerfile
     container_name: admin-view
     expose:
       - 8086
@@ -138,10 +122,10 @@ services:
       - app
 
   logic-core:
-    image: roockie1/dispatcherbot-logic-core:latest
-    #    build:
-    #      context: ./logic-core
-    #      dockerfile: ./Dockerfile
+#    image: roockie1/dispatcherbot-logic-core:latest
+    build:
+      context: ./logic-core
+      dockerfile: ./Dockerfile
     container_name: logic-core
     expose:
       - 8085

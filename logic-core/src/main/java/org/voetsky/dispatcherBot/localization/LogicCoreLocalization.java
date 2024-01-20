@@ -1,12 +1,10 @@
-package org.voetsky.dispatcherBot.configuration.localization;
-
-
+package org.voetsky.dispatcherBot.localization;
 
 import jakarta.annotation.PostConstruct;
 
 import java.io.IOException;
 
-public interface DispatcherLang {
+public interface LogicCoreLocalization {
 
     @PostConstruct
     void loadDic(String lang) throws IOException;
