@@ -8,7 +8,7 @@ public interface UserOperations {
 
     UserDto login(CredentialsDto credentialsDto);
 
-    UserDto registerAdmin();
+    void registerAdmin();
 
     UserDto register(SignUpDto userDto);
 

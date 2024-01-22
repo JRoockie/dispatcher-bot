@@ -38,14 +38,14 @@ public class UserOperationsService implements UserOperations{
 
     @PostConstruct
     @Override
-    public UserDto registerAdmin() {
+    public void registerAdmin() {
         User user = new User();
         user.setPassword("u");
         user.setLogin("u");
-        user.setPassword(passwordEncoder.encode(CharBuffer.wrap(user.getPassword())));
-
-        User savedUser = userRepository.save(user);
-        return userMapper.toUserDto(savedUser);
+        if (userRepository.findByLogin(user.getLogin()).isPresent()) {
+            user.setPassword(passwordEncoder.encode(CharBuffer.wrap(user.getPassword())));
+            userRepository.save(user);
+        }
     }
 
     @Override

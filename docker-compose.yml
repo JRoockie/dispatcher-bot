@@ -99,7 +99,7 @@ services:
     build:
       context: ./browser-admin-view
       dockerfile: ./Dockerfile
-    container_name: admin-view
+    container_name: browser-admin-view
     expose:
       - 8086
     ports:
