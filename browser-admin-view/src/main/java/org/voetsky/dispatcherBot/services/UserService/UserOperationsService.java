@@ -42,7 +42,7 @@ public class UserOperationsService implements UserOperations{
         User user = new User();
         user.setPassword("u");
         user.setLogin("u");
-        if (userRepository.findByLogin(user.getLogin()).isPresent()) {
+        if (userRepository.findByLogin(user.getLogin()).isEmpty()) {
             user.setPassword(passwordEncoder.encode(CharBuffer.wrap(user.getPassword())));
             userRepository.save(user);
         }
