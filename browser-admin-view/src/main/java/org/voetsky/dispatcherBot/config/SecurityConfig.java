@@ -25,12 +25,14 @@ public class SecurityConfig {
                 .and()
                 .addFilterBefore(new JwtAuthFilter(userAuthenticationProvider), BasicAuthenticationFilter.class)
                 .csrf().disable()
+//                .cors().and()
 //                .csrf().csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
 //                .and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeHttpRequests((req) ->
                         req
+                                .requestMatchers(HttpMethod.OPTIONS).permitAll()
                                 .requestMatchers(HttpMethod.POST, "/login", "/register").permitAll()
 //                                .requestMatchers(HttpMethod.GET, "/token/csrf").permitAll()
                                 .requestMatchers(HttpMethod.GET, "/swagger-ui/index.html").permitAll()
@@ -45,5 +47,18 @@ public class SecurityConfig {
         ;
         return http.build();
     }
+
+//    @Bean
+//    public CorsConfigurationSource corsConfigurationSource() {
+//        CorsConfiguration configuration = new CorsConfiguration();
+//        configuration.setAllowedOrigins(Arrays.asList("http://94.198.221.250", "https://94.198.221.250", "http://94.198.221.250:3000", "https://94.198.221.250:3000", "https://records-bot.ru", "http://records-bot.ru", "http://localhost:3000"));
+//        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+//        configuration.setAllowedHeaders(Arrays.asList("Authorization", "Origin", "X-Requested-With", "Content-Type", "Accept"));
+//        configuration.setMaxAge(3600L);
+//
+//        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+//        source.registerCorsConfiguration("/**", configuration);
+//        return source;
+//    }
 
 }
