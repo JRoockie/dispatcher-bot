@@ -24,13 +24,14 @@ public class WebConfig {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowCredentials(true);
-        config.addAllowedOrigin("http://94.198.221.250");
         config.addAllowedOrigin("https://94.198.221.250");
-        config.addAllowedOrigin("http://94.198.221.250:3000");
-        config.addAllowedOrigin("https://94.198.221.250:3000");
+        config.addAllowedOrigin("http://94.198.221.250");
         config.addAllowedOrigin("https://records-bot.ru");
         config.addAllowedOrigin("http://records-bot.ru");
+        config.addAllowedOrigin("https://localhost");
+        config.addAllowedOrigin("http://localhost");
         config.addAllowedOrigin("http://localhost:3000");
+        config.addAllowedOrigin("https://localhost:3000");
         config.setAllowedHeaders(Arrays.asList(
                 HttpHeaders.AUTHORIZATION,
                 HttpHeaders.CONTENT_TYPE,
