@@ -38,8 +38,12 @@ npm start
 Open http://localhost:3000, you can see all orders in database.
 Go to the bot @OlegRecords_bot and make order. Then it will appears in our frontend.
 
+You can enter into default admin account:
+- Login: u
+- Password: u
+
 ## Configuration 
-If you want to change bot you need to weite your own token and botname in all property files and docker-compose also:
+If you want to change bot you need to write your own token and botname in all property files and docker-compose also:
 
 ```sh
       bot.name: test_bot
