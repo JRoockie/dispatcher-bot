@@ -26,7 +26,7 @@ Write in console:
 docker compose up -d
 ```
 > You can change ports, bot token and anything that you need in application.properties files in each microservice. 
-> Dont foget to change environment variables in docker-compose.yaml
+> Don't forget to change environment variables in docker-compose.yaml
 
 Download my frontend part: [frontend](https://github.com/JRoockie/fontend)
 And write it in frontend part console:
