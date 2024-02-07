@@ -12,6 +12,7 @@ import org.voetsky.dispatcherBot.repository.song.SongRepository;
 import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @AllArgsConstructor
@@ -36,29 +37,40 @@ public class OrdersOperationsService implements OrdersOperations {
     @Override
     public List<OrderClient> newOrders() {
         List<OrderClient> orders = orderClientRepository.findOrderClientsByIsAcceptedTrue();
+        OrderClient deletedOrder = bluntFrontendCrutch(orders);
+
         orders = orders.stream()
                 .filter(order -> !order.getSuccessful())
-                .filter(order -> order.getDeletedWhen() == null)
+                .filter(order -> order.getDeletedWhen() == null )
                 .sorted(Comparator.comparing(OrderClient::getDate).reversed())
                 .collect(Collectors.toList());
+
+        orders.add(deletedOrder);
+
         return orders;
     }
+
+
 
     @Override
     public List<OrderClient> finOrders() {
         List<OrderClient> orders = orderClientRepository.findOrderClientsByIsAcceptedTrue();
-        List<OrderClient> finalizedOrders = orders.stream()
+        OrderClient deletedOrder = bluntFrontendCrutch(orders);
+
+        orders = orders.stream()
                 .filter(OrderClient::getSuccessful)
-                .filter(order -> order.getDeletedWhen() == null)
+                .filter(order -> order.getDeletedWhen() == null )
                 .sorted(Comparator.comparing(OrderClient::getDate).reversed())
                 .collect(Collectors.toList());
-        orders.sort(Comparator.comparing(OrderClient::getDate).reversed());
-        return finalizedOrders;
+
+        orders.add(deletedOrder);
+        return orders;
     }
 
     @Override
     public Boolean updateOrderFalse(UpdateOrderDto request) {
         OrderClient updateOrderFalse = orderClientRepository.findById(request.id()).orElse(null);
+
         if (updateOrderFalse != null) {
             updateOrderFalse.setSuccessful(false);
             orderClientRepository.save(updateOrderFalse);
@@ -70,6 +82,7 @@ public class OrdersOperationsService implements OrdersOperations {
     @Override
     public Boolean updateOrderTrue(UpdateOrderDto request) {
         OrderClient updateOrderTrue = orderClientRepository.findById(request.id()).orElse(null);
+
         if (updateOrderTrue != null) {
             updateOrderTrue.setSuccessful(true);
             orderClientRepository.save(updateOrderTrue);
@@ -97,6 +110,19 @@ public class OrdersOperationsService implements OrdersOperations {
             return true;
         }
         return false;
+    }
+
+    public OrderClient bluntFrontendCrutch(List<OrderClient> orders){
+        OrderClient deletedOrder = null;
+
+        Optional<OrderClient> firstDeletedOrder = orders.stream()
+                .filter(order -> order.getDeletedWhen() != null)
+                .findFirst();
+
+        if (firstDeletedOrder.isPresent()) {
+            deletedOrder = firstDeletedOrder.get();
+        }
+        return deletedOrder;
     }
 
 }

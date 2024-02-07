@@ -1,6 +1,7 @@
 package org.voetsky.dispatcherBot.testDataFiller;
 
 import com.github.javafaker.Faker;
+import jakarta.annotation.PostConstruct;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.voetsky.dispatcherBot.UserState;
@@ -53,7 +54,7 @@ public class DataFiller {
         this.binaryContentRepo = binaryContentRepo;
     }
 
-//    @PostConstruct
+    @PostConstruct
     synchronized public void fillData() {
         for (int i = 0; i <= orders; i++) {
             OrderClient order;
@@ -78,6 +79,19 @@ public class DataFiller {
                 }
             }
         }
+
+    }
+
+    @PostConstruct
+    public void bluntFrontendCrutch(){
+        OrderClient order;
+        OrderClient order1;
+        TgUser tgUser = makeTgUser();
+        order = makeOrder(tgUser, true, true, true);
+        order1 = makeOrder(tgUser, true, false, true);
+        fillSongs(order, true);
+        fillSongs(order1, true);
+
 
     }
 
