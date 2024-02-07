@@ -2,6 +2,7 @@ package org.voetsky.dispatcherBot.services.UserService;
 
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -19,6 +20,12 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @Service
 public class UserOperationsService implements UserOperations{
+
+    @Value("${admin.login}")
+    private String adminLogin;
+
+    @Value("${admin.pass}")
+    private String adminPassword;
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
@@ -40,8 +47,8 @@ public class UserOperationsService implements UserOperations{
     @Override
     public void registerAdmin() {
         User user = new User();
-        user.setPassword("u");
-        user.setLogin("u");
+        user.setPassword(adminPassword);
+        user.setLogin(adminLogin);
         if (userRepository.findByLogin(user.getLogin()).isEmpty()) {
             user.setPassword(passwordEncoder.encode(CharBuffer.wrap(user.getPassword())));
             userRepository.save(user);
