@@ -7,6 +7,17 @@
 - Telegram bot - @OlegRecords_bot
 - Web view - records-bot.ru
 
+![Java](https://img.shields.io/badge/-java-fcad03?style=for-the-badge&logo=java&logoColor=09000)
+![SpringBoot](https://img.shields.io/badge/-springBoot-000000?style=for-the-badge&logo=spring&logoColor=09000)
+![JUnit](https://img.shields.io/badge/-junit-ffffff?style=for-the-badge&logo=junit&logoColor=09000)
+![Mockito](https://img.shields.io/badge/-mockito-ffffff?style=for-the-badge&logo=mockito&logoColor=09000)
+![Docker](https://img.shields.io/badge/-docker-ffffff?style=for-the-badge&logo=docker&logoColor=09000)
+![Hibernate](https://img.shields.io/badge/-hibernate-000?style=for-the-badge&logo=hibernate&logoColor=09000)
+![Telegram API](https://img.shields.io/badge/-API-ffffff?style=for-the-badge&logo=telegram&logoColor=09000)
+![Postgres](https://img.shields.io/badge/-postgres-ffffff?style=for-the-badge&logo=postgresql&logoColor=09000)
+![RabbitMQ](https://img.shields.io/badge/-rabbitmq-ffffff?style=for-the-badge&logo=rabbitmq&logoColor=09000)
+![GIT](https://img.shields.io/badge/-git-ffffff?style=for-the-badge&logo=git&logoColor=09000)
+
 ## Functions
 
 - This application completely replaces the manager's work, compiles applications directly from the bot's telegrams and shows them in an easy-to-understand form
