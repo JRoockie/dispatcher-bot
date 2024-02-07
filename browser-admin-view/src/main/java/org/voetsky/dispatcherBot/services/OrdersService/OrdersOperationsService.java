@@ -36,14 +36,22 @@ public class OrdersOperationsService implements OrdersOperations {
     @Override
     public List<OrderClient> newOrders() {
         List<OrderClient> orders = orderClientRepository.findOrderClientsByIsAcceptedTrue();
-        orders = orders.stream().filter(order -> !order.getSuccessful()).sorted(Comparator.comparing(OrderClient::getDate).reversed()).collect(Collectors.toList());
+        orders = orders.stream()
+                .filter(order -> !order.getSuccessful())
+                .filter(order -> order.getDeletedWhen() == null)
+                .sorted(Comparator.comparing(OrderClient::getDate).reversed())
+                .collect(Collectors.toList());
         return orders;
     }
 
     @Override
     public List<OrderClient> finOrders() {
         List<OrderClient> orders = orderClientRepository.findOrderClientsByIsAcceptedTrue();
-        List<OrderClient> finalizedOrders = orders.stream().filter(OrderClient::getSuccessful).sorted(Comparator.comparing(OrderClient::getDate).reversed()).collect(Collectors.toList());
+        List<OrderClient> finalizedOrders = orders.stream()
+                .filter(OrderClient::getSuccessful)
+                .filter(order -> order.getDeletedWhen() == null)
+                .sorted(Comparator.comparing(OrderClient::getDate).reversed())
+                .collect(Collectors.toList());
         orders.sort(Comparator.comparing(OrderClient::getDate).reversed());
         return finalizedOrders;
     }

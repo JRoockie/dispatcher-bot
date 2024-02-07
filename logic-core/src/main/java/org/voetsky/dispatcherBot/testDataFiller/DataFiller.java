@@ -1,7 +1,6 @@
 package org.voetsky.dispatcherBot.testDataFiller;
 
 import com.github.javafaker.Faker;
-import jakarta.annotation.PostConstruct;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.voetsky.dispatcherBot.UserState;
@@ -54,7 +53,7 @@ public class DataFiller {
         this.binaryContentRepo = binaryContentRepo;
     }
 
-    @PostConstruct
+//    @PostConstruct
     synchronized public void fillData() {
         for (int i = 0; i <= orders; i++) {
             OrderClient order;
