@@ -1,11 +1,13 @@
 # Telegram-bot - Records-bot
 
- This app consists of 2 parts: 
-1. Telegram bot questionnaire
-2. Web presentation of data
+ Приложение состоит из 2х частей: 
+1. Telegram bot опросник
+2. Web представление данных, собранных ботом
 
 - Telegram bot - @OlegRecords_bot
-- Web view - records-bot.ru
+- Web - records-bot.ru
+
+Стек технологий:
 
 ![Java](https://img.shields.io/badge/-java-fcad03?style=for-the-badge&logo=java&logoColor=09000)
 ![SpringBoot](https://img.shields.io/badge/-springBoot-000000?style=for-the-badge&logo=spring&logoColor=09000)
@@ -18,43 +20,92 @@
 ![RabbitMQ](https://img.shields.io/badge/-rabbitmq-ffffff?style=for-the-badge&logo=rabbitmq&logoColor=09000)
 ![GIT](https://img.shields.io/badge/-git-ffffff?style=for-the-badge&logo=git&logoColor=09000)
 
-## Functions
+## Техническое задание
 
-- This application completely replaces the manager's work, compiles applications directly from the bot's telegrams and shows them in an easy-to-understand form
-- Bot supports Kazakh and Russian languages
-- Easy to change bot text in language's property files
-- Easy to add new commands
-- Web interface
+Общие задачи:
+- Разработать Телеграм Бот-опросник для сбора информации и составления заявки
+- Разработать Веб приложение для просмотра данных
+- Разработать фронтенд
+- Докеризация проекта
+- Деплой и развертывание приложения на удаленном сервере
+- Конфгурация NGINX
+- Установка домена и SSL
 
-The application is built on a micro service architecture and consists of 3 parts:
-- browser-admin-view - sends data to website
-- the logic-core - application logic
-- dispatcher - receiving messages from telegram
+Бекенд бота:
+- Бот должен поддерживать казахский и русский языки
+- Необходимо легко изменять текст бота в файлах свойств для каждого языка
+- Необходимо легко добавлять новые команды и менять структуру бота 
+- Автоочистка бд от заявок, которые не были завершены пользователями
 
-## How to start?
-Write in console:
+
+Веб приложение:
+
+- Механизм авторизации
+- 2 типа заявок: Обработанные и необработанные
+- API для фронтенда
+- Возможность скачивания файлов в браузер
+- CRUD операции
+- Реализация JWT
+- REST
+
+## О приложении:
+
+Приложение построено на архитектуре микросервисов и состоит из трех приложений:
+
+- browser-admin-view - отправляет данные на фронт.
+- logic-core - логика тг бота
+- dispatcher - получение сообщений из телеграма и первичная валидация
+
+### dispatcher: 
+
+- [Прием и валидация сообщений из тг](dispatcher/src/main/java/org/voetsky/dispatcherBot/controller/UpdateController.java)
+- [Локализация сообщений](dispatcher/src/main/java/org/voetsky/dispatcherBot/configuration/localization/DispatcherLangUnit.java)
+- [Отправка сообщения в брокер](dispatcher/src/main/java/org/voetsky/dispatcherBot/service/output/updateProducer/UpdateProducerImpl.java)
+- [Прием сообщений из брокера от других сервисов](dispatcher/src/main/java/org/voetsky/dispatcherBot/service/input/answerConsumer/AnswerConsumerImpl.java)
+- [Формирование ответа в телеграм ](dispatcher/src/main/java/org/voetsky/dispatcherBot/service/messageutils/MakeMessage.java)
+
+### logic-core: 
+
+- [Получение сообщений из брокера, валидация, первичная обработка](logic-core/src/main/java/org/voetsky/dispatcherBot/services/input)
+- [Основная логика обработки комманд и ввода, после валидации](logic-core/src/main/java/org/voetsky/dispatcherBot/services/logic/commandHandlerService/CommandHandlerService.java)
+- [Сервисы связанные с бд: сравнение обьектов, закачка файлов в бд, общая логика, требующая другие репозитории одновременно](logic-core/src/main/java/org/voetsky/dispatcherBot/services/repoServices)
+- [Заполнение бд тестовыми данными](logic-core/src/main/java/org/voetsky/dispatcherBot/testDataFiller)
+- [Локализация сообщений](logic-core/src/main/java/org/voetsky/dispatcherBot/localization)
+- [Отправка сообщений в брокер](logic-core/src/main/java/org/voetsky/dispatcherBot/services/output)
+- [Автоочистка БД от заявок которые не были до конца завершены пользователем](logic-core/src/main/java/org/voetsky/dispatcherBot/services/scheduleTasks/dbCleanerService/DbCleanerService.java)
+
+### browser-admin-view: 
+- [Авторизация](browser-admin-view/src/main/java/org/voetsky/dispatcherBot/controllers/AuthController.java)
+- [API для запросов фронта](browser-admin-view/src/main/java/org/voetsky/dispatcherBot/controllers/ViewController.java)
+- [Сервис скачивания файлов](browser-admin-view/src/main/java/org/voetsky/dispatcherBot/services/FileOperationsService/FileOperationsService.java)
+- [Фильтрация данных из БД](browser-admin-view/src/main/java/org/voetsky/dispatcherBot/services/OrdersService/OrdersOperationsService.java)
+- [Регистрация и дефолт логин, пароль для входа](browser-admin-view/src/main/java/org/voetsky/dispatcherBot/services/UserService/UserOperationsService.java)
+- [Файлы фонфигураций](browser-admin-view/src/main/java/org/voetsky/dispatcherBot/config)
+
+## А как запустить то?
+Напиисать в консоли проекта:
 ```sh
 docker compose up -d
 ```
-> You can change ports, bot token and anything that you need in application.properties files in each microservice. 
-> Don't forget to change environment variables in docker-compose.yaml
+- Можно изменить порты, токен бота и все, что вам нужно, в файлах application.properties каждого микросервиса.
+- Не забудьте изменить переменные среды в файле [docker-compose.yaml](docker-compose.yml)
 
-Download my frontend part: [frontend](https://github.com/JRoockie/fontend)
-And write it in frontend part console:
+Скачать фронтенд для этого проекта: [frontend](https://github.com/JRoockie/frontend)
+Написать в консоли проекта:
 ```sh
 npm i
 npm start
 ```
 
-Open http://localhost:3000, you can see all orders in database.
-Go to the bot @OlegRecords_bot and make order. Then it will appears in our frontend.
+Открыв http://localhost:3000, вы увидите все заказы, находящиеся в базе данных.
+Напишите в тг @OlegRecords_bot и сделайте заказ. Обновите страницу, новый заказ появится на фронте моментально.
 
-You can enter into default admin account:
+Чтобы зайти на фронт, можно указать дефолтные значения логина и пароля администратора:
 - Login: u
 - Password: u
 
-## Configuration 
-If you want to change bot you need to write your own token and botname in all property files and docker-compose also:
+## Конфигурация 
+Если вы хотите изменить бота, вам нужно написать свой собственный токен и имя бота во всех файлах application.properties и также в файле docker-compose.
 
 ```sh
       bot.name: test_bot
