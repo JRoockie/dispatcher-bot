@@ -1,7 +1,7 @@
 # Telegram-bot - Records-bot
 
  Приложение состоит из 2х частей: 
-1. Telegram bot опросник
+1. Telegram бот опросник
 2. Web представление данных, собранных ботом
 
 - Telegram bot - @OlegRecords_bot
@@ -50,13 +50,13 @@
 
 ## О приложении:
 
-Приложение построено на архитектуре микросервисов и состоит из трех приложений:
+Приложение построено c использованием микросервисной архитектуры и состоит из трех приложений:
 
 - browser-admin-view - отправляет данные на фронт.
 - logic-core - логика тг бота
 - dispatcher - получение сообщений из телеграма и первичная валидация
 
-### dispatcher: 
+### Функции dispatcher: 
 
 - [Прием и валидация сообщений из тг](dispatcher/src/main/java/org/voetsky/dispatcherBot/controller/UpdateController.java)
 - [Локализация сообщений](dispatcher/src/main/java/org/voetsky/dispatcherBot/configuration/localization/DispatcherLangUnit.java)
@@ -64,30 +64,30 @@
 - [Прием сообщений из брокера от других сервисов](dispatcher/src/main/java/org/voetsky/dispatcherBot/service/input/answerConsumer/AnswerConsumerImpl.java)
 - [Формирование ответа в телеграм ](dispatcher/src/main/java/org/voetsky/dispatcherBot/service/messageutils/MakeMessage.java)
 
-### logic-core: 
+### Функции logic-core: 
 
 - [Получение сообщений из брокера, валидация, первичная обработка](logic-core/src/main/java/org/voetsky/dispatcherBot/services/input)
-- [Основная логика обработки комманд и ввода, после валидации](logic-core/src/main/java/org/voetsky/dispatcherBot/services/logic/commandHandlerService/CommandHandlerService.java)
-- [Сервисы связанные с бд: сравнение обьектов, закачка файлов в бд, общая логика, требующая другие репозитории одновременно](logic-core/src/main/java/org/voetsky/dispatcherBot/services/repoServices)
-- [Заполнение бд тестовыми данными](logic-core/src/main/java/org/voetsky/dispatcherBot/testDataFiller)
+- [Основная логика обработки комманд и ввода после валидации](logic-core/src/main/java/org/voetsky/dispatcherBot/services/logic/commandHandlerService/CommandHandlerService.java)
+- [Сервисы связанные с БД: сравнение обьектов, закачка файлов в БД, общая логика (требующая другие репозитории одновременно)](logic-core/src/main/java/org/voetsky/dispatcherBot/services/repoServices)
+- [Заполнение БД тестовыми данными](logic-core/src/main/java/org/voetsky/dispatcherBot/testDataFiller)
 - [Локализация сообщений](logic-core/src/main/java/org/voetsky/dispatcherBot/localization)
 - [Отправка сообщений в брокер](logic-core/src/main/java/org/voetsky/dispatcherBot/services/output)
 - [Автоочистка БД от заявок которые не были до конца завершены пользователем](logic-core/src/main/java/org/voetsky/dispatcherBot/services/scheduleTasks/dbCleanerService/DbCleanerService.java)
 
-### browser-admin-view: 
+### Функции browser-admin-view: 
 - [Авторизация](browser-admin-view/src/main/java/org/voetsky/dispatcherBot/controllers/AuthController.java)
 - [API для запросов фронта](browser-admin-view/src/main/java/org/voetsky/dispatcherBot/controllers/ViewController.java)
 - [Сервис скачивания файлов](browser-admin-view/src/main/java/org/voetsky/dispatcherBot/services/FileOperationsService/FileOperationsService.java)
 - [Фильтрация данных из БД](browser-admin-view/src/main/java/org/voetsky/dispatcherBot/services/OrdersService/OrdersOperationsService.java)
-- [Регистрация и дефолт логин, пароль для входа](browser-admin-view/src/main/java/org/voetsky/dispatcherBot/services/UserService/UserOperationsService.java)
-- [Файлы фонфигураций](browser-admin-view/src/main/java/org/voetsky/dispatcherBot/config)
+- [Регистрация, дефолт логин и пароль для входа](browser-admin-view/src/main/java/org/voetsky/dispatcherBot/services/UserService/UserOperationsService.java)
+- [Файлы конфигураций](browser-admin-view/src/main/java/org/voetsky/dispatcherBot/config)
 
 ## А как запустить то?
 Напиисать в консоли проекта:
 ```sh
 docker compose up -d
 ```
-- Можно изменить порты, токен бота и все, что вам нужно, в файлах application.properties каждого микросервиса.
+- Можно изменить порты, токен бота и другое в файлах application.properties каждого микросервиса.
 - Не забудьте изменить переменные среды в файле [docker-compose.yaml](docker-compose.yml)
 
 Скачать фронтенд для этого проекта: [frontend](https://github.com/JRoockie/frontend)
@@ -97,7 +97,7 @@ npm i
 npm start
 ```
 
-Открыв http://localhost:3000, вы увидите все заказы, находящиеся в базе данных.
+Открыв http://localhost:3000, увидите все заказы, находящиеся в базе данных.
 Напишите в тг @OlegRecords_bot и сделайте заказ. Обновите страницу, новый заказ появится на фронте моментально.
 
 Чтобы зайти на фронт, можно указать дефолтные значения логина и пароля администратора:
